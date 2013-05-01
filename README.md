@@ -2,6 +2,7 @@ PortraitBuilder
 ===============
 
 Copywrite 2012-1013 Stuart Haidon
+
 This software is released under the terms of the GNU Lesser General Public License.
 
 ------------------
