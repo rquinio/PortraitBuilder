@@ -7,8 +7,10 @@ CK2Utils library.
 The Parser grammar for the Portraits has been included, but it was last used
 on an older version of Hime and may need some changes.
 
-
 DLC use has been partially implemented.
+
+Note: this project will no longer be updated, and pull requests will be ignored.
+Please fork to continue development.
 
 ------------------
 
