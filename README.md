@@ -1,6 +1,11 @@
 PortraitBuilder
 ===============
 
+Copywrite 2012-1013 Stuart Haidon
+This software is released under the terms of the GNU Lesser General Public License.
+
+------------------
+
 Contains the source code for the UI project, and a cut down version of the
 CK2Utils library.
 
