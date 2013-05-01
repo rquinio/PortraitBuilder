@@ -1,0 +1,49 @@
+cf grammar EventReader
+{
+	options	{
+		Axiom = "Start";
+		Separator = "SEPARATOR";
+	}
+	terminals {
+		INT -> '-'? [0-9]*;
+		FLOAT -> INT? '.' INT;
+		DATE -> INT '.' INT '.' INT;
+		NUMBER -> INT|FLOAT;
+				
+		ASSIGN -> '=';
+		OPEN -> '{';
+		CLOSE -> '}';
+		
+		LETTER -> [a-zA-Z] | 0x0080 .. 0x02AF;
+		ID -> (LETTER|'_'|0x0027|0x0060|':') (LETTER|[0-9]|'_'|'-'|0x0027|0x0060|'*'|','|'.'|'‘'|'!'|'\\'|'/'|':'|'?' )*;
+		STRING -> '"' ' '* ID* (' ' ID+)* ' '* '"';
+		
+		BOOL -> 'yes'|'no';
+		
+		NEW_LINE -> 0x000D /* CR */
+                    |  0x000A /* LF */
+                    |  0x000D 0x000A /* CR LF */
+                    |  0x2028 /* LS */
+                    |  0x2029 /* PS */ ;
+		COMMENT -> '#' (.* - (.* NEW_LINE .*)) NEW_LINE? ;
+		
+		WHITE_SPACE -> ' ' | '\t' | NEW_LINE | 0x00A0;
+		SEPARATOR -> (WHITE_SPACE | COMMENT)+;
+	}
+	rules{
+		idOption -> ID ASSIGN! ID;
+		boolOption -> ID ASSIGN! BOOL;
+		stringOption -> ID ASSIGN! STRING;
+		numberOption -> ID ASSIGN! NUMBER;
+		groupOption -> ID ASSIGN! OPEN! Option* CLOSE!;
+		colourGroup -> OPEN! NUMBER NUMBER NUMBER CLOSE!;
+		layerGroup -> ID! ASSIGN! OPEN! STRING+ CLOSE!;
+		cultureGroup -> ID! ASSIGN! OPEN! NUMBER+ CLOSE!;
+		
+		Option -> (idOption | boolOption | stringOption | numberOption | groupOption^ | colourGroup^ | layerGroup^ | cultureGroup^ );
+		
+		Sprite -> ID ASSIGN! OPEN! Option+ CLOSE!;
+		
+		Start -> Sprite*;
+	}	
+}
