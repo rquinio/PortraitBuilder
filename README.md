@@ -10,13 +10,15 @@ on an older version of Hime and may need some changes.
 
 DLC use has been partially implemented.
 
-==========
+------------------
 
-To build the project, you will need the following:
+To build the ParseLibs project, you will need the following:
 
 The DevIL library, with the DevIL.Net wrapper. It, and the .Net wrapper can
 be found at http://openil.sourceforge.net/
 
-SharpZipLib. Can be found at http://www.icsharpcode.net/opensource/sharpziplib/
-
 Hime Parser Generator. Can be found at http://himeparser.codeplex.com/
+
+To build the UI Project, you will need:
+
+SharpZipLib. Can be found at http://www.icsharpcode.net/opensource/sharpziplib/
