@@ -295,7 +295,7 @@ namespace Parsers.Portrait
 		private void ParseLayers( PortraitType p, SyntaxTreeNode node, string filename )
 		{
 			string[] s;
-			Layer l;
+			Layer layer;
 
 			foreach( SyntaxTreeNode child in node.Children )
 			{
@@ -303,30 +303,34 @@ namespace Parsers.Portrait
 
 				s = ( (SymbolTokenText)child.Symbol ).ValueText.Replace( "\"", "" ).Split( ':' );
 
-				l = new Layer();
-				l.Filename = filename;
+				layer = new Layer();
+				layer.Filename = filename;
 
-				l.Name = s[0];
-				l.LayerType = s[1][0] == 'd' ? Layer.Type.DNA : Layer.Type.Property;
-				l.Index = int.Parse( s[1].Substring( 1 ) );
+				layer.Name = s[0];
+				layer.LayerType = s[1][0] == 'd' ? Layer.Type.DNA : Layer.Type.Property;
+				layer.Index = int.Parse( s[1].Substring( 1 ) );
 
-				if( s.Length >= 3 )
-				{
-					if( s[2] == "h" || s[2] == "x" )
-						l.IsHair = true;
-					else if( s[2] == "e" )
-						l.IsEye = true;
-				}
-				if( s.Length == 4 )
-					l.DontRefreshIfValid = s[3] == "y";
+                for(int i = 2; i < s.Length; i++){
+                    if(s[i] == "h" || s[2] == "x"){
+                        layer.IsHair = true;
+                    } else if(s[i] == "e"){
+                        layer.IsEye = true;
+                    } else if(s[i] == "y"){
+                        layer.DontRefreshIfValid = true;
+                    } else if(s[i].StartsWith("o")){
+                        string[] offsets = s[i].Substring(1).Split('x');
+                        layer.Offset = new Point(int.Parse(offsets[0]), int.Parse(offsets[1]));
+                    }
+                }
 
-				Log( "   --ID: " + l.Name );
-				Log( "   --Index: " + l.Index );
-				Log( "   --Layer Type: " + ( l.LayerType == Layer.Type.DNA ? "DNA" : "Property" ) );
-				Log( "   --Is Hair: " + l.IsHair );
-				Log( "   --Is Eye: " + l.IsEye );
+				Log( "   --ID: " + layer.Name );
+				Log( "   --Index: " + layer.Index );
+				Log( "   --Layer Type: " + ( layer.LayerType == Layer.Type.DNA ? "DNA" : "Property" ) );
+				Log( "   --Is Hair: " + layer.IsHair );
+				Log( "   --Is Eye: " + layer.IsEye );
+                Log("   --Offset: " + layer.Offset);
 
-				p.Layers.Add( l );
+				p.Layers.Add( layer );
 			}
 		}
 
@@ -435,20 +439,20 @@ namespace Parsers.Portrait
 
 			string dir = selMod.ModPathType == ModReader.Folder.CKDir ? ckDir : myDocsDir;
 
-			foreach( Layer l in pType.Layers )
+			foreach( Layer layer in pType.Layers )
 			{
-                Log("--Drawing Layer " + l.Index);
+                Log("--Drawing Layer " + layer.Index);
 
                 try {
 
-				if( Sprites.ContainsKey( l.Name ) )
+				if( Sprites.ContainsKey( layer.Name ) )
 				{
-					Log( "  --Searching for sprite ID: " + l.Name );
-					sprite = Sprites[l.Name];
+					Log( "  --Searching for sprite ID: " + layer.Name );
+					sprite = Sprites[layer.Name];
 				} else
 				{
 					Log( "  --Sprite not found." );
-					DrawErrors.Add( "Sprite not found: " + l.Name );
+					DrawErrors.Add( "Sprite not found: " + layer.Name );
 					continue;
 				}
 
@@ -472,37 +476,37 @@ namespace Parsers.Portrait
 				}
 
 				//Get DNA/Properties letter, then the index of the tile to draw
-				letter = l.LayerType == Layer.Type.DNA ? dna[l.Index] : properties[l.Index];
-				Log( "  --Layer Type: " + ( l.LayerType == Layer.Type.DNA ? "DNA" : "Property" ) );
-				Log( "  --Layer Index: " + l.Index );
+				letter = layer.LayerType == Layer.Type.DNA ? dna[layer.Index] : properties[layer.Index];
+				Log( "  --Layer Type: " + ( layer.LayerType == Layer.Type.DNA ? "DNA" : "Property" ) );
+				Log( "  --Layer Index: " + layer.Index );
 				Log( "  --Layer Letter: " + letter );
 				tileIndex = GetIndex( letter, sprite.FrameCount );
 				Log( "  --Tile Index: " + tileIndex );
 
 				//Draw tile
-				if( l.IsHair )
+				if( layer.IsHair )
 				{
 					Log( "  --Drawing Layer as Hair" );
 					letter = dna[pType.HairColourIndex];
 					hairEyeIndex = GetIndex( letter, pType.HairColours.Count );
 					hairEyeTemp = DrawHair( sprite.Tiles[tileIndex], pType.HairColours[hairEyeIndex] );
-					g.DrawImage( hairEyeTemp, 12, 12 );
-				} else if( l.IsEye )
+                    g.DrawImage(hairEyeTemp, 12 + layer.Offset.X, 12 + layer.Offset.Y);
+				} else if( layer.IsEye )
 				{
 					Log( "  --Drawing Layer as Eye" );
 					letter = dna[pType.EyeColourIndex];
 					hairEyeIndex = GetIndex( letter, pType.EyeColours.Count );
 					hairEyeTemp = DrawEye( sprite.Tiles[tileIndex], pType.EyeColours[hairEyeIndex] );
-					g.DrawImage( hairEyeTemp, 12, 12 );
+                    g.DrawImage(hairEyeTemp, 12 + layer.Offset.X, 12 + layer.Offset.Y);
 				} else
 				{
 					Log( "  --Drawing Layer" );
-					g.DrawImage( sprite.Tiles[tileIndex], 12, 12 );
+                    g.DrawImage(sprite.Tiles[tileIndex], 12 + layer.Offset.X, 12 + layer.Offset.Y);
 				}
                 }
                 catch (Exception e)
                 {
-                    System.Diagnostics.Debug.WriteLine("Could not render layer" + l.Index);
+                    System.Diagnostics.Debug.WriteLine("Could not render layer" + layer.Index);
                     System.Diagnostics.Debug.WriteLine(e);
                 }
 			}

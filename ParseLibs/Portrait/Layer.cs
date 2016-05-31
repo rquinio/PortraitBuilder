@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Drawing;
 
 namespace Parsers.Portrait
 {
@@ -16,7 +17,12 @@ namespace Parsers.Portrait
 		public Type LayerType;
 		public bool IsHair;
 		public bool IsEye;
-		public bool DontRefreshIfValid;
+		public bool DontRefreshIfValid = false;
+
+        /// <summary>
+        /// The offset coordinates for this layer
+        /// </summary>
+        public Point Offset = new Point(0,0);
 
 		public enum Type
 		{

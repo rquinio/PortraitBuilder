@@ -445,6 +445,7 @@ namespace Portrait_Builder
       sb.Append( GetLetter( cbRedDots ) ); //Red Dots
       sb.Append( GetLetter( cbBoils ) ); //Boils
       sb.Append( GetLetter( cbBlinded ) );
+      sb.Append("0"); // Player overlay
 
       m_properties = sb.ToString();
     }
