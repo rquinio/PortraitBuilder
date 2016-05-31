@@ -105,8 +105,8 @@ namespace Parsers.Portrait
 			}
 
 			//Parse the file
-			EventReaderLexer lexer = new EventReaderLexer( relcontents );
-			EventReaderParser parser = new EventReaderParser( lexer );
+            PortraitReaderLexer lexer = new PortraitReaderLexer(relcontents);
+            PortraitReaderParser parser = new PortraitReaderParser(lexer);
 
 			SyntaxTreeNode root = parser.Analyse();
 

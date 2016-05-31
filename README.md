@@ -20,13 +20,16 @@ Please fork to continue development.
 
 ------------------
 
-To build the ParseLibs project, you will need the following:
+To build the ParseLibs project, you will need:
 
-The DevIL library, with the DevIL.Net wrapper. It, and the .Net wrapper can
-be found at http://openil.sourceforge.net/
+* The DevIL library, with the DevIL.Net wrapper. It, and the .Net wrapper can be found at http://openil.sourceforge.net/
 
-Hime Parser Generator. Can be found at http://himeparser.codeplex.com/
+* Hime Parser Generator. Can be found at http://himeparser.codeplex.com/
 
 To build the UI Project, you will need:
 
-SharpZipLib. Can be found at http://www.icsharpcode.net/opensource/sharpziplib/
+* SharpZipLib. Can be found at http://www.icsharpcode.net/opensource/sharpziplib/
+
+To re-generate the Lexer/Parser from the grammar, install Hime Parser Generator v0.5.0 (won't work with v1.0), and run the following:
+
+> himecc PortraitReader.gram -n Parsers.Portrait
