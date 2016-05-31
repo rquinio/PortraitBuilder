@@ -60,6 +60,7 @@ namespace Parsers.Portrait
 
 		private void Log( string text )
 		{
+            System.Diagnostics.Debug.WriteLine(text);
 			if( m_logging )
 			{
 				m_log.WriteLine( "PRC > " + text );
@@ -419,7 +420,7 @@ namespace Parsers.Portrait
 			Log( "  --Documents Dir: " + myDocsDir );
 			Log( "  --Mod: " + selMod.Name );
 
-			if( dna.Length >= 9 == false || properties.Length >= 9 == false )
+			if( dna.Length < 9 || properties.Length < 9)
 			{
 				DrawErrors.Add( "DNA or Property strings are too short." );
 				Log( "  --Error: DNA or Portrait string too short." );
@@ -436,7 +437,9 @@ namespace Parsers.Portrait
 
 			foreach( Layer l in pType.Layers )
 			{
-				Log( "--Drawing Layer" );
+                Log("--Drawing Layer " + l.Index);
+
+                try {
 
 				if( Sprites.ContainsKey( l.Name ) )
 				{
@@ -496,6 +499,12 @@ namespace Parsers.Portrait
 					Log( "  --Drawing Layer" );
 					g.DrawImage( sprite.Tiles[tileIndex], 12, 12 );
 				}
+                }
+                catch (Exception e)
+                {
+                    System.Diagnostics.Debug.WriteLine("Could not render layer" + l.Index);
+                    System.Diagnostics.Debug.WriteLine(e);
+                }
 			}
 
 			g.Dispose();

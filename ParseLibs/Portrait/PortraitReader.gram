@@ -6,7 +6,7 @@ cf grammar EventReader
 	}
 	terminals {
 		INT -> '-'? [0-9]*;
-		FLOAT -> INT? '.' INT;
+		FLOAT -> INT? '.' INT 'f'?;
 		DATE -> INT '.' INT '.' INT;
 		NUMBER -> INT|FLOAT;
 				

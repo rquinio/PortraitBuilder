@@ -39,7 +39,7 @@ namespace Portrait_Builder
             }
           } else
           {
-            if( !File.Exists( dir + "\\ck2.exe" ) )
+              if (!File.Exists(dir + "\\CK2game.exe"))
             {
               MessageBox.Show( "Crusader Kings II not found.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error );
               dir = null;

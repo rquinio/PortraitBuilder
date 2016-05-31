@@ -111,6 +111,7 @@ namespace Portrait_Builder
 
     private void Log( string text )
     {
+        System.Diagnostics.Debug.WriteLine(text);
       m_log.WriteLine( text );
       m_log.Flush();
     }
