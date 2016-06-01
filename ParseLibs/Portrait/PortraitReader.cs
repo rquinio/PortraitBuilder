@@ -215,124 +215,106 @@ namespace Parsers.Portrait
 
 		private void ParseEyeColours( PortraitType portraitType, SyntaxTreeNode node )
 		{
-			Colour colour;
 			IEnumerable<SyntaxTreeNode> children = node.Children.Where( child => child.Symbol.Name == "colourGroup" );
-			SymbolTokenText value;
 
 			foreach( SyntaxTreeNode child in children )
 			{
-				Log( " --Parsing Eye Colour" );
-
-				colour = new Colour();
-
-				value = child.Children[0].Symbol as SymbolTokenText;
-				colour.Red = byte.Parse( value.ValueText );
-				value = child.Children[1].Symbol as SymbolTokenText;
-				colour.Green = byte.Parse( value.ValueText );
-				value = child.Children[2].Symbol as SymbolTokenText;
-				colour.Blue = byte.Parse( value.ValueText );
-
-				Log( "   --Colour: " + colour.Red + " " + colour.Green + " " + colour.Blue );
-
-				portraitType.EyeColours.Add( colour );
+				portraitType.EyeColours.Add( ParseColour(child) );
 			}
 		}
 
 		private void ParseHairColours( PortraitType portraitType, SyntaxTreeNode node )
 		{
-			Colour colour;
-			Hair hair;
 			List<SyntaxTreeNode> children = node.Children.Where( child => child.Symbol.Name == "colourGroup" ).ToList();
-			SymbolTokenText value;
-			SyntaxTreeNode token;
 
 			for( int i = 0; i < children.Count; i += 3 )
 			{
-				Log( " --Parsing Hair Colour" );
+				Log( " --Parsing Hair colours" );
 
-				hair = new Hair();
+                Hair hair = new Hair();
 
-				colour = new Colour();
-				token = children[i];
-				value = token.Children[0].Symbol as SymbolTokenText;
-				colour.Red = byte.Parse( value.ValueText );
-				value = token.Children[1].Symbol as SymbolTokenText;
-				colour.Green = byte.Parse( value.ValueText );
-				value = token.Children[2].Symbol as SymbolTokenText;
-				colour.Blue = byte.Parse( value.ValueText );
-				hair.Dark = colour;
+                hair.Dark = ParseColour(children[i]);
+                Log("   --Dark: " + hair.Dark.Red + " " + hair.Dark.Green + " " + hair.Dark.Blue);
 
-				Log( "   --Dark: " + colour.Red + " " + colour.Green + " " + colour.Blue );
+                hair.Base = ParseColour(children[i + 1]);
+                Log("   --Base: " + hair.Base.Red + " " + hair.Base.Green + " " + hair.Base.Blue);
 
-				colour = new Colour();
-				token = children[i + 1];
-				value = token.Children[0].Symbol as SymbolTokenText;
-				colour.Red = byte.Parse( value.ValueText );
-				value = token.Children[1].Symbol as SymbolTokenText;
-				colour.Green = byte.Parse( value.ValueText );
-				value = token.Children[2].Symbol as SymbolTokenText;
-				colour.Blue = byte.Parse( value.ValueText );
-				hair.Base = colour;
-
-				Log( "   --Base: " + colour.Red + " " + colour.Green + " " + colour.Blue );
-
-				colour = new Colour();
-				token = children[i + 2];
-				value = token.Children[0].Symbol as SymbolTokenText;
-				colour.Red = byte.Parse( value.ValueText );
-				value = token.Children[1].Symbol as SymbolTokenText;
-				colour.Green = byte.Parse( value.ValueText );
-				value = token.Children[2].Symbol as SymbolTokenText;
-				colour.Blue = byte.Parse( value.ValueText );
-				hair.Highlight = colour;
-
-				Log( "   --Highlight: " + colour.Red + " " + colour.Green + " " + colour.Blue );
+                hair.Highlight = ParseColour(children[i + 2]);
+                Log("   --Highlight: " + hair.Highlight.Red + " " + hair.Highlight.Green + " " + hair.Highlight.Blue);
 
 				portraitType.HairColours.Add( hair );
 			}
 		}
 
+        private Colour ParseColour(SyntaxTreeNode child)
+        {
+            Log(" --Parsing Colour");
+
+            Colour colour = new Colour();
+
+            SymbolTokenText value = child.Children[0].Symbol as SymbolTokenText;
+            colour.Red = byte.Parse(value.ValueText);
+            value = child.Children[1].Symbol as SymbolTokenText;
+            colour.Green = byte.Parse(value.ValueText);
+            value = child.Children[2].Symbol as SymbolTokenText;
+            colour.Blue = byte.Parse(value.ValueText);
+
+            Log("   --Colour: " + colour.Red + " " + colour.Green + " " + colour.Blue);
+
+            return colour;
+        }
+
 		private void ParseLayers( PortraitType portraitType, SyntaxTreeNode node, string filename )
 		{
-			string[] layerParts;
-			Layer layer;
-
 			foreach( SyntaxTreeNode child in node.Children )
 			{
-				Log( " --Parsing Layer" );
-
-				layerParts = ( (SymbolTokenText)child.Symbol ).ValueText.Replace( "\"", "" ).Split( ':' );
-
-				layer = new Layer();
-				layer.Filename = filename;
-
-				layer.Name = layerParts[0];
-				layer.LayerType = layerParts[1][0] == 'd' ? Layer.Type.DNA : Layer.Type.Property;
-				layer.Index = int.Parse( layerParts[1].Substring( 1 ) );
-
-                for(int i = 2; i < layerParts.Length; i++){
-                    if(layerParts[i] == "h" || layerParts[2] == "x"){
-                        layer.IsHair = true;
-                    } else if(layerParts[i] == "e"){
-                        layer.IsEye = true;
-                    } else if(layerParts[i] == "y"){
-                        layer.DontRefreshIfValid = true;
-                    } else if(layerParts[i].StartsWith("o")){
-                        string[] offsets = layerParts[i].Substring(1).Split('x');
-                        layer.Offset = new Point(int.Parse(offsets[0]), int.Parse(offsets[1]));
-                    }
-                }
-
-				Log( "   --ID: " + layer.Name );
-				Log( "   --Index: " + layer.Index );
-				Log( "   --Layer Type: " + ( layer.LayerType == Layer.Type.DNA ? "DNA" : "Property" ) );
-				Log( "   --Is Hair: " + layer.IsHair );
-				Log( "   --Is Eye: " + layer.IsEye );
-                Log("   --Offset: " + layer.Offset);
-
-				portraitType.Layers.Add( layer );
+                portraitType.Layers.Add(ParseLayer(portraitType, child, filename));
 			}
 		}
+
+        private Layer ParseLayer(PortraitType portraitType, SyntaxTreeNode node, string filename)
+        {
+            Log(" --Parsing Layer");
+
+            string[] layerParts = ((SymbolTokenText)node.Symbol).ValueText.Replace("\"", "").Split(':');
+
+            Layer layer = new Layer();
+            layer.Filename = filename;
+
+            layer.Name = layerParts[0];
+            layer.LayerType = layerParts[1][0] == 'd' ? Layer.Type.DNA : Layer.Type.Property;
+            layer.Index = int.Parse(layerParts[1].Substring(1));
+
+            for (int i = 2; i < layerParts.Length; i++)
+            {
+                if (layerParts[i] == "h" || layerParts[2] == "x")
+                {
+                    layer.IsHair = true;
+                }
+                else if (layerParts[i] == "e")
+                {
+                    layer.IsEye = true;
+                }
+                else if (layerParts[i] == "y")
+                {
+                    layer.DontRefreshIfValid = true;
+                }
+                else if (layerParts[i].StartsWith("o"))
+                {
+                    string[] offsets = layerParts[i].Substring(1).Split('x');
+                    layer.Offset = new Point(int.Parse(offsets[0]), int.Parse(offsets[1]));
+                }
+            }
+
+            Log("   --ID: " + layer.Name);
+            Log("   --Index: " + layer.Index);
+            Log("   --Layer Type: " + (layer.LayerType == Layer.Type.DNA ? "DNA" : "Property"));
+            Log("   --Is Hair: " + layer.IsHair);
+            Log("   --Is Eye: " + layer.IsEye);
+            Log("   --Offset: " + layer.Offset);
+
+            return layer;
+        }
 
 		private void ParseSpriteType( SyntaxTreeNode node, string filename )
 		{
@@ -431,11 +413,9 @@ namespace Parsers.Portrait
 				return null;
 			}
 
-			Bitmap portrait = new Bitmap( 176, 176 ), hairEyeTemp;
+			Bitmap portrait = new Bitmap( 176, 176 );
 			Graphics g = Graphics.FromImage( portrait );
-			char letter;
 			Sprite sprite;
-			int tileIndex, hairEyeIndex;
 
 			string dir = selectedMod.ModPathType == ModReader.Folder.CKDir ? ckDir : myDocsDir;
 
@@ -459,50 +439,28 @@ namespace Parsers.Portrait
 				//Check if loaded; if not, then load
 				if( !sprite.IsLoaded )
 				{
-					if( File.Exists( dir + "/" + selectedMod.Path + "/" + sprite.TextureFilePath ) )
+                    string filePath = sprite.TextureFilePath;
+                    if (File.Exists(dir + "/" + selectedMod.Path + "/" + filePath))
 					{
-						Log( "  --Loading sprite from: " + dir + "/" + selectedMod.Path + "/" + sprite.TextureFilePath );
+                        Log("  --Loading sprite from: " + dir + "/" + selectedMod.Path + "/" + filePath);
 						sprite.Load( dir + "/" + selectedMod.Path );
-					} else if( File.Exists( ckDir + "/" + sprite.TextureFilePath ) )
+                    }
+                    else if (File.Exists(ckDir + "/" + filePath))
 					{
-						Log( "  --Loading sprite from: " + ckDir + "/" + sprite.TextureFilePath );
+                        Log("  --Loading sprite from: " + ckDir + "/" + filePath);
 						sprite.Load( ckDir + "/" );
 					} else
 					{
-						Log( "  --Error: Unable to find file: " + sprite.TextureFilePath );
-						DrawErrors.Add( "Unable to find file: " + sprite.TextureFilePath );
+                        Log("  --Error: Unable to find file: " + filePath);
+                        DrawErrors.Add("Unable to find file: " + filePath);
 						continue;
 					}
 				}
 
 				//Get DNA/Properties letter, then the index of the tile to draw
-				letter = layer.LayerType == Layer.Type.DNA ? dna[layer.Index] : properties[layer.Index];
-				Log( "  --Layer Type: " + ( layer.LayerType == Layer.Type.DNA ? "DNA" : "Property" ) );
-				Log( "  --Layer Index: " + layer.Index );
-				Log( "  --Layer Letter: " + letter );
-				tileIndex = GetIndex( letter, sprite.FrameCount );
-				Log( "  --Tile Index: " + tileIndex );
+                int tileIndex = GetTileIndex(dna, properties, sprite.FrameCount, layer);
 
-				//Draw tile
-				if( layer.IsHair )
-				{
-					Log( "  --Drawing Layer as Hair" );
-					letter = dna[portraitType.HairColourIndex];
-					hairEyeIndex = GetIndex( letter, portraitType.HairColours.Count );
-					hairEyeTemp = DrawHair( sprite.Tiles[tileIndex], portraitType.HairColours[hairEyeIndex] );
-                    g.DrawImage(hairEyeTemp, 12 + layer.Offset.X, 12 + layer.Offset.Y);
-				} else if( layer.IsEye )
-				{
-					Log( "  --Drawing Layer as Eye" );
-					letter = dna[portraitType.EyeColourIndex];
-					hairEyeIndex = GetIndex( letter, portraitType.EyeColours.Count );
-					hairEyeTemp = DrawEye( sprite.Tiles[tileIndex], portraitType.EyeColours[hairEyeIndex] );
-                    g.DrawImage(hairEyeTemp, 12 + layer.Offset.X, 12 + layer.Offset.Y);
-				} else
-				{
-					Log( "  --Drawing Layer" );
-                    g.DrawImage(sprite.Tiles[tileIndex], 12 + layer.Offset.X, 12 + layer.Offset.Y);
-				}
+                DrawTile(portraitType, dna, g, sprite, layer, tileIndex);
                 }
                 catch (Exception e)
                 {
@@ -514,6 +472,43 @@ namespace Parsers.Portrait
 			g.Dispose();
 			return portrait;
 		}
+
+        private int GetTileIndex(string dna, string properties, int frameCount, Layer layer)
+        {
+            char letter = layer.LayerType == Layer.Type.DNA ? dna[layer.Index] : properties[layer.Index];
+            Log("  --Layer Type: " + (layer.LayerType == Layer.Type.DNA ? "DNA" : "Property"));
+            Log("  --Layer Index: " + layer.Index);
+            Log("  --Layer Letter: " + letter);
+            int tileIndex = GetTileIndexFromLetter(letter, frameCount);
+            Log("  --Tile Index: " + tileIndex);
+            return tileIndex;
+        }
+
+        private void DrawTile(PortraitType portraitType, string dna, Graphics g, Sprite sprite, Layer layer, int tileIndex)
+        {
+            Bitmap tile;
+            if (layer.IsHair)
+            {
+                Log("  --Drawing Layer as Hair");
+                int hairIndex = GetTileIndexFromLetter(dna[portraitType.HairColourIndex], portraitType.HairColours.Count);
+                tile = DrawHair(sprite.Tiles[tileIndex], portraitType.HairColours[hairIndex]);
+
+            }
+            else if (layer.IsEye)
+            {
+                Log("  --Drawing Layer as Eye");
+                int eyeIndex = GetTileIndexFromLetter(dna[portraitType.EyeColourIndex], portraitType.EyeColours.Count);
+                tile = DrawEye(sprite.Tiles[tileIndex], portraitType.EyeColours[eyeIndex]);
+
+            }
+            else
+            {
+                Log("  --Drawing Layer");
+                tile = sprite.Tiles[tileIndex];
+            }
+
+            g.DrawImage(tile, 12 + layer.Offset.X, 12 + layer.Offset.Y);
+        }
 
 		private Bitmap DrawEye( Bitmap source, Colour eyeColour )
 		{
@@ -598,7 +593,7 @@ namespace Parsers.Portrait
 			return output;
 		}
 
-		private int GetIndex( char letter, int frameCount )
+		private int GetTileIndexFromLetter( char letter, int frameCount )
 		{
 			int index = 0;
 
