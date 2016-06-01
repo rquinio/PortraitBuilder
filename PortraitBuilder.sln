@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 2012
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Portrait Builder", "Portrait Builder\Portrait Builder.csproj", "{B8C477CE-DC33-4DE2-BBE4-CEE170CE8994}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PortraitBuilder", "PortraitBuilder\PortraitBuilder.csproj", "{B8C477CE-DC33-4DE2-BBE4-CEE170CE8994}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ParseLibs", "ParseLibs\ParseLibs.csproj", "{F70D6B3B-C58B-4E50-8A2C-4C3365F17084}"
 EndProject
