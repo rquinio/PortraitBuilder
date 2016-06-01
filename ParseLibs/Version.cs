@@ -11,8 +11,8 @@ namespace Parsers
   {
     static public string GetVersion()
     {
-      Assembly ass = Assembly.GetExecutingAssembly();
-      FileVersionInfo fvi = FileVersionInfo.GetVersionInfo( ass.Location );
+      Assembly assembly = Assembly.GetExecutingAssembly();
+      FileVersionInfo fvi = FileVersionInfo.GetVersionInfo( assembly.Location );
 
       return fvi.FileVersion;
     }

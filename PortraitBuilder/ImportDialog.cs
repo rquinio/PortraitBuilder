@@ -75,25 +75,25 @@ namespace Portrait_Builder
 
     private void tb_TextChanged( object sender, EventArgs e )
     {
-      TextBox s = (TextBox)sender;
+      TextBox tb = (TextBox)sender;
 
-      bool valid = IsValid( s.Text, 11 );
+      bool valid = IsValid( tb.Text, 11 );
 
-      if ( s == tbDNA && !valid )
+      if ( tb == tbDNA && !valid )
       {
         errorProvider.SetError( tbDNA, "Invalid DNA Code." );
         m_DNAValid = false;
-      } else if ( s == tbDNA && valid )
+      } else if ( tb == tbDNA && valid )
       {
         errorProvider.SetError( tbDNA, string.Empty );
         m_DNAValid = true;
       }
 
-      if( s == tbProperties && !valid )
+      if( tb == tbProperties && !valid )
       {
         errorProvider.SetError( tbProperties, "Invalid Properties Code." );
         m_PropertiesValid = false;
-      } else if( s == tbProperties && valid )
+      } else if( tb == tbProperties && valid )
       {
         errorProvider.SetError( tbProperties, string.Empty );
         m_PropertiesValid = true;

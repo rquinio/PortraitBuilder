@@ -32,15 +32,12 @@ namespace Parsers.Portrait
 		/// <param name="ckDir">Directory to load image from.</param>
 		public void Load( string ckDir )
 		{
-			Bitmap texture, tile;
-			Graphics g;
-			Size s;
-			Rectangle drawArea;
+			Bitmap texture;
 
 			if( Tiles.Count > 0 )
 			{
-				foreach( Bitmap b in Tiles )
-					b.Dispose();
+				foreach( Bitmap tile in Tiles )
+					tile.Dispose();
 				Tiles = new List<Bitmap>();
 			}
 
@@ -49,13 +46,13 @@ namespace Parsers.Portrait
 			else
 				throw new FileLoadException( "Unable to find texture file.", ckDir + TextureFilePath );
 
-			s = new Size( texture.Width / FrameCount, texture.Height );
+            Size size = new Size(texture.Width / FrameCount, texture.Height);
 
-			for( int i = 0; i < FrameCount; i++ )
+			for( int indexFrame = 0; indexFrame < FrameCount; indexFrame++ )
 			{
-				tile = new Bitmap( s.Width, s.Height );
-				g = Graphics.FromImage( tile );
-				drawArea = new Rectangle( i * s.Width, 0, s.Width, s.Height );
+                Bitmap tile = new Bitmap(size.Width, size.Height);
+                Graphics g = Graphics.FromImage(tile);
+                Rectangle drawArea = new Rectangle(indexFrame * size.Width, 0, size.Width, size.Height);
 				g.DrawImage( texture, 0, 0, drawArea, GraphicsUnit.Pixel );
 				Tiles.Add( tile );
 				g.Dispose();

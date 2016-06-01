@@ -24,12 +24,12 @@ namespace Parsers.Mod
         return;
       }
       
-      Mod m;
+      Mod mod;
       string line;
-      FileInfo f = new FileInfo( filename );
-      m = new Mod();
-      m.ModFile = f.Name;
-      m.ModPathType = dir;
+      FileInfo modFile = new FileInfo( filename );
+      mod = new Mod();
+      mod.ModFile = modFile.Name;
+      mod.ModPathType = dir;
 
       using( StreamReader sr = new StreamReader( filename, Encoding.GetEncoding( 1252 ) ) )
       {
@@ -39,31 +39,31 @@ namespace Parsers.Mod
             continue;
 
           if( line.StartsWith( "name" ) )
-            m.Name = line.Split( '=' )[1].Split( '#' )[0].Replace( "\"", "" ).Trim();
+            mod.Name = line.Split( '=' )[1].Split( '#' )[0].Replace( "\"", "" ).Trim();
           if( line.StartsWith( "path" ) || line.StartsWith( "archive" ) )
-            m.Path = line.Split( '=' )[1].Split( '#' )[0].Replace( "\"", "" ).Trim();
+            mod.Path = line.Split( '=' )[1].Split( '#' )[0].Replace( "\"", "" ).Trim();
           if( line.StartsWith( "user_dir" ) || line.StartsWith( "archive" ) )
-            m.UserDir = line.Split( '=' )[1].Split( '#' )[0].Replace( "\"", "" ).Trim();
+            mod.UserDir = line.Split( '=' )[1].Split( '#' )[0].Replace( "\"", "" ).Trim();
 
           if( line.StartsWith( "extend" ) )
-            m.Extends.Add( line.Split( '=' )[1].Split( '#' )[0].Replace( "\"", "" ).Trim() );
+            mod.Extends.Add( line.Split( '=' )[1].Split( '#' )[0].Replace( "\"", "" ).Trim() );
           if( line.StartsWith( "replace" ) )
-            m.Replaces.Add( line.Split( '=' )[1].Split( '#' )[0].Replace( "\"", "" ).Trim().Replace( '/', '\\' ) );
+            mod.Replaces.Add( line.Split( '=' )[1].Split( '#' )[0].Replace( "\"", "" ).Trim().Replace( '/', '\\' ) );
 
           if( line.StartsWith( "dependencies" ) )
           {
-            string[] tstring = line.Split( '=' )[1].Split( '#' )[0].Replace( "{", "" ).Replace( "}", "" ).Trim().Split( '"' );
-            foreach ( string s in tstring )
+            string[] dependencies = line.Split( '=' )[1].Split( '#' )[0].Replace( "{", "" ).Replace( "}", "" ).Trim().Split( '"' );
+            foreach ( string dependency in dependencies )
             {
-              if ( s.Trim() != string.Empty )
+              if ( dependency.Trim() != string.Empty )
               {
-                m.Dependencies.Add( s );
+                mod.Dependencies.Add( dependency );
               }
             }
           }
         }
       }
-      Mods.Add( m );
+      Mods.Add( mod );
     }
 
     /// <summary>
@@ -89,9 +89,9 @@ namespace Parsers.Mod
         return;
       }
 
-      foreach( FileInfo f in mods )
+      foreach( FileInfo modFile in mods )
       {
-        Parse( f.FullName, dirType );
+        Parse( modFile.FullName, dirType );
       }
     }
 

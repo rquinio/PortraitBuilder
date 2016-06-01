@@ -33,10 +33,10 @@ namespace Parsers.Portrait
 		public List<string> DrawErrors;
 
 		public List<char> Letters = new List<char> { 'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z' };
-		private Random m_rand = new Random();
+		private Random rand = new Random();
 
-		private bool m_logging = false;
-		private StreamWriter m_log;
+		private bool shouldLog = false;
+		private StreamWriter log;
 
 		/// <summary>
 		/// Unloads all loaded portrait data.
@@ -54,17 +54,17 @@ namespace Parsers.Portrait
 
 		public void SetLogging( StreamWriter log )
 		{
-			m_log = log;
-			m_logging = true;
+			this.log = log;
+			shouldLog = true;
 		}
 
 		private void Log( string text )
 		{
             System.Diagnostics.Debug.WriteLine(text);
-			if( m_logging )
+			if( shouldLog )
 			{
-				m_log.WriteLine( "PRC > " + text );
-				m_log.Flush();
+				log.WriteLine( "PRC > " + text );
+				log.Flush();
 			}
 		}
 
@@ -82,12 +82,12 @@ namespace Parsers.Portrait
 				return;
 			}
 
-			StreamReader relfile = new StreamReader( filename, Encoding.GetEncoding( 1252 ) );
-			string relcontents = relfile.ReadToEnd();
-			relfile.Dispose();
+			StreamReader stream = new StreamReader( filename, Encoding.GetEncoding( 1252 ) );
+			string fileContent = stream.ReadToEnd();
+			stream.Dispose();
 
 			//Check the file isn't empty
-			string[] lines = relcontents.Split( relcontents.Contains( '\r' ) ? '\r' : '\n' );
+			string[] lines = fileContent.Split( fileContent.Contains( '\r' ) ? '\r' : '\n' );
 			bool isEmpty = true;
 			for( int i = 0; i < lines.Length; i++ )
 			{
@@ -105,7 +105,7 @@ namespace Parsers.Portrait
 			}
 
 			//Parse the file
-            PortraitReaderLexer lexer = new PortraitReaderLexer(relcontents);
+            PortraitReaderLexer lexer = new PortraitReaderLexer(fileContent);
             PortraitReaderParser parser = new PortraitReaderParser(lexer);
 
 			SyntaxTreeNode root = parser.Analyse();
@@ -148,8 +148,8 @@ namespace Parsers.Portrait
 
 		private void ParsePortraitType( SyntaxTreeNode node, string filename )
 		{
-			PortraitType p = new PortraitType();
-			p.Filename = filename;
+			PortraitType portraitType = new PortraitType();
+			portraitType.Filename = filename;
 
 			List<SyntaxTreeNode> children = node.Children.Where( child => child.Symbol.Name == "Option" ).ToList();
 			SymbolTokenText id, value;
@@ -168,31 +168,31 @@ namespace Parsers.Portrait
 				{
 					case "stringOption":
 						if( id.ValueText == "name" )
-							p.Name = value.ValueText.Replace( "\"", "" );
+							portraitType.Name = value.ValueText.Replace( "\"", "" );
 						if( id.ValueText == "effectFile" )
-							p.EffectFile = value.ValueText.Replace( "\"", "" ).Replace( @"\\", @"\" );
+							portraitType.EffectFile = value.ValueText.Replace( "\"", "" ).Replace( @"\\", @"\" );
 						break;
 					case "numberOption":
 						if( id.ValueText == "hair_color_index" )
-							p.HairColourIndex = Int32.Parse( value.ValueText );
+							portraitType.HairColourIndex = Int32.Parse( value.ValueText );
 						if( id.ValueText == "eye_color_index" )
-							p.EyeColourIndex = Int32.Parse( value.ValueText );
+							portraitType.EyeColourIndex = Int32.Parse( value.ValueText );
 						break;
 				}
 			}
 
 			Log( "Type parsed: " );
-			Log( " --ID: " + p.Name );
-			Log( " --Hair Colour Index: " + p.HairColourIndex );
-			Log( " --Eye Colour Index: " + p.EyeColourIndex );
+			Log( " --ID: " + portraitType.Name );
+			Log( " --Hair Colour Index: " + portraitType.HairColourIndex );
+			Log( " --Eye Colour Index: " + portraitType.EyeColourIndex );
 
-			ParseLayers( p, node.Children.Single( c => c.Symbol.Name == "layerGroup" ), filename );
+			ParseLayers( portraitType, node.Children.Single( c => c.Symbol.Name == "layerGroup" ), filename );
 
 			children = node.Children.Where( c => c.Symbol.Name == "cultureGroup" ).ToList();
 			if( children.Count > 0 )
 			{
 				foreach( SyntaxTreeNode child in children[0].Children )
-					p.Culture.Add( Int32.Parse( ( (SymbolTokenText)child.Symbol ).ValueText ) );
+					portraitType.Culture.Add( Int32.Parse( ( (SymbolTokenText)child.Symbol ).ValueText ) );
 			}
 
 			children = node.Children.Where( c => c.Symbol.Name == "groupOption" ).ToList();
@@ -202,20 +202,20 @@ namespace Parsers.Portrait
 				id = child.Children[0].Symbol as SymbolTokenText;
 
 				if( id.ValueText == "hair_color" )
-					ParseHairColours( p, child );
+					ParseHairColours( portraitType, child );
 				else if( id.ValueText == "eye_color" )
-					ParseEyeColours( p, child );
+					ParseEyeColours( portraitType, child );
 			}
 
-			if( !PortraitTypes.ContainsKey( p.Name ) )
-				PortraitTypes.Add( p.Name, p );
+			if( !PortraitTypes.ContainsKey( portraitType.Name ) )
+				PortraitTypes.Add( portraitType.Name, portraitType );
 			else
-				Errors.Add( "Portrait type " + p.Name + " has already been defined." );
+				Errors.Add( "Portrait type " + portraitType.Name + " has already been defined." );
 		}
 
-		private void ParseEyeColours( PortraitType p, SyntaxTreeNode node )
+		private void ParseEyeColours( PortraitType portraitType, SyntaxTreeNode node )
 		{
-			Colour c;
+			Colour colour;
 			IEnumerable<SyntaxTreeNode> children = node.Children.Where( child => child.Symbol.Name == "colourGroup" );
 			SymbolTokenText value;
 
@@ -223,25 +223,25 @@ namespace Parsers.Portrait
 			{
 				Log( " --Parsing Eye Colour" );
 
-				c = new Colour();
+				colour = new Colour();
 
 				value = child.Children[0].Symbol as SymbolTokenText;
-				c.Red = byte.Parse( value.ValueText );
+				colour.Red = byte.Parse( value.ValueText );
 				value = child.Children[1].Symbol as SymbolTokenText;
-				c.Green = byte.Parse( value.ValueText );
+				colour.Green = byte.Parse( value.ValueText );
 				value = child.Children[2].Symbol as SymbolTokenText;
-				c.Blue = byte.Parse( value.ValueText );
+				colour.Blue = byte.Parse( value.ValueText );
 
-				Log( "   --Colour: " + c.Red + " " + c.Green + " " + c.Blue );
+				Log( "   --Colour: " + colour.Red + " " + colour.Green + " " + colour.Blue );
 
-				p.EyeColours.Add( c );
+				portraitType.EyeColours.Add( colour );
 			}
 		}
 
-		private void ParseHairColours( PortraitType p, SyntaxTreeNode node )
+		private void ParseHairColours( PortraitType portraitType, SyntaxTreeNode node )
 		{
-			Colour c;
-			Hair h;
+			Colour colour;
+			Hair hair;
 			List<SyntaxTreeNode> children = node.Children.Where( child => child.Symbol.Name == "colourGroup" ).ToList();
 			SymbolTokenText value;
 			SyntaxTreeNode token;
@@ -250,75 +250,75 @@ namespace Parsers.Portrait
 			{
 				Log( " --Parsing Hair Colour" );
 
-				h = new Hair();
+				hair = new Hair();
 
-				c = new Colour();
+				colour = new Colour();
 				token = children[i];
 				value = token.Children[0].Symbol as SymbolTokenText;
-				c.Red = byte.Parse( value.ValueText );
+				colour.Red = byte.Parse( value.ValueText );
 				value = token.Children[1].Symbol as SymbolTokenText;
-				c.Green = byte.Parse( value.ValueText );
+				colour.Green = byte.Parse( value.ValueText );
 				value = token.Children[2].Symbol as SymbolTokenText;
-				c.Blue = byte.Parse( value.ValueText );
-				h.Dark = c;
+				colour.Blue = byte.Parse( value.ValueText );
+				hair.Dark = colour;
 
-				Log( "   --Dark: " + c.Red + " " + c.Green + " " + c.Blue );
+				Log( "   --Dark: " + colour.Red + " " + colour.Green + " " + colour.Blue );
 
-				c = new Colour();
+				colour = new Colour();
 				token = children[i + 1];
 				value = token.Children[0].Symbol as SymbolTokenText;
-				c.Red = byte.Parse( value.ValueText );
+				colour.Red = byte.Parse( value.ValueText );
 				value = token.Children[1].Symbol as SymbolTokenText;
-				c.Green = byte.Parse( value.ValueText );
+				colour.Green = byte.Parse( value.ValueText );
 				value = token.Children[2].Symbol as SymbolTokenText;
-				c.Blue = byte.Parse( value.ValueText );
-				h.Base = c;
+				colour.Blue = byte.Parse( value.ValueText );
+				hair.Base = colour;
 
-				Log( "   --Base: " + c.Red + " " + c.Green + " " + c.Blue );
+				Log( "   --Base: " + colour.Red + " " + colour.Green + " " + colour.Blue );
 
-				c = new Colour();
+				colour = new Colour();
 				token = children[i + 2];
 				value = token.Children[0].Symbol as SymbolTokenText;
-				c.Red = byte.Parse( value.ValueText );
+				colour.Red = byte.Parse( value.ValueText );
 				value = token.Children[1].Symbol as SymbolTokenText;
-				c.Green = byte.Parse( value.ValueText );
+				colour.Green = byte.Parse( value.ValueText );
 				value = token.Children[2].Symbol as SymbolTokenText;
-				c.Blue = byte.Parse( value.ValueText );
-				h.Highlight = c;
+				colour.Blue = byte.Parse( value.ValueText );
+				hair.Highlight = colour;
 
-				Log( "   --Highlight: " + c.Red + " " + c.Green + " " + c.Blue );
+				Log( "   --Highlight: " + colour.Red + " " + colour.Green + " " + colour.Blue );
 
-				p.HairColours.Add( h );
+				portraitType.HairColours.Add( hair );
 			}
 		}
 
-		private void ParseLayers( PortraitType p, SyntaxTreeNode node, string filename )
+		private void ParseLayers( PortraitType portraitType, SyntaxTreeNode node, string filename )
 		{
-			string[] s;
+			string[] layerParts;
 			Layer layer;
 
 			foreach( SyntaxTreeNode child in node.Children )
 			{
 				Log( " --Parsing Layer" );
 
-				s = ( (SymbolTokenText)child.Symbol ).ValueText.Replace( "\"", "" ).Split( ':' );
+				layerParts = ( (SymbolTokenText)child.Symbol ).ValueText.Replace( "\"", "" ).Split( ':' );
 
 				layer = new Layer();
 				layer.Filename = filename;
 
-				layer.Name = s[0];
-				layer.LayerType = s[1][0] == 'd' ? Layer.Type.DNA : Layer.Type.Property;
-				layer.Index = int.Parse( s[1].Substring( 1 ) );
+				layer.Name = layerParts[0];
+				layer.LayerType = layerParts[1][0] == 'd' ? Layer.Type.DNA : Layer.Type.Property;
+				layer.Index = int.Parse( layerParts[1].Substring( 1 ) );
 
-                for(int i = 2; i < s.Length; i++){
-                    if(s[i] == "h" || s[2] == "x"){
+                for(int i = 2; i < layerParts.Length; i++){
+                    if(layerParts[i] == "h" || layerParts[2] == "x"){
                         layer.IsHair = true;
-                    } else if(s[i] == "e"){
+                    } else if(layerParts[i] == "e"){
                         layer.IsEye = true;
-                    } else if(s[i] == "y"){
+                    } else if(layerParts[i] == "y"){
                         layer.DontRefreshIfValid = true;
-                    } else if(s[i].StartsWith("o")){
-                        string[] offsets = s[i].Substring(1).Split('x');
+                    } else if(layerParts[i].StartsWith("o")){
+                        string[] offsets = layerParts[i].Substring(1).Split('x');
                         layer.Offset = new Point(int.Parse(offsets[0]), int.Parse(offsets[1]));
                     }
                 }
@@ -330,14 +330,14 @@ namespace Parsers.Portrait
 				Log( "   --Is Eye: " + layer.IsEye );
                 Log("   --Offset: " + layer.Offset);
 
-				p.Layers.Add( layer );
+				portraitType.Layers.Add( layer );
 			}
 		}
 
 		private void ParseSpriteType( SyntaxTreeNode node, string filename )
 		{
-			Sprite s = new Sprite();
-			s.Filename = filename;
+			Sprite sprite = new Sprite();
+			sprite.Filename = filename;
 
 			IEnumerable<SyntaxTreeNode> children = node.Children.Where( child => child.Symbol.Name == "Option" );
 			SymbolTokenText id, value;
@@ -356,64 +356,64 @@ namespace Parsers.Portrait
 				{
 					case "stringOption":
 						if( id.ValueText == "name" )
-							s.Name = value.ValueText.Replace( "\"", "" );
+							sprite.Name = value.ValueText.Replace( "\"", "" );
 						if( id.ValueText == "texturefile" )
-							s.TextureFilePath = value.ValueText.Replace( "\"", "" ).Replace( @"\\", @"\" );
+							sprite.TextureFilePath = value.ValueText.Replace( "\"", "" ).Replace( @"\\", @"\" );
 						break;
 					case "boolOption":
 						if( id.ValueText == "norefcount" )
-							s.NoRefCount = value.ValueText == "yes";
+							sprite.NoRefCount = value.ValueText == "yes";
 						break;
 					case "numberOption":
 						if( id.ValueText == "noOfFrames" )
-							s.FrameCount = Int32.Parse( value.ValueText );
+							sprite.FrameCount = Int32.Parse( value.ValueText );
 						break;
 				}
 			}
 			Log( "Sprite Parsed: " );
-			Log( " --ID: " + s.Name );
-			Log( " --Texture File: " + s.TextureFilePath );
-			Log( " --NoRefCount: " + s.NoRefCount );
-			Log( " --Frame Count: " + s.FrameCount );
+			Log( " --ID: " + sprite.Name );
+			Log( " --Texture File: " + sprite.TextureFilePath );
+			Log( " --NoRefCount: " + sprite.NoRefCount );
+			Log( " --Frame Count: " + sprite.FrameCount );
 
-			if( Sprites.ContainsKey( s.Name ) )
+			if( Sprites.ContainsKey( sprite.Name ) )
 			{
 				Log( "Sprite already exists. Replacing." );
-				Sprites.Remove( s.Name );
+				Sprites.Remove( sprite.Name );
 			}
 
-			Sprites.Add( s.Name, s );
+			Sprites.Add( sprite.Name, sprite );
 		}
 
 		/// <summary>
 		/// Draws a character portrait.
 		/// </summary>
 		/// <param name="ckDir">Path of the Crusader Kings II directory. E.g. C:\Paradox\Crusader Kings II</param>
-		/// <param name="pType">PortaitType to use for drawing.</param>
+		/// <param name="portraitType">PortaitType to use for drawing.</param>
 		/// <param name="dna">DNA string to use for drawing.</param>
 		/// <param name="properties">Properties string to use for drawing.</param> 
 		/// <param name="myDocsDir">Fath to the My Documents directory.</param>
 		/// <returns>Frameless portrait drawn with the given parameters.</returns>
-		public Bitmap DrawPortrait( string ckDir, PortraitType pType, string dna, string properties, string myDocsDir )
+		public Bitmap DrawPortrait( string ckDir, PortraitType portraitType, string dna, string properties, string myDocsDir )
 		{
 			return DrawPortrait( ckDir, new Mod.Mod
 			{
 				ModPathType = ModReader.Folder.CKDir,
 				Name = "Vanilla"
-			}, pType, dna, properties, myDocsDir );
+			}, portraitType, dna, properties, myDocsDir );
 		}
 
 		/// <summary>
 		/// Draws a character portrait.
 		/// </summary>
 		/// <param name="ckDir">Path of the Crusader Kings II directory. E.g. C:\Paradox\Crusader Kings II</param>
-		/// <param name="selMod">Mod object to use when drawing.</param>
-		/// <param name="pType">PortaitType to use for drawing.</param>
+		/// <param name="selectedMod">Mod object to use when drawing.</param>
+		/// <param name="portraitType">PortaitType to use for drawing.</param>
 		/// <param name="dna">DNA string to use for drawing.</param>
 		/// <param name="properties">Properties string to use for drawing.</param>
 		/// <param name="myDocsDir">Fath to the My Documents directory.</param>
 		/// <returns>Frameless portrait drawn with the given parameters.</returns>
-		public Bitmap DrawPortrait( string ckDir, Mod.Mod selMod, PortraitType pType, string dna, string properties, string myDocsDir )
+		public Bitmap DrawPortrait( string ckDir, Mod.Mod selectedMod, PortraitType portraitType, string dna, string properties, string myDocsDir )
 		{
 			DrawErrors = new List<string>();
 
@@ -422,7 +422,7 @@ namespace Parsers.Portrait
 			Log( "  --Properties: " + properties );
 			Log( "  --CKDir: " + ckDir );
 			Log( "  --Documents Dir: " + myDocsDir );
-			Log( "  --Mod: " + selMod.Name );
+			Log( "  --Mod: " + selectedMod.Name );
 
 			if( dna.Length < 9 || properties.Length < 9)
 			{
@@ -437,9 +437,9 @@ namespace Parsers.Portrait
 			Sprite sprite;
 			int tileIndex, hairEyeIndex;
 
-			string dir = selMod.ModPathType == ModReader.Folder.CKDir ? ckDir : myDocsDir;
+			string dir = selectedMod.ModPathType == ModReader.Folder.CKDir ? ckDir : myDocsDir;
 
-			foreach( Layer layer in pType.Layers )
+			foreach( Layer layer in portraitType.Layers )
 			{
                 Log("--Drawing Layer " + layer.Index);
 
@@ -459,10 +459,10 @@ namespace Parsers.Portrait
 				//Check if loaded; if not, then load
 				if( !sprite.IsLoaded )
 				{
-					if( File.Exists( dir + "/" + selMod.Path + "/" + sprite.TextureFilePath ) )
+					if( File.Exists( dir + "/" + selectedMod.Path + "/" + sprite.TextureFilePath ) )
 					{
-						Log( "  --Loading sprite from: " + dir + "/" + selMod.Path + "/" + sprite.TextureFilePath );
-						sprite.Load( dir + "/" + selMod.Path );
+						Log( "  --Loading sprite from: " + dir + "/" + selectedMod.Path + "/" + sprite.TextureFilePath );
+						sprite.Load( dir + "/" + selectedMod.Path );
 					} else if( File.Exists( ckDir + "/" + sprite.TextureFilePath ) )
 					{
 						Log( "  --Loading sprite from: " + ckDir + "/" + sprite.TextureFilePath );
@@ -487,16 +487,16 @@ namespace Parsers.Portrait
 				if( layer.IsHair )
 				{
 					Log( "  --Drawing Layer as Hair" );
-					letter = dna[pType.HairColourIndex];
-					hairEyeIndex = GetIndex( letter, pType.HairColours.Count );
-					hairEyeTemp = DrawHair( sprite.Tiles[tileIndex], pType.HairColours[hairEyeIndex] );
+					letter = dna[portraitType.HairColourIndex];
+					hairEyeIndex = GetIndex( letter, portraitType.HairColours.Count );
+					hairEyeTemp = DrawHair( sprite.Tiles[tileIndex], portraitType.HairColours[hairEyeIndex] );
                     g.DrawImage(hairEyeTemp, 12 + layer.Offset.X, 12 + layer.Offset.Y);
 				} else if( layer.IsEye )
 				{
 					Log( "  --Drawing Layer as Eye" );
-					letter = dna[pType.EyeColourIndex];
-					hairEyeIndex = GetIndex( letter, pType.EyeColours.Count );
-					hairEyeTemp = DrawEye( sprite.Tiles[tileIndex], pType.EyeColours[hairEyeIndex] );
+					letter = dna[portraitType.EyeColourIndex];
+					hairEyeIndex = GetIndex( letter, portraitType.EyeColours.Count );
+					hairEyeTemp = DrawEye( sprite.Tiles[tileIndex], portraitType.EyeColours[hairEyeIndex] );
                     g.DrawImage(hairEyeTemp, 12 + layer.Offset.X, 12 + layer.Offset.Y);
 				} else
 				{
@@ -515,12 +515,12 @@ namespace Parsers.Portrait
 			return portrait;
 		}
 
-		private Bitmap DrawEye( Bitmap b, Colour ec )
+		private Bitmap DrawEye( Bitmap source, Colour eyeColour )
 		{
 			Bitmap output = new Bitmap( 152, 152 );
-			Colour c1 = new Colour(), c2 = new Colour();
+			Colour colour1 = new Colour(), colour2 = new Colour();
 
-			BitmapData bdata = b.LockBits( new Rectangle( 0, 0, 152, 152 ), ImageLockMode.ReadOnly, b.PixelFormat );
+			BitmapData bdata = source.LockBits( new Rectangle( 0, 0, 152, 152 ), ImageLockMode.ReadOnly, source.PixelFormat );
 			BitmapData odata = output.LockBits( new Rectangle( 0, 0, 152, 152 ), ImageLockMode.ReadOnly, output.PixelFormat );
 			int pixelSize = 4;
 
@@ -533,36 +533,36 @@ namespace Parsers.Portrait
 
 					for( int x = 0; x < 152; x++ )
 					{
-						c1.Red = brow[x * pixelSize + 2];
-						c1.Alpha = brow[x * pixelSize + 3];
+						colour1.Red = brow[x * pixelSize + 2];
+						colour1.Alpha = brow[x * pixelSize + 3];
 
-						if( c1.Alpha > 0 )
+						if( colour1.Alpha > 0 )
 						{
-							c2.Red = (byte)( 255 * ( ( ec.Red / 255f ) * ( c1.Red / 255f ) ) );
-							c2.Green = (byte)( 255 * ( ( ec.Green / 255f ) * ( c1.Red / 255f ) ) );
-							c2.Blue = (byte)( 255 * ( ( ec.Blue / 255f ) * ( c1.Red / 255f ) ) );
+							colour2.Red = (byte)( 255 * ( ( eyeColour.Red / 255f ) * ( colour1.Red / 255f ) ) );
+							colour2.Green = (byte)( 255 * ( ( eyeColour.Green / 255f ) * ( colour1.Red / 255f ) ) );
+							colour2.Blue = (byte)( 255 * ( ( eyeColour.Blue / 255f ) * ( colour1.Red / 255f ) ) );
 
-							orow[x * pixelSize] = c2.Blue;
-							orow[x * pixelSize + 1] = c2.Green;
-							orow[x * pixelSize + 2] = c2.Red;
-							orow[x * pixelSize + 3] = c1.Alpha;
+							orow[x * pixelSize] = colour2.Blue;
+							orow[x * pixelSize + 1] = colour2.Green;
+							orow[x * pixelSize + 2] = colour2.Red;
+							orow[x * pixelSize + 3] = colour1.Alpha;
 						}
 					}
 				}
 			}
 
-			b.UnlockBits( bdata );
+			source.UnlockBits( bdata );
 			output.UnlockBits( odata );
 
 			return output;
 		}
 
-		private Bitmap DrawHair( Bitmap b, Hair hc )
+		private Bitmap DrawHair( Bitmap source, Hair hairColor )
 		{
 			Bitmap output = new Bitmap( 152, 152 );
-			Colour c1 = new Colour(), c2;
+			Colour colour1 = new Colour(), colour2;
 
-			BitmapData bdata = b.LockBits( new Rectangle( 0, 0, 152, 152 ), ImageLockMode.ReadOnly, b.PixelFormat );
+			BitmapData bdata = source.LockBits( new Rectangle( 0, 0, 152, 152 ), ImageLockMode.ReadOnly, source.PixelFormat );
 			BitmapData odata = output.LockBits( new Rectangle( 0, 0, 152, 152 ), ImageLockMode.ReadOnly, output.PixelFormat );
 			int pixelSize = 4;
 
@@ -575,24 +575,24 @@ namespace Parsers.Portrait
 
 					for( int x = 0; x < 152; x++ )
 					{
-						c1.Green = brow[x * pixelSize + 1];
-						c1.Alpha = brow[x * pixelSize + 3];
+						colour1.Green = brow[x * pixelSize + 1];
+						colour1.Alpha = brow[x * pixelSize + 3];
 
-						if( c1.Alpha > 0 )
+						if( colour1.Alpha > 0 )
 						{
-							c2 = Colour.Lerp( hc.Dark, hc.Base, Colour.Clamp( c1.Green * 2 ) );
-							c2 = Colour.Lerp( c2, hc.Highlight, Colour.Clamp( ( c1.Green - 128 ) * 2 ) );
+							colour2 = Colour.Lerp( hairColor.Dark, hairColor.Base, Colour.Clamp( colour1.Green * 2 ) );
+							colour2 = Colour.Lerp( colour2, hairColor.Highlight, Colour.Clamp( ( colour1.Green - 128 ) * 2 ) );
 
-							orow[x * pixelSize] = c2.Blue;
-							orow[x * pixelSize + 1] = c2.Green;
-							orow[x * pixelSize + 2] = c2.Red;
-							orow[x * pixelSize + 3] = c1.Alpha;
+							orow[x * pixelSize] = colour2.Blue;
+							orow[x * pixelSize + 1] = colour2.Green;
+							orow[x * pixelSize + 2] = colour2.Red;
+							orow[x * pixelSize + 3] = colour1.Alpha;
 						}
 					}
 				}
 			}
 
-			b.UnlockBits( bdata );
+			source.UnlockBits( bdata );
 			output.UnlockBits( odata );
 
 			return output;
@@ -603,7 +603,7 @@ namespace Parsers.Portrait
 			int index = 0;
 
 			if( letter == '0' )
-				return m_rand.Next( frameCount );
+				return rand.Next( frameCount );
 
 			index = Letters.IndexOf( letter ) + 1;
 			index = index % frameCount;

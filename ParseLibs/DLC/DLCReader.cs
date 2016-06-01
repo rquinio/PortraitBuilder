@@ -25,49 +25,49 @@ namespace Parsers.DLC
         return;
       }
 
-      DLC d;
+      DLC dlc;
       string line;
       int intOut;
-      FileInfo f = new FileInfo( filename );
+      FileInfo dlcFile = new FileInfo( filename );
 
-      d = new DLC();
-      d.DLCFile = f.Name;
+      dlc = new DLC();
+      dlc.DLCFile = dlcFile.Name;
 
-      using( StreamReader sr = new StreamReader( filename, Encoding.GetEncoding( 1252 ) ) )
+      using( StreamReader reader = new StreamReader( filename, Encoding.GetEncoding( 1252 ) ) )
       {
-        while( ( line = sr.ReadLine() ) != null )
+        while( ( line = reader.ReadLine() ) != null )
         {
           if( line.StartsWith( "#" ) )
             continue;
 
           if( line.StartsWith( "name" ) )
-            d.Name = line.Split( '=' )[1].Split( '#' )[0].Replace( "\"", "" ).Trim();
+            dlc.Name = line.Split( '=' )[1].Split( '#' )[0].Replace( "\"", "" ).Trim();
           if( line.StartsWith( "archive" ) )
-            d.Archive = line.Split( '=' )[1].Split( '#' )[0].Replace( "\"", "" ).Trim();
+            dlc.Archive = line.Split( '=' )[1].Split( '#' )[0].Replace( "\"", "" ).Trim();
           if( line.StartsWith( "checksum" ) )
-            d.Checksum = line.Split( '=' )[1].Split( '#' )[0].Replace( "\"", "" ).Trim();
+            dlc.Checksum = line.Split( '=' )[1].Split( '#' )[0].Replace( "\"", "" ).Trim();
 
           if( line.StartsWith( "steam_id" ) )
           {
             if( Int32.TryParse( line.Split( '=' )[1].Split( '#' )[0].Replace( "\"", "" ).Trim(), out intOut ) )
-              d.SteamID = intOut;
+              dlc.SteamID = intOut;
             else
-              Errors.Add( string.Format( "Error parsing Steam ID in file: {0}", f.Name ) );
+              Errors.Add( string.Format( "Error parsing Steam ID in file: {0}", dlcFile.Name ) );
           }
 
           if( line.StartsWith( "gamersgate_id" ) )
           {
             if( Int32.TryParse( line.Split( '=' )[1].Split( '#' )[0].Replace( "\"", "" ).Trim(), out intOut ) )
-              d.GamersGateID = intOut;
+              dlc.GamersGateID = intOut;
             else
-              Errors.Add( string.Format( "Error parsing GamersGate ID in file: {0}", f.Name ) );
+              Errors.Add( string.Format( "Error parsing GamersGate ID in file: {0}", dlcFile.Name ) );
           }
 
           if ( line.StartsWith( "affects_checksum" ) )
-            d.AffectsChecksum = line.Split( '=' )[1].Split( '#' )[0].Replace( "\"", "" ).Trim() == "yes";
+            dlc.AffectsChecksum = line.Split( '=' )[1].Split( '#' )[0].Replace( "\"", "" ).Trim() == "yes";
         }
       }
-      DLCs.Add( d );
+      DLCs.Add( dlc );
     }
 
     public void ParseFolder( string folder )
@@ -86,9 +86,9 @@ namespace Parsers.DLC
         return;
       }
 
-      foreach ( FileInfo f in dlcFiles )
+      foreach ( FileInfo dlcFile in dlcFiles )
       {
-        Parse( f.FullName );
+        Parse( dlcFile.FullName );
       }
     }
   }
