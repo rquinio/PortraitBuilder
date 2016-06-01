@@ -1,34 +1,32 @@
-PortraitBuilder
-===============
+# CK2 PortraitBuilder
 
-Copywrite 2012-1013 Stuart Haidon
+This project is a fork of Measter's PortraitBuilder. It contains the source code for the UI project, and a cut down version of the CK2Utils library.
 
-This software is released under the terms of the GNU Lesser General Public License.
+Also see the dedicated [CK2 forum thread](https://forum.paradoxplaza.com/forum/index.php?threads/utility-portrait-builder.604169/), after registering your CK2 game.
 
-------------------
+## Description
 
-Contains the source code for the UI project, and a cut down version of the
-CK2Utils library.
+This tool alows to create custom characters, by previewing their appearance, which can then be used for mods character history, or to modify a character in a saved game.
 
-The Parser grammar for the Portraits has been included, but it was last used
-on an older version of Hime and may need some changes.
+Features:
 
-DLC use has been partially implemented.
+- Mod support
+- DLC support has been partially implemented.
 
-Note: this project will no longer be updated, and pull requests will be ignored.
-Please fork to continue development.
+## Users
 
-------------------
+- Install [.NET 4.5](https://www.microsoft.com/en-gb/download/details.aspx?id=30653)
 
-To build the ParseLibs project, you will need:
+- Start Portrait Builder.exe
 
-* The DevIL library, with the DevIL.Net wrapper. It, and the .Net wrapper can be found at http://openil.sourceforge.net/
+- Select your CK2 game directory (ex: C:\Program Files (x86)\Steam\SteamApps\common\Crusader Kings II). This value is kept into a file "gamedir".
 
-* Hime Parser Generator. Can be found at http://himeparser.codeplex.com/
+## Developers
 
-To build the UI Project, you will need:
-
-* SharpZipLib. Can be found at http://www.icsharpcode.net/opensource/sharpziplib/
+Dependencies:
+- The DevIL library, with the DevIL.Net wrapper: http://openil.sourceforge.net/
+- Hime Parser Generator: http://himeparser.codeplex.com/
+- SharpZipLib: http://www.icsharpcode.net/opensource/sharpziplib/
 
 To re-generate the Lexer/Parser from the grammar, install Hime Parser Generator v0.5.0 (won't work with v1.0), and run the following:
 

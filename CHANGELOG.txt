@@ -1,9 +1,5 @@
-Portrait Builder
-By Measter
 
-If, when the program is started, it doesn't find the "gamedir", it will ask you for the
-location of your Crusader Kings II directory. If you do not provide it, the program will
-not work.
+By Measter:
 
 Version 1.1.7
  - Added logging. Outputs log on error, and can be forced to output with -log.
