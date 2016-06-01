@@ -20,7 +20,7 @@ namespace Parsers.Portrait
 		public bool DontRefreshIfValid = false;
 
         /// <summary>
-        /// The offset coordinates for this layer
+        /// The offset coordinates for this layer, from the bottom-left of the image
         /// </summary>
         public Point Offset = new Point(0,0);
 

@@ -507,7 +507,7 @@ namespace Parsers.Portrait
                 tile = sprite.Tiles[tileIndex];
             }
 
-            g.DrawImage(tile, 12 + layer.Offset.X, 12 + layer.Offset.Y);
+            g.DrawImage(tile, 12 + layer.Offset.X, 12 + 152 - tile.Size.Height - layer.Offset.Y);
         }
 
 		private Bitmap DrawEye( Bitmap source, Colour eyeColour )

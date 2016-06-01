@@ -6,7 +6,7 @@ Also see the dedicated [CK2 forum thread](https://forum.paradoxplaza.com/forum/i
 
 ## Description
 
-This tool alows to create custom characters, by previewing their appearance, which can then be used for mods character history, or to modify a character in a saved game.
+This tool allows to create custom characters, by previewing their appearance, which can then be used in character history of mods, or to customize a character in a saved game.
 
 Features:
 
@@ -17,9 +17,11 @@ Features:
 
 - Install [.NET 4.5](https://www.microsoft.com/en-gb/download/details.aspx?id=30653)
 
-- Start Portrait Builder.exe
+- Start PortraitBuilder.exe
 
 - Select your CK2 game directory (ex: C:\Program Files (x86)\Steam\SteamApps\common\Crusader Kings II). This value is kept into a file "gamedir".
+
+Note: adding -log or -logfull to launch options will trigger some logging inside a log.txt file.
 
 ## Developers
 
