@@ -132,6 +132,12 @@ namespace Portrait_Builder {
 			Log("Disposing of previous portrait data.");
 			portraitReader.Dispose();
 
+			Log("Loading portraits from vanilla.");
+			string[] fileNames = Directory.GetFiles(ck2Dir + @"\interface\", "*.gfx");
+			foreach (string fileName in fileNames) {
+				portraitReader.Parse(fileName);
+			}
+
 			if (cbModEnable.Checked && selectedMod.HasPortraits) {
 				Log("Loading portraits from mod: " + selectedMod.Name);
 
@@ -148,17 +154,10 @@ namespace Portrait_Builder {
 						break;
 				}
 
-				string[] fileNames = Directory.GetFiles(dir + @"\" + selectedMod.Path + @"\interface\", "*.gfx");
-
-				foreach (string fileName in fileNames)
+				fileNames = Directory.GetFiles(dir + @"\" + selectedMod.Path + @"\interface\", "*.gfx");
+				foreach (string fileName in fileNames) {
 					portraitReader.Parse(fileName);
-			} else {
-				Log("Loading portraits from vanilla.");
-
-				string[] fileNames = Directory.GetFiles(ck2Dir + @"\interface\", "*.gfx");
-
-				foreach (string fileName in fileNames)
-					portraitReader.Parse(fileName);
+				}
 			}
 
 			Log("The following errors were encountered while loading.");
@@ -170,14 +169,10 @@ namespace Portrait_Builder {
 
 			if (portraitReader.PortraitTypes.Count == 0) {
 				Log("Error: No portrait types found.");
-
 				MessageBox.Show(this, "No portraits found in mod " + selectedMod.Name + "\n\nCheck errorlog.txt for details.", "Error", MessageBoxButtons.OK,
 												 MessageBoxIcon.Error);
-
 				DumpLog();
-
 				hadError = true;
-
 				return;
 			}
 
@@ -187,37 +182,41 @@ namespace Portrait_Builder {
 				cbPortraitTypes.Items.Add(pair.Value.Name);
 
 				foreach (Layer layer in pair.Value.Layers) {
-					// Shared
-					setupFlag(pair, layer, "background");
-					setupFlag(pair, layer, "boils");
-					setupFlag(pair, layer, "reddots");
-					setupFlag(pair, layer, "scars");
-					setupFlag(pair, layer, "imprisoned");
-					setupFlag(pair, layer, "blinded");
-
-					// Properties
-					setupFlag(pair, layer, "clothes");
-					setupFlag(pair, layer, "headgear");
-					setupFlag(pair, layer, "beard");
-					setupFlag(pair, layer, "hair");
-
-					// DNA
-					setupFlag(pair, layer, "base");
-					setupFlag(pair, layer, "neck");
-					setupFlag(pair, layer, "cheeks");
-					setupFlag(pair, layer, "chin");
-					setupFlag(pair, layer, "mouth");
-					setupFlag(pair, layer, "nose");
-					setupFlag(pair, layer, "eyes");
-					setupFlag(pair, layer, "ear");
+					setupFlags(pair.Value, layer);
 				}
 			}
 			cbPortraitTypes.SelectedIndex = 0;
 		}
 
-		private void setupFlag(KeyValuePair<string, PortraitType> pair, Layer layer, string layerName) {
-			if (layer.Name.Contains(layerName) && !pair.Value.CustomFlags.ContainsKey(layerName))
-				pair.Value.CustomFlags.Add(layerName, layer.Name);
+		private void setupFlags(PortraitType portraitType, Layer layer) {
+			// Shared
+			setupFlag(portraitType, layer, "background");
+			setupFlag(portraitType, layer, "boils");
+			setupFlag(portraitType, layer, "reddots");
+			setupFlag(portraitType, layer, "scars");
+			setupFlag(portraitType, layer, "imprisoned");
+			setupFlag(portraitType, layer, "blinded");
+
+			// Properties
+			setupFlag(portraitType, layer, "clothes");
+			setupFlag(portraitType, layer, "headgear");
+			setupFlag(portraitType, layer, "beard");
+			setupFlag(portraitType, layer, "hair");
+
+			// DNA
+			setupFlag(portraitType, layer, "base");
+			setupFlag(portraitType, layer, "neck");
+			setupFlag(portraitType, layer, "cheeks");
+			setupFlag(portraitType, layer, "chin");
+			setupFlag(portraitType, layer, "mouth");
+			setupFlag(portraitType, layer, "nose");
+			setupFlag(portraitType, layer, "eyes");
+			setupFlag(portraitType, layer, "ear");
+		}
+
+		private void setupFlag(PortraitType portraitType, Layer layer, string layerName) {
+			if (layer.Name.Contains(layerName) && !portraitType.CustomFlags.ContainsKey(layerName))
+				portraitType.CustomFlags.Add(layerName, layer.Name);
 		}
 
 		private void LoadMods() {
