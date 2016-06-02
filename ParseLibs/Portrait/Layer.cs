@@ -1,10 +1,8 @@
 using System.Collections.Generic;
 using System.Drawing;
 
-namespace Parsers.Portrait
-{
-	public class Layer
-	{
+namespace Parsers.Portrait {
+	public class Layer {
 		/// <summary>
 		/// The name of the Sprite file.
 		/// </summary>
@@ -19,13 +17,12 @@ namespace Parsers.Portrait
 		public bool IsEye;
 		public bool DontRefreshIfValid = false;
 
-        /// <summary>
-        /// The offset coordinates for this layer, from the bottom-left of the image
-        /// </summary>
-        public Point Offset = new Point(0,0);
+		/// <summary>
+		/// The offset coordinates for this layer, from the bottom-left of the image
+		/// </summary>
+		public Point Offset = new Point(0, 0);
 
-		public enum Type
-		{
+		public enum Type {
 			DNA,
 			Property
 		}
@@ -40,9 +37,8 @@ namespace Parsers.Portrait
 		/// </summary>
 		public string Filename;
 
-		public override string ToString()
-		{
-			return string.Format( "Name: {0}, LayerType: {1}", Name, LayerType );
+		public override string ToString() {
+			return string.Format("Name: {0}, LayerType: {1}", Name, LayerType);
 		}
 	}
 }

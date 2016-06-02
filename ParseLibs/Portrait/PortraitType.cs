@@ -1,9 +1,7 @@
 using System.Collections.Generic;
 
-namespace Parsers.Portrait
-{
-	public class PortraitType
-	{
+namespace Parsers.Portrait {
+	public class PortraitType {
 		public string Name;
 		public string EffectFile;
 
@@ -31,9 +29,8 @@ namespace Parsers.Portrait
 		/// </summary>
 		public string Filename;
 
-		public override string ToString()
-		{
-			return string.Format( "Name: {0}, Layers: {1}, HairColours: {2}, EyeColours: {3}", Name, Layers.Count, HairColours.Count, EyeColours.Count );
+		public override string ToString() {
+			return string.Format("Name: {0}, Layers: {1}, HairColours: {2}, EyeColours: {3}", Name, Layers.Count, HairColours.Count, EyeColours.Count);
 		}
 	}
 }
