@@ -11,10 +11,7 @@ namespace Parsers.Mod {
 		public List<string> Extends = new List<string>();
 		public List<string> Replaces = new List<string>();
 
-		/// <summary>
-		/// Used for storing data specific to the program.
-		/// </summary>
-		public Dictionary<string, object> CustomFlags = new Dictionary<string, object>();
+		public bool HasPortraits = false;
 
 		public override string ToString() {
 			return Name;

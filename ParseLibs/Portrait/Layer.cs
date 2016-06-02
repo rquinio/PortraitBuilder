@@ -28,17 +28,12 @@ namespace Parsers.Portrait {
 		}
 
 		/// <summary>
-		/// Used for storing data specific to the program.
-		/// </summary>
-		public Dictionary<string, object> CustomFlags = new Dictionary<string, object>();
-
-		/// <summary>
 		/// The file that the data was loaded from.
 		/// </summary>
 		public string Filename;
 
 		public override string ToString() {
-			return string.Format("Name: {0}, LayerType: {1}", Name, LayerType);
+			return string.Format("Name: {0}, Index: {1}, LayerType: {2}, Offset: {3}, Hair: {4}, Eye: {5}", Name, Index, LayerType, Offset, IsHair, IsEye);
 		}
 	}
 }

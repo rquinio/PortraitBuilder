@@ -35,7 +35,6 @@ namespace Portrait_Builder {
 		private bool fullLogging = false;
 		private string version = string.Empty;
 		private bool hadError = false;
-		private StringBuilder modListSetup;
 
 
 		public Form1() {
@@ -56,16 +55,16 @@ namespace Portrait_Builder {
 			myDocsDir = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments) +
 										@"\Paradox Interactive\Crusader Kings II\";
 			dlcDir = Environment.CurrentDirectory + @"\dlc";
-			ReadDir();
-			modListSetup = new StringBuilder();
-			LoadDLC();
-			LoadMods();
 
 			Assembly assembly = Assembly.GetExecutingAssembly();
 			FileVersionInfo fvi = FileVersionInfo.GetVersionInfo(assembly.Location);
 			version = fvi.FileVersion;
 
 			SetupStream();
+
+			ReadGameDir();
+			LoadDLCs();
+			LoadMods();
 
 			LoadPortraits();
 			LoadBorders();
@@ -92,8 +91,6 @@ namespace Portrait_Builder {
 			Log("Portrait Builder Parser Library " + Parsers.Version.GetVersion());
 			Log("Logging started at " + DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss"));
 			Log("");
-
-			Log(modListSetup.ToString());
 		}
 
 		private void DumpLog() {
@@ -135,9 +132,7 @@ namespace Portrait_Builder {
 			Log("Disposing of previous portrait data.");
 			portraitReader.Dispose();
 
-			if (cbModEnable.Checked &&
-					selectedMod.CustomFlags.ContainsKey("HasPortrait") &&
-					(bool)selectedMod.CustomFlags["HasPortrait"]) {
+			if (cbModEnable.Checked && selectedMod.HasPortraits) {
 				Log("Loading portraits from mod: " + selectedMod.Name);
 
 				string dir = string.Empty;
@@ -227,9 +222,9 @@ namespace Portrait_Builder {
 
 		private void LoadMods() {
 			ModReader modReader = new ModReader();
-			modListSetup.AppendLine("Loading mods from " + ck2Dir + @"\mod\");
+			Log("Loading mods from " + ck2Dir + @"\mod\");
 			modReader.ParseFolder(ck2Dir + @"\mod\", ModReader.Folder.CKDir);
-			modListSetup.AppendLine("Loading mods from " + myDocsDir + @"\mod\");
+			Log("Loading mods from " + myDocsDir + @"\mod\");
 			modReader.ParseFolder(myDocsDir + @"\mod\", ModReader.Folder.MyDocs);
 
 			foreach (Mod mod in modReader.Mods) {
@@ -239,38 +234,40 @@ namespace Portrait_Builder {
 					continue;
 
 				if (File.Exists(dir + mod.Path + @"\interface\portraits.gfx")) {
-					mod.CustomFlags.Add("HasPortrait", true);
+					mod.HasPortraits = true;
 					usableMods.Add(mod);
 					continue;
 				}
 
 				if (Directory.Exists(dir + mod.Path + @"\gfx\characters\")) {
 					if (Directory.GetDirectories(dir + mod.Path + @"\gfx\characters\").Length > 0) {
-						mod.CustomFlags.Add("HasPortrait", false);
+						mod.HasPortraits = false;
 						usableMods.Add(mod);
 					}
 				}
 			}
 
-			modListSetup.AppendLine(" --Usable mods found:");
+			Log(" --Usable mods found:");
 			if (usableMods.Count > 0) {
 				cbModEnable.Enabled = true;
 				foreach (Mod mod in usableMods) {
-					modListSetup.AppendLine("   --" + mod.Name);
+					Log("   --" + mod.Name);
 					cbMods.Items.Add(mod.Name);
 					cbMods.SelectedIndex = 0;
 				}
 			}
 		}
 
-		private void LoadDLC() {
+		private void LoadDLCs() {
 			DLCReader dlcReader = new DLCReader();
-			modListSetup.AppendLine("Loading DLC from " + ck2Dir + @"\dlc\");
+			Log("Loading DLC from " + ck2Dir + @"\dlc\");
 			dlcReader.ParseFolder(ck2Dir + @"\dlc");
 
 			FastZip fastZip = new FastZip();
-			foreach (DLC dlc in dlcReader.DLCs)
+			foreach (DLC dlc in dlcReader.DLCs) {
+				Log("Extracting " + dlc.Name);
 				fastZip.ExtractZip(ck2Dir + dlc.Archive, dlcDir, null);
+			}
 
 			if (!Directory.Exists(dlcDir + @"\gfx\characters\"))
 				return;
@@ -279,11 +276,11 @@ namespace Portrait_Builder {
 			mod.ModPathType = ModReader.Folder.DLC;
 			mod.Name = "DLC Portraits";
 			mod.Path = string.Empty;
-			mod.CustomFlags.Add("HasPortrait", true);
+			mod.HasPortraits = true;
 			usableMods.Add(mod);
 		}
 
-		private void ReadDir() {
+		private void ReadGameDir() {
 			Stream stream = new FileStream("gamedir", FileMode.Open);
 			BinaryReader reader = new BinaryReader(stream);
 			{
@@ -310,19 +307,11 @@ namespace Portrait_Builder {
 			Bitmap portrait;
 			Log("   --Rendering portrait.");
 			try {
+				PortraitType portraitType = portraitReader.PortraitTypes[cbPortraitTypes.SelectedItem.ToString()];
 				if (cbModEnable.Checked) {
-					portrait = portraitReader.DrawPortrait(ck2Dir,
-																			selectedMod,
-																			portraitReader.PortraitTypes[cbPortraitTypes.SelectedItem.ToString()],
-																			dna,
-																			properties,
-																			myDocsDir);
+					portrait = portraitReader.DrawPortrait(ck2Dir, selectedMod, portraitType, dna, properties, myDocsDir);
 				} else {
-					portrait = portraitReader.DrawPortrait(ck2Dir,
-																			portraitReader.PortraitTypes[cbPortraitTypes.SelectedItem.ToString()],
-																			dna,
-																			properties,
-																			myDocsDir);
+					portrait = portraitReader.DrawPortrait(ck2Dir, portraitType, dna, properties, myDocsDir);
 				}
 			} catch (Exception e) {
 				Log("Error encountered rendering portrait:");
@@ -380,7 +369,7 @@ namespace Portrait_Builder {
 			sb.Append(GetLetter(cbRedDots)); //Red Dots
 			sb.Append(GetLetter(cbBoils)); //Boils
 			sb.Append(GetLetter(cbBlinded));
-			sb.Append("0"); // Player overlay
+			sb.Append("b"); // Player overlay
 
 			properties = sb.ToString();
 		}

@@ -59,7 +59,7 @@ namespace Parsers.Portrait {
 		}
 
 		public override string ToString() {
-			return string.Format("Name: {0}, FrameCount: {1}, IsLoaded: {2}", Name, FrameCount, IsLoaded);
+			return string.Format("Name: {0}, Texture: {1}, FrameCount: {2}, NoRefCount: {3}, IsLoaded: {4}", Name, TextureFilePath, FrameCount, NoRefCount, IsLoaded);
 		}
 	}
 }
