@@ -42,7 +42,7 @@ namespace Parsers.Portrait {
 		}
 
 		/// <summary>
-		/// Parses a given portrait.gfx file. Any errors encountered are stored in the Errors list.
+		/// Parses a given portrait.gfx file.
 		/// </summary>
 		/// <param name="filename">Path of the file to parse.</param>
 		public void Parse(string filename) {

@@ -21,7 +21,7 @@ Features:
 
 - Select your CK2 game directory (ex: C:\Program Files (x86)\Steam\SteamApps\common\Crusader Kings II). This value is kept into a file "gamedir".
 
-Note: adding -log or -logfull to launch options will trigger some logging inside a log.txt file.
+- Errors are logged to a log.txt file. Adding -logfull to PortraitBuilder.exe launch options will set log level to DEBUG.
 
 ## Developers
 

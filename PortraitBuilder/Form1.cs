@@ -19,6 +19,8 @@ namespace Portrait_Builder {
 		private static readonly ILog logger = LogManager.GetLogger(typeof(Form1).Name);
 
 		private Image previewImage = new Bitmap(176, 176);
+		private List<Bitmap> borders = new List<Bitmap>();
+
 		private bool started = false;
 		private StringBuilder dnaPropOutput;
 		public static Random rand = new Random();
@@ -29,8 +31,10 @@ namespace Portrait_Builder {
 
 		private Mod selectedMod = new Mod();
 		private List<Mod> usableMods = new List<Mod>();
+
 		private PortraitReader portraitReader = new PortraitReader();
-		private List<Bitmap> borders = new List<Bitmap>();
+		private PortraitOffsetReader portraitOffsetReader = new PortraitOffsetReader();
+
 		private string dna;
 		private string properties;
 
@@ -100,10 +104,7 @@ namespace Portrait_Builder {
 			portraitReader.Dispose();
 
 			logger.Info("Loading portraits from vanilla.");
-			string[] fileNames = Directory.GetFiles(ck2Dir + @"\interface\", "*.gfx");
-			foreach (string fileName in fileNames) {
-				portraitReader.Parse(fileName);
-			}
+			LoadPortraitsFromDir(ck2Dir);
 
 			if (cbModEnable.Checked && selectedMod.HasPortraits) {
 				logger.Info("Loading portraits from mod: " + selectedMod.Name);
@@ -121,10 +122,7 @@ namespace Portrait_Builder {
 						break;
 				}
 
-				fileNames = Directory.GetFiles(dir + @"\" + selectedMod.Path + @"\interface\", "*.gfx");
-				foreach (string fileName in fileNames) {
-					portraitReader.Parse(fileName);
-				}
+				LoadPortraitsFromDir(dir + @"\" + selectedMod.Path);
 			}
 
 			cbPortraitTypes.Items.Clear();
@@ -139,14 +137,36 @@ namespace Portrait_Builder {
 
 			logger.Debug("Setting up type flags");
 			foreach (KeyValuePair<string, PortraitType> pair in portraitReader.PortraitTypes) {
-				logger.Debug(" --Setting up flags for " + pair.Value.Name);
-				cbPortraitTypes.Items.Add(pair.Value.Name);
+				PortraitType portraitType = pair.Value;
+				logger.Debug(" --Setting up flags for " + portraitType.Name);
+				cbPortraitTypes.Items.Add(portraitType.Name);
 
-				foreach (Layer layer in pair.Value.Layers) {
-					setupFlags(pair.Value, layer);
+				foreach (Layer layer in portraitType.Layers) {
+
+					if (portraitOffsetReader.Offsets.ContainsKey(layer.Name)) {
+						layer.Offset = portraitOffsetReader.Offsets[layer.Name];
+						logger.Debug(string.Format("Overriding offset of layer {0} to {1}", layer.Name, layer.Offset));
+					}
+
+					setupFlags(portraitType, layer);
 				}
 			}
 			cbPortraitTypes.SelectedIndex = 0;
+		}
+
+		private void LoadPortraitsFromDir(string dir) {
+			List<string> fileNames = new List<string>();
+			fileNames.AddRange(Directory.GetFiles(dir + @"\interface\", "*.gfx"));
+			fileNames.AddRange(Directory.GetFiles(dir + @"\interface\portraits\", "*.gfx"));
+
+			foreach (string fileName in fileNames) {
+				portraitReader.Parse(fileName);
+			}
+
+			string[] offsetFileNames = Directory.GetFiles(dir + @"\interface\portrait_offsets\", "*.txt");
+			foreach (string offsetFileName in offsetFileNames) {
+				portraitOffsetReader.Parse(offsetFileName);
+			}
 		}
 
 		private void setupFlags(PortraitType portraitType, Layer layer) {

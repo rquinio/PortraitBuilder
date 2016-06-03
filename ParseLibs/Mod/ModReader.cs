@@ -26,8 +26,8 @@ namespace Parsers.Mod {
 			mod.ModFile = modFile.Name;
 			mod.ModPathType = dir;
 
-			using (StreamReader sr = new StreamReader(filename, Encoding.GetEncoding(1252))) {
-				while ((line = sr.ReadLine()) != null) {
+			using (StreamReader reader = new StreamReader(filename, Encoding.GetEncoding(1252))) {
+				while ((line = reader.ReadLine()) != null) {
 					if (line.StartsWith("#"))
 						continue;
 

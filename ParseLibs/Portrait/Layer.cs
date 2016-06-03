@@ -12,7 +12,9 @@ namespace Parsers.Portrait {
 		/// Index of the letter in the DNA/Properties string
 		/// </summary>
 		public int Index;
+
 		public Type LayerType;
+
 		public bool IsHair;
 		public bool IsEye;
 		public bool DontRefreshIfValid = false;

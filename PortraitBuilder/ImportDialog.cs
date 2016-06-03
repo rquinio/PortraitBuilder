@@ -88,7 +88,7 @@ namespace Portrait_Builder {
 		}
 
 		private bool Validate(TextBox tb, int length) {
-			bool isValid = IsValid(tb.Text, 11);
+			bool isValid = IsValid(tb.Text, length);
 			if (isValid) {
 				errorProvider.SetError(tb, string.Empty);
 			} else {

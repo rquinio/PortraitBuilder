@@ -59,6 +59,7 @@
     <Compile Include="DLC\DLCReader.cs" />
     <Compile Include="Mod\Mod.cs" />
     <Compile Include="Mod\ModReader.cs" />
+    <Compile Include="Portrait\PortraitOffsetReader.cs" />
     <Compile Include="Portrait\Colour.cs" />
     <Compile Include="Portrait\Hair.cs" />
     <Compile Include="Portrait\Layer.cs" />
