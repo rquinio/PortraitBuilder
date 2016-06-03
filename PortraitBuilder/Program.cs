@@ -3,6 +3,9 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Windows.Forms;
+using log4net;
+using log4net.Core;
+using log4net.Repository.Hierarchy;
 
 namespace Portrait_Builder {
 	static class Program {
@@ -60,13 +63,10 @@ namespace Portrait_Builder {
 		}
 
 		private static void StartUI(string[] args) {
-			if (args.Length > 0 && args[0] == "-log") {
-				Application.Run(new Form1(true, false));
-			} else if (args.Length > 0 && args[0] == "-logfull") {
-				Application.Run(new Form1(true, true));
-			} else {
-				Application.Run(new Form1());
+			if (args.Length > 0 && args[0] == "-logfull") {
+				((Hierarchy)LogManager.GetRepository()).Root.Level = Level.Debug;
 			}
+			Application.Run(new Form1());
 		}
 	}
 }

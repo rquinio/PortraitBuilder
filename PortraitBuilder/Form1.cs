@@ -8,12 +8,16 @@ using System.Reflection;
 using System.Text;
 using System.Windows.Forms;
 using ICSharpCode.SharpZipLib.Zip;
+using log4net;
 using Parsers.DLC;
 using Parsers.Mod;
 using Parsers.Portrait;
 
 namespace Portrait_Builder {
 	public partial class Form1 : Form {
+
+		private static readonly ILog logger = LogManager.GetLogger(typeof(Form1).Name);
+
 		private Image previewImage = new Bitmap(176, 176);
 		private bool started = false;
 		private StringBuilder dnaPropOutput;
@@ -27,38 +31,30 @@ namespace Portrait_Builder {
 		private List<Mod> usableMods = new List<Mod>();
 		private PortraitReader portraitReader = new PortraitReader();
 		private List<Bitmap> borders = new List<Bitmap>();
-		private string dna, properties;
+		private string dna;
+		private string properties;
 
-		private StreamWriter log;
-		private MemoryStream memoryStream;
-		private bool forceLog = false;
-		private bool fullLogging = false;
 		private bool hadError = false;
-
 
 		public Form1() {
 			InitializeComponent();
 			EnvironmentSetup();
 		}
 
-		public Form1(bool logging, bool full) {
-			InitializeComponent();
-
-			forceLog = logging;
-			fullLogging = full;
-
-			EnvironmentSetup();
-		}
-
 		private void EnvironmentSetup() {
+			logger.Info("Portrait Builder Version " + Application.ProductVersion);
+			logger.Info("Portrait Builder Parser Library " + Parsers.Version.GetVersion());
+
 			myDocsDir = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments) +
 										@"\Paradox Interactive\Crusader Kings II\";
+			logger.Info("CK2 directory: " + ck2Dir);
+			logger.Info("Mod directory: " + myDocsDir);
+			logger.Info("----------------------------");
+
 			dlcDir = Environment.CurrentDirectory + @"\dlc";
 
 			// Add the version to title
 			this.Text += " " + Application.ProductVersion;
-
-			SetupStream();
 
 			ReadGameDir();
 			LoadDLCs();
@@ -78,38 +74,11 @@ namespace Portrait_Builder {
 			started = true;
 		}
 
-		private void SetupStream() {
-			memoryStream = new MemoryStream();
-			log = new StreamWriter(memoryStream);
-
-			if (fullLogging)
-				portraitReader.SetLogging(log);
-
-			Log("Portrait Builder Version " + Application.ProductVersion);
-			Log("Portrait Builder Parser Library " + Parsers.Version.GetVersion());
-			Log("Logging started at " + DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss"));
-			Log("");
-		}
-
-		private void DumpLog() {
-			Stream stream = new FileStream("log.txt", FileMode.Create, FileAccess.Write);
-			memoryStream.WriteTo(stream);
-			stream.Close();
-			stream.Dispose();
-		}
-
-		private void Log(string text) {
-			System.Diagnostics.Debug.WriteLine(text);
-			log.WriteLine(text);
-			log.Flush();
-		}
-
 		private void LoadBorders() {
-			Log("Setting up borders.");
+			logger.Debug("Setting up borders.");
 			if (!File.Exists(ck2Dir + @"\gfx\interface\charframe_150.dds")) {
-				Log("Error: Borders file \\gfx\\interface\\charframe_150.dds not found.");
+				logger.Error("Borders file \\gfx\\interface\\charframe_150.dds not found.");
 				hadError = true;
-				DumpLog();
 
 				MessageBox.Show(this, "Unable to find borders graphic.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
 				return;
@@ -127,17 +96,17 @@ namespace Portrait_Builder {
 		}
 
 		private void LoadPortraits() {
-			Log("Disposing of previous portrait data.");
+			logger.Info("Disposing of previous portrait data.");
 			portraitReader.Dispose();
 
-			Log("Loading portraits from vanilla.");
+			logger.Info("Loading portraits from vanilla.");
 			string[] fileNames = Directory.GetFiles(ck2Dir + @"\interface\", "*.gfx");
 			foreach (string fileName in fileNames) {
 				portraitReader.Parse(fileName);
 			}
 
 			if (cbModEnable.Checked && selectedMod.HasPortraits) {
-				Log("Loading portraits from mod: " + selectedMod.Name);
+				logger.Info("Loading portraits from mod: " + selectedMod.Name);
 
 				string dir = string.Empty;
 				switch (selectedMod.ModPathType) {
@@ -158,25 +127,19 @@ namespace Portrait_Builder {
 				}
 			}
 
-			Log("The following errors were encountered while loading.");
-
-			foreach (string error in portraitReader.Errors)
-				Log(" --" + error);
-
 			cbPortraitTypes.Items.Clear();
 
 			if (portraitReader.PortraitTypes.Count == 0) {
-				Log("Error: No portrait types found.");
+				logger.Error("No portrait types found.");
 				MessageBox.Show(this, "No portraits found in mod " + selectedMod.Name + "\n\nCheck errorlog.txt for details.", "Error", MessageBoxButtons.OK,
 												 MessageBoxIcon.Error);
-				DumpLog();
 				hadError = true;
 				return;
 			}
 
-			Log("Setting up type flags");
+			logger.Debug("Setting up type flags");
 			foreach (KeyValuePair<string, PortraitType> pair in portraitReader.PortraitTypes) {
-				Log(" --Setting up flags for " + pair.Value.Name);
+				logger.Debug(" --Setting up flags for " + pair.Value.Name);
 				cbPortraitTypes.Items.Add(pair.Value.Name);
 
 				foreach (Layer layer in pair.Value.Layers) {
@@ -219,9 +182,9 @@ namespace Portrait_Builder {
 
 		private void LoadMods() {
 			ModReader modReader = new ModReader();
-			Log("Loading mods from " + ck2Dir + @"\mod\");
+			logger.Info("Loading mods from " + ck2Dir + @"\mod\");
 			modReader.ParseFolder(ck2Dir + @"\mod\", ModReader.Folder.CKDir);
-			Log("Loading mods from " + myDocsDir + @"\mod\");
+			logger.Info("Loading mods from " + myDocsDir + @"\mod\");
 			modReader.ParseFolder(myDocsDir + @"\mod\", ModReader.Folder.MyDocs);
 
 			foreach (Mod mod in modReader.Mods) {
@@ -244,11 +207,11 @@ namespace Portrait_Builder {
 				}
 			}
 
-			Log(" --Usable mods found:");
+			logger.Info(" --Usable mods found:");
 			if (usableMods.Count > 0) {
 				cbModEnable.Enabled = true;
 				foreach (Mod mod in usableMods) {
-					Log("   --" + mod.Name);
+					logger.Info("   --" + mod.Name);
 					cbMods.Items.Add(mod.Name);
 					cbMods.SelectedIndex = 0;
 				}
@@ -257,12 +220,12 @@ namespace Portrait_Builder {
 
 		private void LoadDLCs() {
 			DLCReader dlcReader = new DLCReader();
-			Log("Loading DLC from " + ck2Dir + @"\dlc\");
+			logger.Info("Loading DLCs from " + ck2Dir + @"\dlc\");
 			dlcReader.ParseFolder(ck2Dir + @"\dlc");
 
 			FastZip fastZip = new FastZip();
 			foreach (DLC dlc in dlcReader.DLCs) {
-				Log("Extracting " + dlc.Name);
+				logger.Info("Extracting " + dlc.Name);
 				fastZip.ExtractZip(ck2Dir + dlc.Archive, dlcDir, null);
 			}
 
@@ -286,7 +249,7 @@ namespace Portrait_Builder {
 		}
 
 		private void UpdatePortrait() {
-			Log("Updating portrait.");
+			logger.Debug("Updating portrait.");
 
 			GetDNA();
 			GetProperties();
@@ -295,14 +258,14 @@ namespace Portrait_Builder {
 		}
 
 		private void DrawPortrait() {
-			Log(" --Drawing portrait.");
+			logger.Debug(" --Drawing portrait.");
 
 			Graphics g = Graphics.FromImage(previewImage);
 
-			Log("   --Clearing preview.");
+			logger.Debug("   --Clearing preview.");
 			g.Clear(Color.Empty);
 			Bitmap portrait;
-			Log("   --Rendering portrait.");
+			logger.Debug("   --Rendering portrait.");
 			try {
 				PortraitType portraitType = portraitReader.PortraitTypes[cbPortraitTypes.SelectedItem.ToString()];
 				if (cbModEnable.Checked) {
@@ -311,28 +274,18 @@ namespace Portrait_Builder {
 					portrait = portraitReader.DrawPortrait(ck2Dir, portraitType, dna, properties, myDocsDir, dlcDir);
 				}
 			} catch (Exception e) {
-				Log("Error encountered rendering portrait:" + e.ToString());
-
-				MessageBox.Show(this, "Error rendering portrait:\n\n" + e, "Error", MessageBoxButtons.OK,
-												 MessageBoxIcon.Error);
-
+				logger.Error("Error encountered rendering portrait:" + e.ToString());
 				return;
 			}
 			g.DrawImage(portrait, 0, 0);
-			Log("   --Drawing border.");
+			logger.Debug("   --Drawing border.");
 			g.DrawImage(borders[cbRank.SelectedIndex], 0, 0);
-
-			if (portraitReader.DrawErrors.Count > 0) {
-				Log("Errors encountered while rendering portrait:");
-				foreach (string error in portraitReader.DrawErrors)
-					Log(" --" + error);
-			}
 
 			pbPortrait.Image = previewImage;
 		}
 
 		private void GetDNA() {
-			Log(" --Building DNA string.");
+			logger.Debug(" --Building DNA string.");
 			StringBuilder sb = new StringBuilder();
 
 			sb.Append(GetLetter(cbNeck));
@@ -351,7 +304,7 @@ namespace Portrait_Builder {
 		}
 
 		private void GetProperties() {
-			Log(" --Building Properties string.");
+			logger.Debug(" --Building Properties string.");
 			StringBuilder sb = new StringBuilder();
 
 			sb.Append(GetLetter(cbBackground));
@@ -371,7 +324,7 @@ namespace Portrait_Builder {
 		}
 
 		private void OutputDNA() {
-			Log(" --Outputting DNA and Property strings.");
+			logger.Debug(" --Outputting DNA and Property strings.");
 			dnaPropOutput = new StringBuilder();
 
 			dnaPropOutput.Append("  dna=\"");
@@ -398,7 +351,7 @@ namespace Portrait_Builder {
 		}
 
 		private void RandomizeUI(bool doRank) {
-			Log("Randomizing UI");
+			logger.Debug("Randomizing UI");
 			if (doRank) {
 				RandomizeComboBox(cbRank);
 			}
@@ -432,7 +385,9 @@ namespace Portrait_Builder {
 		}
 
 		private void RandomizeComboBox(ComboBox cb) {
-			cb.SelectedIndex = rand.Next(cb.Items.Count - 1);
+			if (cb.Items.Count > 0) {
+				cb.SelectedIndex = rand.Next(cb.Items.Count - 1);
+			}
 		}
 
 		private void FillComboBox(ComboBox cb, int count) {
@@ -447,16 +402,16 @@ namespace Portrait_Builder {
 			if (portraitType.CustomFlags.ContainsKey(flagName)) {
 				string spriteName = (string)portraitType.CustomFlags[flagName];
 				Sprite sprite = portraitReader.Sprites[spriteName];
-				Log(" --" + flagName + " item count: " + sprite.FrameCount);
+				logger.Debug(" --" + flagName + " item count: " + sprite.FrameCount);
 				FillComboBox(cb, sprite.FrameCount);
 			} else {
-				Log(" --No " + flagName + " flag found, setting UI to 26.");
+				logger.Warn(" --No " + flagName + " flag found, setting UI to 26.");
 				FillComboBox(cb, 26);
 			}
 		}
 
 		private void SetupSharedUI() {
-			Log("Setting up Shared UI");
+			logger.Debug("Setting up Shared UI");
 
 			FillComboBox(cbBackground, "background");
 			FillComboBox(cbScars, "scars");
@@ -469,7 +424,7 @@ namespace Portrait_Builder {
 		private void SetupUI() {
 			PortraitType portraitType = portraitReader.PortraitTypes[cbPortraitTypes.SelectedItem.ToString()];
 
-			Log("Setting up UI for: " + portraitType.Name);
+			logger.Debug("Setting up UI for: " + portraitType.Name);
 			FillComboBox(cbClothes, "clothes");
 			FillComboBox(cbHeadgear, "headgear");
 			FillComboBox(cbHair, "hair");
@@ -482,13 +437,13 @@ namespace Portrait_Builder {
 			FillComboBox(cbEyes, "eyes");
 			FillComboBox(cbEars, "ear");
 
-			Log(" --Setting hair colours: " + portraitType.HairColours.Count);
+			logger.Debug(" --Setting hair colours: " + portraitType.HairColours.Count);
 			cbHairColour.Items.Clear();
 			for (int i = 0; i < portraitType.HairColours.Count; i++) {
 				cbHairColour.Items.Add(i);
 			}
 
-			Log(" --Setting eye colours: " + portraitType.EyeColours.Count);
+			logger.Debug(" --Setting eye colours: " + portraitType.EyeColours.Count);
 			cbEyeColour.Items.Clear();
 			for (int i = 0; i < portraitType.EyeColours.Count; i++) {
 				cbEyeColour.Items.Add(i);
@@ -576,8 +531,6 @@ namespace Portrait_Builder {
 			selectedMod = usableMods[cbMods.SelectedIndex];
 
 			if (started) {
-				SetupStream();
-
 				started = false;
 				LoadPortraits();
 
@@ -595,8 +548,6 @@ namespace Portrait_Builder {
 
 		private void cbModEnable_CheckedChanged(object sender, EventArgs e) {
 			cbMods.Enabled = cbModEnable.Checked;
-
-			SetupStream();
 
 			started = false;
 			LoadPortraits();
@@ -644,8 +595,7 @@ namespace Portrait_Builder {
 		}
 
 		private void Form1_FormClosed(object sender, FormClosedEventArgs e) {
-			if (!hadError && forceLog)
-				DumpLog();
+			
 		}
 	}
 }

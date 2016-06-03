@@ -6,10 +6,14 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using Hime.Redist.Parsers;
+using log4net;
 using Parsers.Mod;
 
 namespace Parsers.Portrait {
 	public class PortraitReader {
+
+		private static readonly ILog logger = LogManager.GetLogger(typeof(PortraitReader).Name);
+
 		/// <summary>
 		/// Dictionary of loaded Sprites.
 		/// Key is the name of the sprite. E.g. GFX_character_background
@@ -21,20 +25,8 @@ namespace Parsers.Portrait {
 		/// </summary>
 		public Dictionary<string, PortraitType> PortraitTypes = new Dictionary<string, PortraitType>();
 
-		/// <summary>
-		/// List of errors encountered during parsing.
-		/// </summary>
-		public List<string> Errors = new List<string>();
-		/// <summary>
-		/// List of errors encountered during rendering. Clears every time DrawPortrait is called.
-		/// </summary>
-		public List<string> DrawErrors;
-
 		public List<char> Letters = new List<char> { 'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z' };
 		private Random rand = new Random();
-
-		private bool shouldLog = false;
-		private StreamWriter log;
 
 		/// <summary>
 		/// Unloads all loaded portrait data.
@@ -49,28 +41,13 @@ namespace Parsers.Portrait {
 			PortraitTypes.Clear();
 		}
 
-		public void SetLogging(StreamWriter log) {
-			this.log = log;
-			shouldLog = true;
-		}
-
-		private void Log(string text) {
-			if (shouldLog) {
-				System.Diagnostics.Debug.WriteLine(text);
-				log.WriteLine("PRC > " + text);
-				log.Flush();
-			}
-		}
-
 		/// <summary>
 		/// Parses a given portrait.gfx file. Any errors encountered are stored in the Errors list.
 		/// </summary>
 		/// <param name="filename">Path of the file to parse.</param>
 		public void Parse(string filename) {
-			Log("Checking file exists: " + filename);
 			if (!File.Exists(filename)) {
-				Errors.Add(string.Format("File not found: {0}", filename));
-				Log("File not found.");
+				logger.Error(string.Format("File not found: {0}", filename));
 				return;
 			}
 
@@ -89,7 +66,7 @@ namespace Parsers.Portrait {
 			}
 
 			if (isEmpty) {
-				Log("File is empty: " + filename);
+				logger.Error("File is empty: " + filename);
 				return;
 			}
 
@@ -100,7 +77,7 @@ namespace Parsers.Portrait {
 			SyntaxTreeNode root = parser.Analyse();
 
 			if (root == null) {
-				Errors.Add(String.Format("Lexical error in file {0}, line {1}", (new FileInfo(filename).Name), lexer.CurrentLine));
+				logger.Error(String.Format("Lexical error in file {0}, line {1}", (new FileInfo(filename).Name), lexer.CurrentLine));
 				return;
 			}
 
@@ -160,10 +137,10 @@ namespace Parsers.Portrait {
 				}
 			}
 
-			Log("Type parsed: ");
-			Log(" --ID: " + portraitType.Name);
-			Log(" --Hair Colour Index: " + portraitType.HairColourIndex);
-			Log(" --Eye Colour Index: " + portraitType.EyeColourIndex);
+			logger.Debug("Type parsed: ");
+			logger.Debug(" --ID: " + portraitType.Name);
+			logger.Debug(" --Hair Colour Index: " + portraitType.HairColourIndex);
+			logger.Debug(" --Eye Colour Index: " + portraitType.EyeColourIndex);
 
 			ParseLayers(portraitType, node.Children.Single(c => c.Symbol.Name == "layerGroup"), filename);
 
@@ -186,8 +163,9 @@ namespace Parsers.Portrait {
 
 			if (!PortraitTypes.ContainsKey(portraitType.Name))
 				PortraitTypes.Add(portraitType.Name, portraitType);
-			else
-				Errors.Add("Portrait type " + portraitType.Name + " has already been defined.");
+			else {
+				logger.Warn("Portrait type " + portraitType.Name + " has already been defined.");
+			}
 		}
 
 		private void ParseEyeColours(PortraitType portraitType, SyntaxTreeNode node) {
@@ -202,18 +180,18 @@ namespace Parsers.Portrait {
 			List<SyntaxTreeNode> children = node.Children.Where(child => child.Symbol.Name == "colourGroup").ToList();
 
 			for (int i = 0; i < children.Count; i += 3) {
-				Log(" --Parsing Hair colours");
+				logger.Debug(" --Parsing Hair colours");
 
 				Hair hair = new Hair();
 
 				hair.Dark = ParseColour(children[i]);
-				Log("   --Dark: " + hair.Dark);
+				logger.Debug("   --Dark: " + hair.Dark);
 
 				hair.Base = ParseColour(children[i + 1]);
-				Log("   --Base: " + hair.Base);
+				logger.Debug("   --Base: " + hair.Base);
 
 				hair.Highlight = ParseColour(children[i + 2]);
-				Log("   --Highlight: " + hair.Highlight);
+				logger.Debug("   --Highlight: " + hair.Highlight);
 
 				portraitType.HairColours.Add(hair);
 			}
@@ -229,7 +207,7 @@ namespace Parsers.Portrait {
 			value = child.Children[2].Symbol as SymbolTokenText;
 			colour.Blue = byte.Parse(value.ValueText);
 
-			Log(" --Colour Parsed: " + colour);
+			logger.Debug(" --Colour Parsed: " + colour);
 			return colour;
 		}
 
@@ -262,7 +240,7 @@ namespace Parsers.Portrait {
 				}
 			}
 
-			Log(" --Layer Parsed: " + layer);
+			logger.Debug(" --Layer Parsed: " + layer);
 
 			return layer;
 		}
@@ -300,10 +278,10 @@ namespace Parsers.Portrait {
 						break;
 				}
 			}
-			Log("Sprite Parsed: " + sprite);
+			logger.Debug("Sprite Parsed: " + sprite);
 
 			if (Sprites.ContainsKey(sprite.Name)) {
-				Log("Sprite already exists. Replacing.");
+				logger.Debug("Sprite already exists. Replacing.");
 				Sprites.Remove(sprite.Name);
 			}
 
@@ -337,9 +315,7 @@ namespace Parsers.Portrait {
 		/// <param name="myDocsDir">Fath to the My Documents directory.</param>
 		/// <returns>Frameless portrait drawn with the given parameters.</returns>
 		public Bitmap DrawPortrait(string ckDir, Mod.Mod selectedMod, PortraitType portraitType, string dna, string properties, string myDocsDir, string dlcDir) {
-			DrawErrors = new List<string>();
-
-			Log(string.Format("Drawing Portrait - DNA: {0}, Properties: {1}", dna, properties));
+			logger.Info(string.Format("Drawing Portrait - DNA: {0}, Properties: {1}", dna, properties));
 
 			if (dna.Length < 9 || properties.Length < 9) {
 				throw new ArgumentException(string.Format("DNA {0} or Property {1} strings are too short.", dna, properties));
@@ -356,7 +332,7 @@ namespace Parsers.Portrait {
 			}
 
 			foreach (Layer layer in portraitType.Layers) {
-				Log("--Drawing Layer : " + layer);
+				logger.Debug("Drawing Layer : " + layer);
 
 				try {
 					if (Sprites.ContainsKey(layer.Name)) {
@@ -377,9 +353,7 @@ namespace Parsers.Portrait {
 					}
 
 				} catch (Exception e) {
-					DrawErrors.Add("Could not render layer " + layer + ", caused by: "+ e.ToString());
-					Log("Could not render layer" + layer);
-					Log(e.ToString());
+					logger.Error("Could not render layer " + layer + ", caused by:\n" + e.ToString());
 				}
 			}
 
@@ -399,14 +373,14 @@ namespace Parsers.Portrait {
 			} else {
 				throw new FileNotFoundException(string.Format("Unable to find file: {0} under mod {1}, nor vanilla {2}", filePath, modPath, ckDir));
 			}
-			Log("  --Loading sprite from: " + containerPath);
+			logger.Debug("Loading sprite from: " + containerPath);
 			sprite.Load(containerPath);
 		}
 
 		private int GetTileIndex(string dna, string properties, int frameCount, Layer layer) {
 			char letter = layer.LayerType == Layer.Type.DNA ? dna[layer.Index] : properties[layer.Index];;
 			int tileIndex = GetTileIndexFromLetter(letter, frameCount);
-			Log(string.Format("  --Layer Letter: {0}, Tile Index: {1}",letter, tileIndex));
+			logger.Debug(string.Format("Layer Letter: {0}, Tile Index: {1}", letter, tileIndex));
 			return tileIndex;
 		}
 

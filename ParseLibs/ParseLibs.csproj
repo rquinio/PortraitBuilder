@@ -43,6 +43,9 @@
     <Reference Include="Hime.Redist">
       <HintPath>..\libs\Hime.Redist.dll</HintPath>
     </Reference>
+    <Reference Include="log4net">
+      <HintPath>..\libs\log4net.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Drawing" />

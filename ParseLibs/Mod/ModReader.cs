@@ -1,22 +1,21 @@
 ﻿using System.Collections.Generic;
 using System.IO;
 using System.Text;
+using log4net;
 
 namespace Parsers.Mod {
 	public class ModReader {
+
+		private static readonly ILog logger = LogManager.GetLogger(typeof(Mod).Name);
+
 		/// <summary>
 		/// List of loaded Mods
 		/// </summary>
 		public List<Mod> Mods = new List<Mod>();
 
-		/// <summary>
-		/// List of errors encountered during parsing.
-		/// </summary>
-		public List<string> Errors = new List<string>();
-
 		public void Parse(string filename, Folder dir) {
 			if (!File.Exists(filename)) {
-				Errors.Add(string.Format("File not found: {0}", filename));
+				logger.Error(string.Format("File not found: {0}", filename));
 				return;
 			}
 
@@ -66,14 +65,14 @@ namespace Parsers.Mod {
 			DirectoryInfo dir = new DirectoryInfo(folder);
 
 			if (!dir.Exists) {
-				Errors.Add(string.Format("Folder not found: {0}", dir.FullName));
+				logger.Error(string.Format("Folder not found: {0}", dir.FullName));
 				return;
 			}
 
 			FileInfo[] mods = dir.GetFiles("*.mod");
 
 			if (mods.Length == 0) {
-				Errors.Add(string.Format("No mods found in folder: {0}", dir.FullName));
+				logger.Warn(string.Format("No mods found in folder: {0}", dir.FullName));
 				return;
 			}
 
