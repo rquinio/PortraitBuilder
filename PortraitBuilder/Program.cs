@@ -6,6 +6,9 @@ using System.Windows.Forms;
 
 namespace Portrait_Builder {
 	static class Program {
+
+		static string CK2_EXE = "CK2game.exe";
+
 		/// <summary>
 		/// The main entry point for the application.
 		/// </summary>
@@ -21,9 +24,11 @@ namespace Portrait_Builder {
 				string dir = null;
 
 				while (dir == null) {
-					dir = Measter.Snippets.FolderBrowser("Please select the Crusader Kings II directory.", null);
+					string ck2exePath = Measter.Snippets.OpenFileDialog("Please select the location of your " + CK2_EXE, "Application (*.exe)|*.exe", null);
 
-					if (dir == null) {
+					//FolderBrowser("Please select the Crusader Kings II directory.", null);
+
+					if (ck2exePath == null) {
 						if (MessageBox.Show("This program cannot run without data from the Crusader Kings II directory. Do you wish to exit?",
 																 "Exit Application?",
 																 MessageBoxButtons.YesNo,
@@ -31,11 +36,12 @@ namespace Portrait_Builder {
 							break;
 						}
 					} else {
-						if (!File.Exists(dir + "\\CK2game.exe")) {
+						if (!ck2exePath.EndsWith(CK2_EXE)) {
 							MessageBox.Show("Crusader Kings II not found.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
 							dir = null;
 							continue;
 						}
+						dir = ck2exePath.Replace(CK2_EXE, "");
 						SetDir(dir);
 
 						StartUI(args);

@@ -4,7 +4,8 @@ using System.Windows.Forms;
 
 namespace Portrait_Builder {
 	public partial class ImportDialog : Form {
-		private bool m_DNAValid = false, m_PropertiesValid = false;
+		private bool isDNAValid = false; 
+		private bool isPropertiesValid = false;
 
 		public char Neck = 'a';
 		public char Chin = 'a';
@@ -27,6 +28,7 @@ namespace Portrait_Builder {
 		public char RedDots = 'a';
 		public char Boils = 'a';
 		public char Blinded = 'a';
+		public char Player = 'a';
 
 		public ImportDialog() {
 			InitializeComponent();
@@ -51,18 +53,19 @@ namespace Portrait_Builder {
 			EyeColour = dna[9];
 
 			//Properties
-			string prop = tbProperties.Text;
-			Background = prop[0];
-			Hair = prop[1];
+			string properties = tbProperties.Text;
+			Background = properties[0];
+			Hair = properties[1];
 			//unused
-			Clothes = prop[3];
-			Beard = prop[4];
-			Headgear = prop[5];
-			Prison = prop[6];
-			Scars = prop[7];
-			RedDots = prop[8];
-			Boils = prop[9];
-			Blinded = prop[10];
+			Clothes = properties[3];
+			Beard = properties[4];
+			Headgear = properties[5];
+			Prison = properties[6];
+			Scars = properties[7];
+			RedDots = properties[8];
+			Boils = properties[9];
+			Blinded = properties[10];
+			Player = properties[11];
 
 			DialogResult = DialogResult.OK;
 			Close();
@@ -71,42 +74,40 @@ namespace Portrait_Builder {
 		private void tb_TextChanged(object sender, EventArgs e) {
 			TextBox tb = (TextBox)sender;
 
-			bool valid = IsValid(tb.Text, 11);
-
-			if (tb == tbDNA && !valid) {
-				errorProvider.SetError(tbDNA, "Invalid DNA Code.");
-				m_DNAValid = false;
-			} else if (tb == tbDNA && valid) {
-				errorProvider.SetError(tbDNA, string.Empty);
-				m_DNAValid = true;
+			if (tb == tbDNA) {
+				isDNAValid = Validate(tb, 11);
+			} else if (tb == tbProperties) {
+				isPropertiesValid = Validate(tb, 12);
 			}
 
-			if (tb == tbProperties && !valid) {
-				errorProvider.SetError(tbProperties, "Invalid Properties Code.");
-				m_PropertiesValid = false;
-			} else if (tb == tbProperties && valid) {
-				errorProvider.SetError(tbProperties, string.Empty);
-				m_PropertiesValid = true;
-			}
-
-			if (m_DNAValid && m_PropertiesValid) {
+			if (isDNAValid && isPropertiesValid) {
 				btnOK.Enabled = true;
 			} else {
 				btnOK.Enabled = false;
 			}
 		}
 
-		private bool IsValid(string s, int length) {
+		private bool Validate(TextBox tb, int length) {
+			bool isValid = IsValid(tb.Text, 11);
+			if (isValid) {
+				errorProvider.SetError(tb, string.Empty);
+			} else {
+				errorProvider.SetError(tb, "Invalid text.");
+			}
+			return isValid;
+		}
+
+		private bool IsValid(string dnaOrProperties, int length) {
 			bool valid = true;
 
-			foreach (char c in s) {
+			foreach (char c in dnaOrProperties) {
 				if (!Char.IsLetterOrDigit(c)) {
 					valid = false;
 					break;
 				}
 			}
 
-			if (s.Length != length)
+			if (dnaOrProperties.Length != length)
 				valid = false;
 
 			return valid;

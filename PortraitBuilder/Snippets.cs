@@ -6,18 +6,6 @@ using System.Windows.Forms;
 
 namespace Measter {
 	static class Snippets {
-		public static string FolderBrowser(string sDescription, string sReturn) {
-			using (FolderBrowserDialog dFolder = new FolderBrowserDialog()) {
-				dFolder.Description = sDescription;
-				dFolder.ShowNewFolderButton = false;
-
-				if (dFolder.ShowDialog() == DialogResult.OK) {
-					return dFolder.SelectedPath;
-				} else {
-					return sReturn;
-				}
-			}
-		}
 
 		public static string OpenFileDialog(string sTitle, string sFilter, string sReturn) {
 			using (OpenFileDialog dFileDialog = new OpenFileDialog()) {
