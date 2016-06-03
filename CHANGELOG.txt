@@ -1,7 +1,22 @@
+By Romulien:
+
+Version 2.0.0 - 2016-04-04
+ - Compatibility with vanilla 2.5.2
+ - Update lookup of ck2.exe to CK2game.exe
+ - Support for offsets (inline and external)
+ - Support for extra proprty p11 (player overlay)
+ - Support for DLCs. Disable buggy mod loading, for now.
+ - Replace poorly usable BrowseFolderDialog by an OpenFileDialog, to locate CK2 .exe
+ - Rework the logging, using log4net, with various log levels
+ - Append the version to the window title
+ - Add an icon to the .exe
+ - Remove code duplication, and general cleanup of the code
+ - Fix some gfx parsing errors
+ - Try/catch around some bad .dds files like western_male_eyes2.dds that cause exceptions
 
 By Measter:
 
-Version 1.1.7
+Version 1.1.7 - 2012-11-24
  - Added logging. Outputs log on error, and can be forced to output with -log.
  - Now attempts to load portrait info from all .gfx files in \interface.
  - Can now load mods from My Documents folder.

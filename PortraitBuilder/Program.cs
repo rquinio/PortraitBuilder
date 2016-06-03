@@ -10,7 +10,9 @@ using log4net.Repository.Hierarchy;
 namespace Portrait_Builder {
 	static class Program {
 
-		static string CK2_EXE = "CK2game.exe";
+		private static readonly ILog logger = LogManager.GetLogger(typeof(Program).Name);
+
+		private static string CK2_EXE = "CK2game.exe";
 
 		/// <summary>
 		/// The main entry point for the application.
@@ -66,7 +68,12 @@ namespace Portrait_Builder {
 			if (args.Length > 0 && args[0] == "-logfull") {
 				((Hierarchy)LogManager.GetRepository()).Root.Level = Level.Debug;
 			}
-			Application.Run(new Form1());
+			try {
+				Application.Run(new Form1());
+			} catch (Exception e) {
+				logger.Fatal("Fatal error: " + e.ToString());
+			}
+			
 		}
 	}
 }

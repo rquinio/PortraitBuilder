@@ -26,7 +26,7 @@ Features:
 
 Dependencies:
 
-- The DevIL library, with the DevIL.Net wrapper: http://openil.sourceforge.net/
+- The DevIL library, with the DevIL.Net wrapper: http://openil.sourceforge.net/. Note: DevIL.dll needs to be copied manually from libs/ to bin/Debug or bin/Release
 - Hime Parser Generator: http://himeparser.codeplex.com/
 - SharpZipLib: http://www.icsharpcode.net/opensource/sharpziplib/
 - log4net: https://logging.apache.org/log4net/
