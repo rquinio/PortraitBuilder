@@ -319,11 +319,11 @@ namespace Parsers.Portrait {
 		/// <param name="properties">Properties string to use for drawing.</param> 
 		/// <param name="myDocsDir">Fath to the My Documents directory.</param>
 		/// <returns>Frameless portrait drawn with the given parameters.</returns>
-		public Bitmap DrawPortrait(string ckDir, PortraitType portraitType, string dna, string properties, string myDocsDir) {
+		public Bitmap DrawPortrait(string ckDir, PortraitType portraitType, string dna, string properties, string myDocsDir, string dlcDir) {
 			return DrawPortrait(ckDir, new Mod.Mod {
 				ModPathType = ModReader.Folder.CKDir,
 				Name = "Vanilla"
-			}, portraitType, dna, properties, myDocsDir);
+			}, portraitType, dna, properties, myDocsDir, dlcDir);
 		}
 
 		/// <summary>
@@ -336,68 +336,71 @@ namespace Parsers.Portrait {
 		/// <param name="properties">Properties string to use for drawing.</param>
 		/// <param name="myDocsDir">Fath to the My Documents directory.</param>
 		/// <returns>Frameless portrait drawn with the given parameters.</returns>
-		public Bitmap DrawPortrait(string ckDir, Mod.Mod selectedMod, PortraitType portraitType, string dna, string properties, string myDocsDir) {
+		public Bitmap DrawPortrait(string ckDir, Mod.Mod selectedMod, PortraitType portraitType, string dna, string properties, string myDocsDir, string dlcDir) {
 			DrawErrors = new List<string>();
 
 			Log(string.Format("Drawing Portrait - DNA: {0}, Properties: {1}", dna, properties));
-			Log("  --CKDir: " + ckDir);
-			Log("  --Documents Dir: " + myDocsDir);
-			Log("  --Mod: " + selectedMod.Name);
 
 			if (dna.Length < 9 || properties.Length < 9) {
-				DrawErrors.Add("DNA or Property strings are too short.");
-				Log("  --Error: DNA or Portrait string too short.");
-				return null;
+				throw new ArgumentException(string.Format("DNA {0} or Property {1} strings are too short.", dna, properties));
 			}
 
 			Bitmap portrait = new Bitmap(176, 176);
 			Graphics g = Graphics.FromImage(portrait);
-			Sprite sprite;
 
-			string dir = selectedMod.ModPathType == ModReader.Folder.CKDir ? ckDir : myDocsDir;
+			string dlcOrModDir = ckDir;
+			if (selectedMod.ModPathType == ModReader.Folder.DLC) {
+				dlcOrModDir = dlcDir;
+			} else if (selectedMod.ModPathType == ModReader.Folder.MyDocs) {
+				dlcOrModDir = myDocsDir;
+			}
 
 			foreach (Layer layer in portraitType.Layers) {
 				Log("--Drawing Layer : " + layer);
 
 				try {
-
 					if (Sprites.ContainsKey(layer.Name)) {
-						Log("  --Searching for sprite ID: " + layer.Name);
-						sprite = Sprites[layer.Name];
-					} else {
-						Log("  --Sprite not found.");
-						DrawErrors.Add("Sprite not found: " + layer.Name);
-						continue;
-					}
+						Sprite sprite = Sprites[layer.Name];
 
-					//Check if loaded; if not, then load
-					if (!sprite.IsLoaded) {
-						string filePath = sprite.TextureFilePath;
-						if (File.Exists(dir + "/" + selectedMod.Path + "/" + filePath)) {
-							Log("  --Loading sprite from: " + dir + "/" + selectedMod.Path + "/" + filePath);
-							sprite.Load(dir + "/" + selectedMod.Path);
-						} else if (File.Exists(ckDir + "/" + filePath)) {
-							Log("  --Loading sprite from: " + ckDir + "/" + filePath);
-							sprite.Load(ckDir + "/");
-						} else {
-							Log("  --Error: Unable to find file: " + filePath);
-							DrawErrors.Add("Unable to find file: " + filePath);
-							continue;
+						//Check if loaded; if not, then load
+						if (!sprite.IsLoaded) {
+							LoadSprite(ckDir, selectedMod, dlcOrModDir, sprite);
 						}
+
+						//Get DNA/Properties letter, then the index of the tile to draw
+						int tileIndex = GetTileIndex(dna, properties, sprite.FrameCount, layer);
+
+						DrawTile(portraitType, dna, g, sprite, layer, tileIndex);
+
+					} else {
+						throw new FileNotFoundException("Sprite not found:" + layer.Name);
 					}
 
-					//Get DNA/Properties letter, then the index of the tile to draw
-					int tileIndex = GetTileIndex(dna, properties, sprite.FrameCount, layer);
-
-					DrawTile(portraitType, dna, g, sprite, layer, tileIndex);
 				} catch (Exception e) {
-					System.Diagnostics.Debug.WriteLine("Could not render layer" + layer.Index);
-					System.Diagnostics.Debug.WriteLine(e);
+					DrawErrors.Add("Could not render layer " + layer + ", caused by: "+ e.ToString());
+					Log("Could not render layer" + layer);
+					Log(e.ToString());
 				}
 			}
 
 			g.Dispose();
 			return portrait;
+		}
+
+		private void LoadSprite(string ckDir, Mod.Mod selectedMod, string dlcOrModDir, Sprite sprite) {
+			string filePath = sprite.TextureFilePath;
+			string modPath = dlcOrModDir + "/" + selectedMod.Path;
+
+			string containerPath = null;
+			if (File.Exists(modPath + "/" + filePath)) {
+				containerPath = modPath;
+			} else if (File.Exists(ckDir + "/" + filePath)) {
+				containerPath = ckDir;
+			} else {
+				throw new FileNotFoundException(string.Format("Unable to find file: {0} under mod {1}, nor vanilla {2}", filePath, modPath, ckDir));
+			}
+			Log("  --Loading sprite from: " + containerPath);
+			sprite.Load(containerPath);
 		}
 
 		private int GetTileIndex(string dna, string properties, int frameCount, Layer layer) {

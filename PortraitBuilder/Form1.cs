@@ -308,13 +308,12 @@ namespace Portrait_Builder {
 			try {
 				PortraitType portraitType = portraitReader.PortraitTypes[cbPortraitTypes.SelectedItem.ToString()];
 				if (cbModEnable.Checked) {
-					portrait = portraitReader.DrawPortrait(ck2Dir, selectedMod, portraitType, dna, properties, myDocsDir);
+					portrait = portraitReader.DrawPortrait(ck2Dir, selectedMod, portraitType, dna, properties, myDocsDir, dlcDir);
 				} else {
-					portrait = portraitReader.DrawPortrait(ck2Dir, portraitType, dna, properties, myDocsDir);
+					portrait = portraitReader.DrawPortrait(ck2Dir, portraitType, dna, properties, myDocsDir, dlcDir);
 				}
 			} catch (Exception e) {
-				Log("Error encountered rendering portrait:");
-				Log(e.ToString());
+				Log("Error encountered rendering portrait:" + e.ToString());
 
 				MessageBox.Show(this, "Error rendering portrait:\n\n" + e, "Error", MessageBoxButtons.OK,
 												 MessageBoxIcon.Error);
