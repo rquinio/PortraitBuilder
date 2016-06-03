@@ -215,14 +215,14 @@ namespace Portrait_Builder {
 
 				if (File.Exists(dir + mod.Path + @"\interface\portraits.gfx")) {
 					mod.HasPortraits = true;
-					usableMods.Add(mod);
+					// usableMods.Add(mod);
 					continue;
 				}
 
 				if (Directory.Exists(dir + mod.Path + @"\gfx\characters\")) {
 					if (Directory.GetDirectories(dir + mod.Path + @"\gfx\characters\").Length > 0) {
 						mod.HasPortraits = false;
-						usableMods.Add(mod);
+						// usableMods.Add(mod);
 					}
 				}
 			}
