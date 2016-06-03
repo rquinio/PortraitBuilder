@@ -33,7 +33,6 @@ namespace Portrait_Builder {
 		private MemoryStream memoryStream;
 		private bool forceLog = false;
 		private bool fullLogging = false;
-		private string version = string.Empty;
 		private bool hadError = false;
 
 
@@ -56,9 +55,8 @@ namespace Portrait_Builder {
 										@"\Paradox Interactive\Crusader Kings II\";
 			dlcDir = Environment.CurrentDirectory + @"\dlc";
 
-			Assembly assembly = Assembly.GetExecutingAssembly();
-			FileVersionInfo fvi = FileVersionInfo.GetVersionInfo(assembly.Location);
-			version = fvi.FileVersion;
+			// Add the version to title
+			this.Text += " " + Application.ProductVersion;
 
 			SetupStream();
 
@@ -87,7 +85,7 @@ namespace Portrait_Builder {
 			if (fullLogging)
 				portraitReader.SetLogging(log);
 
-			Log("Portrait Builder Version " + version);
+			Log("Portrait Builder Version " + Application.ProductVersion);
 			Log("Portrait Builder Parser Library " + Parsers.Version.GetVersion());
 			Log("Logging started at " + DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss"));
 			Log("");

@@ -29,7 +29,7 @@ namespace Portrait_Builder {
 					//FolderBrowser("Please select the Crusader Kings II directory.", null);
 
 					if (ck2exePath == null) {
-						if (MessageBox.Show("This program cannot run without data from the Crusader Kings II directory. Do you wish to exit?",
+						if (MessageBox.Show("This program cannot run without data from the Crusader Kings II installation directory. \n To find the directory in Steam: right-click the game in the library, Properties / Local Files / Browse Local Files.",
 																 "Exit Application?",
 																 MessageBoxButtons.YesNo,
 																 MessageBoxIcon.Exclamation) == DialogResult.Yes) {
@@ -37,7 +37,7 @@ namespace Portrait_Builder {
 						}
 					} else {
 						if (!ck2exePath.EndsWith(CK2_EXE)) {
-							MessageBox.Show("Crusader Kings II not found.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+							MessageBox.Show("Crusader Kings II not found. Make sure to select the file " + CK2_EXE, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
 							dir = null;
 							continue;
 						}
