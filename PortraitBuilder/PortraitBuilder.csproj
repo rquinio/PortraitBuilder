@@ -38,7 +38,7 @@
     <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <PropertyGroup>
-    <ApplicationIcon>ck2.ico</ApplicationIcon>
+    <ApplicationIcon>unknown_character.ico</ApplicationIcon>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="DevIL.NET2, Version=1.1.2619.31671, Culture=neutral, processorArchitecture=x86">
@@ -114,7 +114,7 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <Content Include="ck2.ico" />
+    <Content Include="unknown_character.ico" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

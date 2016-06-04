@@ -28,6 +28,7 @@
     /// </summary>
     private void InitializeComponent()
     {
+			System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Form1));
 			this.groupBox1 = new System.Windows.Forms.GroupBox();
 			this.btnSave = new System.Windows.Forms.Button();
 			this.btnCopy = new System.Windows.Forms.Button();
@@ -665,6 +666,7 @@
 			this.Controls.Add(this.groupBox2);
 			this.Controls.Add(this.groupBox1);
 			this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
+			this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
 			this.MaximizeBox = false;
 			this.Name = "Form1";
 			this.Text = "Portrait Builder";
