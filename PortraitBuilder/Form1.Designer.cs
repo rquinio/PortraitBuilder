@@ -1,33 +1,28 @@
-﻿namespace Portrait_Builder
-{
-  partial class Form1
-  {
-    /// <summary>
-    /// Required designer variable.
-    /// </summary>
-    private System.ComponentModel.IContainer components = null;
+﻿namespace Portrait_Builder {
+	partial class Form1 {
+		/// <summary>
+		/// Required designer variable.
+		/// </summary>
+		private System.ComponentModel.IContainer components = null;
 
-    /// <summary>
-    /// Clean up any resources being used.
-    /// </summary>
-    /// <param name="disposing">true if managed resources should be disposed; otherwise, false.</param>
-    protected override void Dispose( bool disposing )
-    {
-      if( disposing && ( components != null ) )
-      {
-        components.Dispose();
-      }
-      base.Dispose( disposing );
-    }
+		/// <summary>
+		/// Clean up any resources being used.
+		/// </summary>
+		/// <param name="disposing">true if managed resources should be disposed; otherwise, false.</param>
+		protected override void Dispose(bool disposing) {
+			if (disposing && (components != null)) {
+				components.Dispose();
+			}
+			base.Dispose(disposing);
+		}
 
-    #region Windows Form Designer generated code
+		#region Windows Form Designer generated code
 
-    /// <summary>
-    /// Required method for Designer support - do not modify
-    /// the contents of this method with the code editor.
-    /// </summary>
-    private void InitializeComponent()
-    {
+		/// <summary>
+		/// Required method for Designer support - do not modify
+		/// the contents of this method with the code editor.
+		/// </summary>
+		private void InitializeComponent() {
 			System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Form1));
 			this.groupBox1 = new System.Windows.Forms.GroupBox();
 			this.btnSave = new System.Windows.Forms.Button();
@@ -79,11 +74,14 @@
 			this.cbBackground = new System.Windows.Forms.ComboBox();
 			this.label18 = new System.Windows.Forms.Label();
 			this.groupBox2 = new System.Windows.Forms.GroupBox();
-			this.cbModEnable = new System.Windows.Forms.CheckBox();
+			this.label21 = new System.Windows.Forms.Label();
 			this.btnRandom = new System.Windows.Forms.Button();
 			this.btnImport = new System.Windows.Forms.Button();
 			this.cbPortraitTypes = new System.Windows.Forms.ComboBox();
-			this.cbMods = new System.Windows.Forms.ComboBox();
+			this.tabContent = new System.Windows.Forms.TabControl();
+			this.tabDLCs = new System.Windows.Forms.TabPage();
+			this.panelDLCs = new System.Windows.Forms.FlowLayoutPanel();
+			this.tabMods = new System.Windows.Forms.TabPage();
 			this.groupBox1.SuspendLayout();
 			((System.ComponentModel.ISupportInitialize)(this.pbPortrait)).BeginInit();
 			this.tabControl1.SuspendLayout();
@@ -91,6 +89,8 @@
 			this.tabPage2.SuspendLayout();
 			this.tabPage3.SuspendLayout();
 			this.groupBox2.SuspendLayout();
+			this.tabContent.SuspendLayout();
+			this.tabDLCs.SuspendLayout();
 			this.SuspendLayout();
 			// 
 			// groupBox1
@@ -101,7 +101,7 @@
 			this.groupBox1.Controls.Add(this.pbPortrait);
 			this.groupBox1.Controls.Add(this.cbRank);
 			this.groupBox1.Controls.Add(this.label20);
-			this.groupBox1.Location = new System.Drawing.Point(242, 12);
+			this.groupBox1.Location = new System.Drawing.Point(493, 10);
 			this.groupBox1.Name = "groupBox1";
 			this.groupBox1.Size = new System.Drawing.Size(188, 330);
 			this.groupBox1.TabIndex = 1;
@@ -151,12 +151,12 @@
 			// 
 			this.cbRank.FormattingEnabled = true;
 			this.cbRank.Items.AddRange(new object[] {
-            "None",
-            "Baron",
-            "Earl",
-            "Duke",
-            "King",
-            "Emperor"});
+						"None",
+						"Baron",
+						"Earl",
+						"Duke",
+						"King",
+						"Emperor"});
 			this.cbRank.Location = new System.Drawing.Point(45, 19);
 			this.cbRank.Name = "cbRank";
 			this.cbRank.Size = new System.Drawing.Size(137, 21);
@@ -594,30 +594,27 @@
 			// 
 			// groupBox2
 			// 
-			this.groupBox2.Controls.Add(this.cbModEnable);
+			this.groupBox2.Controls.Add(this.label21);
 			this.groupBox2.Controls.Add(this.btnRandom);
 			this.groupBox2.Controls.Add(this.btnImport);
 			this.groupBox2.Controls.Add(this.cbPortraitTypes);
-			this.groupBox2.Controls.Add(this.cbMods);
 			this.groupBox2.Controls.Add(this.tabControl1);
-			this.groupBox2.Location = new System.Drawing.Point(12, 12);
+			this.groupBox2.Location = new System.Drawing.Point(263, 10);
 			this.groupBox2.Name = "groupBox2";
 			this.groupBox2.Size = new System.Drawing.Size(224, 330);
 			this.groupBox2.TabIndex = 1;
 			this.groupBox2.TabStop = false;
 			this.groupBox2.Text = "Config";
 			// 
-			// cbModEnable
+			// label21
 			// 
-			this.cbModEnable.AutoSize = true;
-			this.cbModEnable.Enabled = false;
-			this.cbModEnable.Location = new System.Drawing.Point(6, 21);
-			this.cbModEnable.Name = "cbModEnable";
-			this.cbModEnable.Size = new System.Drawing.Size(52, 17);
-			this.cbModEnable.TabIndex = 12;
-			this.cbModEnable.Text = "DLCs";
-			this.cbModEnable.UseVisualStyleBackColor = true;
-			this.cbModEnable.CheckedChanged += new System.EventHandler(this.cbModEnable_CheckedChanged);
+			this.label21.AutoSize = true;
+			this.label21.Location = new System.Drawing.Point(8, 22);
+			this.label21.Name = "label21";
+			this.label21.Size = new System.Drawing.Size(66, 13);
+			this.label21.TabIndex = 24;
+			this.label21.Text = "Portrait type:";
+			this.label21.Click += new System.EventHandler(this.label21_Click);
 			// 
 			// btnRandom
 			// 
@@ -642,27 +639,59 @@
 			// cbPortraitTypes
 			// 
 			this.cbPortraitTypes.FormattingEnabled = true;
-			this.cbPortraitTypes.Location = new System.Drawing.Point(7, 46);
+			this.cbPortraitTypes.Location = new System.Drawing.Point(6, 46);
 			this.cbPortraitTypes.Name = "cbPortraitTypes";
 			this.cbPortraitTypes.Size = new System.Drawing.Size(211, 21);
 			this.cbPortraitTypes.TabIndex = 2;
 			this.cbPortraitTypes.SelectedIndexChanged += new System.EventHandler(this.cbPortraitTypes_SelectedIndexChanged);
 			// 
-			// cbMods
+			// tabContent
 			// 
-			this.cbMods.Enabled = false;
-			this.cbMods.FormattingEnabled = true;
-			this.cbMods.Location = new System.Drawing.Point(64, 19);
-			this.cbMods.Name = "cbMods";
-			this.cbMods.Size = new System.Drawing.Size(154, 21);
-			this.cbMods.TabIndex = 0;
-			this.cbMods.SelectedIndexChanged += new System.EventHandler(this.cbMods_SelectedIndexChanged);
+			this.tabContent.Controls.Add(this.tabDLCs);
+			this.tabContent.Controls.Add(this.tabMods);
+			this.tabContent.Location = new System.Drawing.Point(12, 12);
+			this.tabContent.Name = "tabContent";
+			this.tabContent.SelectedIndex = 0;
+			this.tabContent.Size = new System.Drawing.Size(245, 328);
+			this.tabContent.TabIndex = 4;
+			// 
+			// tabDLCs
+			// 
+			this.tabDLCs.AutoScroll = true;
+			this.tabDLCs.Controls.Add(this.panelDLCs);
+			this.tabDLCs.Location = new System.Drawing.Point(4, 22);
+			this.tabDLCs.Name = "tabDLCs";
+			this.tabDLCs.Padding = new System.Windows.Forms.Padding(3);
+			this.tabDLCs.Size = new System.Drawing.Size(237, 302);
+			this.tabDLCs.TabIndex = 1;
+			this.tabDLCs.Text = "DLCs";
+			this.tabDLCs.UseVisualStyleBackColor = true;
+			// 
+			// panelDLCs
+			// 
+			this.panelDLCs.AutoScroll = true;
+			this.panelDLCs.Location = new System.Drawing.Point(6, 6);
+			this.panelDLCs.Name = "panelDLCs";
+			this.panelDLCs.Size = new System.Drawing.Size(227, 290);
+			this.panelDLCs.TabIndex = 0;
+			// 
+			// tabMods
+			// 
+			this.tabMods.AutoScroll = true;
+			this.tabMods.Location = new System.Drawing.Point(4, 22);
+			this.tabMods.Name = "tabMods";
+			this.tabMods.Size = new System.Drawing.Size(237, 302);
+			this.tabMods.TabIndex = 2;
+			this.tabMods.Text = "Mods";
+			this.tabMods.UseVisualStyleBackColor = true;
+			this.tabMods.Click += new System.EventHandler(this.tabPage6_Click);
 			// 
 			// Form1
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-			this.ClientSize = new System.Drawing.Size(441, 355);
+			this.ClientSize = new System.Drawing.Size(690, 352);
+			this.Controls.Add(this.tabContent);
 			this.Controls.Add(this.groupBox2);
 			this.Controls.Add(this.groupBox1);
 			this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
@@ -683,67 +712,72 @@
 			this.tabPage3.PerformLayout();
 			this.groupBox2.ResumeLayout(false);
 			this.groupBox2.PerformLayout();
+			this.tabContent.ResumeLayout(false);
+			this.tabDLCs.ResumeLayout(false);
 			this.ResumeLayout(false);
 
-    }
+		}
 
-    #endregion
+		#endregion
 
-    private System.Windows.Forms.GroupBox groupBox1;
-    private System.Windows.Forms.PictureBox pbPortrait;
-    private System.Windows.Forms.TabControl tabControl1;
-    private System.Windows.Forms.TabPage tabPage1;
-    private System.Windows.Forms.ComboBox cbMouth;
-    private System.Windows.Forms.Label label4;
-    private System.Windows.Forms.ComboBox cbEars;
-    private System.Windows.Forms.ComboBox cbChin;
-    private System.Windows.Forms.Label label7;
-    private System.Windows.Forms.Label label3;
-    private System.Windows.Forms.ComboBox cbEyes;
-    private System.Windows.Forms.ComboBox cbCheeks;
-    private System.Windows.Forms.Label label6;
-    private System.Windows.Forms.Label label2;
-    private System.Windows.Forms.ComboBox cbNose;
-    private System.Windows.Forms.Label label5;
-    private System.Windows.Forms.ComboBox cbNeck;
-    private System.Windows.Forms.Label label1;
-    private System.Windows.Forms.TabPage tabPage2;
-    private System.Windows.Forms.ComboBox cbClothes;
-    private System.Windows.Forms.Label label8;
-    private System.Windows.Forms.ComboBox cbHeadgear;
-    private System.Windows.Forms.Label label10;
-    private System.Windows.Forms.ComboBox cbBeard;
-    private System.Windows.Forms.Label label12;
-    private System.Windows.Forms.ComboBox cbHair;
-    private System.Windows.Forms.Label label14;
-    private System.Windows.Forms.TabPage tabPage3;
-    private System.Windows.Forms.ComboBox cbRedDots;
-    private System.Windows.Forms.Label label9;
-    private System.Windows.Forms.ComboBox cbBoils;
-    private System.Windows.Forms.Label label13;
-    private System.Windows.Forms.ComboBox cbScars;
-    private System.Windows.Forms.Label label16;
-    private System.Windows.Forms.ComboBox cbPrisoner;
-    private System.Windows.Forms.Label label17;
-    private System.Windows.Forms.ComboBox cbBackground;
-    private System.Windows.Forms.Label label18;
-    private System.Windows.Forms.TextBox tbDNA;
-    private System.Windows.Forms.ComboBox cbEyeColour;
-    private System.Windows.Forms.ComboBox cbHairColour;
-    private System.Windows.Forms.Label label15;
-    private System.Windows.Forms.Label label11;
-    private System.Windows.Forms.ComboBox cbRank;
-    private System.Windows.Forms.Label label20;
-    private System.Windows.Forms.GroupBox groupBox2;
-    private System.Windows.Forms.ComboBox cbMods;
-    private System.Windows.Forms.Button btnSave;
-    private System.Windows.Forms.Button btnCopy;
-    private System.Windows.Forms.Button btnImport;
-    private System.Windows.Forms.Button btnRandom;
-    private System.Windows.Forms.ComboBox cbPortraitTypes;
-    private System.Windows.Forms.CheckBox cbModEnable;
-    private System.Windows.Forms.ComboBox cbBlinded;
-    private System.Windows.Forms.Label label19;
-  }
+		private System.Windows.Forms.GroupBox groupBox1;
+		private System.Windows.Forms.PictureBox pbPortrait;
+		private System.Windows.Forms.TabControl tabControl1;
+		private System.Windows.Forms.TabPage tabPage1;
+		private System.Windows.Forms.ComboBox cbMouth;
+		private System.Windows.Forms.Label label4;
+		private System.Windows.Forms.ComboBox cbEars;
+		private System.Windows.Forms.ComboBox cbChin;
+		private System.Windows.Forms.Label label7;
+		private System.Windows.Forms.Label label3;
+		private System.Windows.Forms.ComboBox cbEyes;
+		private System.Windows.Forms.ComboBox cbCheeks;
+		private System.Windows.Forms.Label label6;
+		private System.Windows.Forms.Label label2;
+		private System.Windows.Forms.ComboBox cbNose;
+		private System.Windows.Forms.Label label5;
+		private System.Windows.Forms.ComboBox cbNeck;
+		private System.Windows.Forms.Label label1;
+		private System.Windows.Forms.TabPage tabPage2;
+		private System.Windows.Forms.ComboBox cbClothes;
+		private System.Windows.Forms.Label label8;
+		private System.Windows.Forms.ComboBox cbHeadgear;
+		private System.Windows.Forms.Label label10;
+		private System.Windows.Forms.ComboBox cbBeard;
+		private System.Windows.Forms.Label label12;
+		private System.Windows.Forms.ComboBox cbHair;
+		private System.Windows.Forms.Label label14;
+		private System.Windows.Forms.TabPage tabPage3;
+		private System.Windows.Forms.ComboBox cbRedDots;
+		private System.Windows.Forms.Label label9;
+		private System.Windows.Forms.ComboBox cbBoils;
+		private System.Windows.Forms.Label label13;
+		private System.Windows.Forms.ComboBox cbScars;
+		private System.Windows.Forms.Label label16;
+		private System.Windows.Forms.ComboBox cbPrisoner;
+		private System.Windows.Forms.Label label17;
+		private System.Windows.Forms.ComboBox cbBackground;
+		private System.Windows.Forms.Label label18;
+		private System.Windows.Forms.TextBox tbDNA;
+		private System.Windows.Forms.ComboBox cbEyeColour;
+		private System.Windows.Forms.ComboBox cbHairColour;
+		private System.Windows.Forms.Label label15;
+		private System.Windows.Forms.Label label11;
+		private System.Windows.Forms.ComboBox cbRank;
+		private System.Windows.Forms.Label label20;
+		private System.Windows.Forms.GroupBox groupBox2;
+		private System.Windows.Forms.Button btnSave;
+		private System.Windows.Forms.Button btnCopy;
+		private System.Windows.Forms.Button btnImport;
+		private System.Windows.Forms.Button btnRandom;
+		private System.Windows.Forms.ComboBox cbPortraitTypes;
+		private System.Windows.Forms.ComboBox cbBlinded;
+		private System.Windows.Forms.Label label19;
+		private System.Windows.Forms.TabControl tabContent;
+		private System.Windows.Forms.TabPage tabMods;
+		private System.Windows.Forms.TabPage tabDLCs;
+		private System.Windows.Forms.FlowLayoutPanel panelDLCs;
+		private System.Windows.Forms.Label label21;
+	}
 }
 

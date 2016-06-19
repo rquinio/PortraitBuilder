@@ -106,23 +106,26 @@ namespace Portrait_Builder {
 			logger.Info("Loading portraits from vanilla.");
 			LoadPortraitsFromDir(ck2Dir);
 
-			if (cbModEnable.Checked && selectedMod.HasPortraits) {
-				logger.Info("Loading portraits from mod: " + selectedMod.Name);
+			foreach (Control control in panelDLCs.Controls) {
+				CheckBox checkbox = (CheckBox)control;
+				if (checkbox.Checked && selectedMod.HasPortraits) {
+					logger.Info("Loading portraits from mod: " + selectedMod.Name);
 
-				string dir = string.Empty;
-				switch (selectedMod.ModPathType) {
-					case ModReader.Folder.CKDir:
-						dir = ck2Dir;
-						break;
-					case ModReader.Folder.MyDocs:
-						dir = myDocsDir;
-						break;
-					case ModReader.Folder.DLC:
-						dir = dlcDir;
-						break;
+					string dir = string.Empty;
+					switch (selectedMod.ModPathType) {
+						case ModReader.Folder.CKDir:
+							dir = ck2Dir;
+							break;
+						case ModReader.Folder.MyDocs:
+							dir = myDocsDir;
+							break;
+						case ModReader.Folder.DLC:
+							dir = dlcDir;
+							break;
+					}
+
+					LoadPortraitsFromDir(dir + @"\" + selectedMod.Path);
 				}
-
-				LoadPortraitsFromDir(dir + @"\" + selectedMod.Path);
 			}
 
 			cbPortraitTypes.Items.Clear();
@@ -229,11 +232,10 @@ namespace Portrait_Builder {
 
 			logger.Info(" --Usable mods found:");
 			if (usableMods.Count > 0) {
-				cbModEnable.Enabled = true;
 				foreach (Mod mod in usableMods) {
 					logger.Info("   --" + mod.Name);
-					cbMods.Items.Add(mod.Name);
-					cbMods.SelectedIndex = 0;
+					//cbMods.Items.Add(mod.Name);
+					//cbMods.SelectedIndex = 0;
 				}
 			}
 		}
@@ -258,6 +260,16 @@ namespace Portrait_Builder {
 			mod.Path = string.Empty;
 			mod.HasPortraits = true;
 			usableMods.Add(mod);
+
+			// Add DLC checkbox
+			CheckBox checkbox = new CheckBox();
+			checkbox.Text = "Portrait DLCs";
+			checkbox.Width = 200; // Force overflow
+			checkbox.CheckedChanged += new System.EventHandler(this.onCheck);
+			panelDLCs.Controls.Add(checkbox);
+
+			// TODO cleanup
+			selectedMod = usableMods[0];
 		}
 
 		private void ReadGameDir() {
@@ -288,12 +300,14 @@ namespace Portrait_Builder {
 			logger.Debug("   --Rendering portrait.");
 			try {
 				PortraitType portraitType = portraitReader.PortraitTypes[cbPortraitTypes.SelectedItem.ToString()];
-				if (cbModEnable.Checked) {
+				if (selectedMod != null) {
 					portrait = portraitReader.DrawPortrait(ck2Dir, selectedMod, portraitType, dna, properties, myDocsDir, dlcDir);
-				} else {
+				}
+				else {
 					portrait = portraitReader.DrawPortrait(ck2Dir, portraitType, dna, properties, myDocsDir, dlcDir);
 				}
-			} catch (Exception e) {
+			}
+			catch (Exception e) {
 				logger.Error("Error encountered rendering portrait:" + e.ToString());
 				return;
 			}
@@ -385,7 +399,8 @@ namespace Portrait_Builder {
 			if (cbBlinded.Items.Count > 0) {
 				cbBlinded.SelectedIndex = 0;
 				cbBlinded.Enabled = true;
-			} else {
+			}
+			else {
 				cbBlinded.Enabled = false;
 				cbBlinded.SelectedIndex = -1;
 			}
@@ -424,7 +439,8 @@ namespace Portrait_Builder {
 				Sprite sprite = portraitReader.Sprites[spriteName];
 				logger.Debug(" --" + flagName + " item count: " + sprite.FrameCount);
 				FillComboBox(cb, sprite.FrameCount);
-			} else {
+			}
+			else {
 				logger.Warn(" --No " + flagName + " flag found, setting UI to 26.");
 				FillComboBox(cb, 26);
 			}
@@ -547,28 +563,7 @@ namespace Portrait_Builder {
 			UpdatePortrait();
 		}
 
-		private void cbMods_SelectedIndexChanged(object sender, EventArgs e) {
-			selectedMod = usableMods[cbMods.SelectedIndex];
-
-			if (started) {
-				started = false;
-				LoadPortraits();
-
-				if (hadError)
-					return;
-
-				SetupSharedUI();
-				SetupUI();
-				RandomizeUI(false);
-				started = true;
-
-				UpdatePortrait();
-			}
-		}
-
-		private void cbModEnable_CheckedChanged(object sender, EventArgs e) {
-			cbMods.Enabled = cbModEnable.Checked;
-
+		private void onCheck(object sender, EventArgs e) {
 			started = false;
 			LoadPortraits();
 
@@ -615,7 +610,15 @@ namespace Portrait_Builder {
 		}
 
 		private void Form1_FormClosed(object sender, FormClosedEventArgs e) {
-			
+
+		}
+
+		private void tabPage6_Click(object sender, EventArgs e) {
+
+		}
+
+		private void label21_Click(object sender, EventArgs e) {
+
 		}
 	}
 }
