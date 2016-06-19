@@ -82,6 +82,7 @@
 			this.tabDLCs = new System.Windows.Forms.TabPage();
 			this.panelDLCs = new System.Windows.Forms.FlowLayoutPanel();
 			this.tabMods = new System.Windows.Forms.TabPage();
+			this.panelMods = new System.Windows.Forms.FlowLayoutPanel();
 			this.groupBox1.SuspendLayout();
 			((System.ComponentModel.ISupportInitialize)(this.pbPortrait)).BeginInit();
 			this.tabControl1.SuspendLayout();
@@ -91,6 +92,7 @@
 			this.groupBox2.SuspendLayout();
 			this.tabContent.SuspendLayout();
 			this.tabDLCs.SuspendLayout();
+			this.tabMods.SuspendLayout();
 			this.SuspendLayout();
 			// 
 			// groupBox1
@@ -678,6 +680,7 @@
 			// tabMods
 			// 
 			this.tabMods.AutoScroll = true;
+			this.tabMods.Controls.Add(this.panelMods);
 			this.tabMods.Location = new System.Drawing.Point(4, 22);
 			this.tabMods.Name = "tabMods";
 			this.tabMods.Size = new System.Drawing.Size(237, 302);
@@ -685,6 +688,14 @@
 			this.tabMods.Text = "Mods";
 			this.tabMods.UseVisualStyleBackColor = true;
 			this.tabMods.Click += new System.EventHandler(this.tabPage6_Click);
+			// 
+			// panelMods
+			// 
+			this.panelMods.AutoScroll = true;
+			this.panelMods.Location = new System.Drawing.Point(5, 6);
+			this.panelMods.Name = "panelMods";
+			this.panelMods.Size = new System.Drawing.Size(227, 290);
+			this.panelMods.TabIndex = 1;
 			// 
 			// Form1
 			// 
@@ -714,6 +725,7 @@
 			this.groupBox2.PerformLayout();
 			this.tabContent.ResumeLayout(false);
 			this.tabDLCs.ResumeLayout(false);
+			this.tabMods.ResumeLayout(false);
 			this.ResumeLayout(false);
 
 		}
@@ -778,6 +790,7 @@
 		private System.Windows.Forms.TabPage tabDLCs;
 		private System.Windows.Forms.FlowLayoutPanel panelDLCs;
 		private System.Windows.Forms.Label label21;
+		private System.Windows.Forms.FlowLayoutPanel panelMods;
 	}
 }
 

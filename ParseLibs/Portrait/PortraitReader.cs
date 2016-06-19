@@ -291,30 +291,13 @@ namespace Parsers.Portrait {
 		/// <summary>
 		/// Draws a character portrait.
 		/// </summary>
-		/// <param name="ckDir">Path of the Crusader Kings II directory. E.g. C:\Paradox\Crusader Kings II</param>
-		/// <param name="portraitType">PortaitType to use for drawing.</param>
-		/// <param name="dna">DNA string to use for drawing.</param>
-		/// <param name="properties">Properties string to use for drawing.</param> 
-		/// <param name="myDocsDir">Fath to the My Documents directory.</param>
-		/// <returns>Frameless portrait drawn with the given parameters.</returns>
-		public Bitmap DrawPortrait(string ckDir, PortraitType portraitType, string dna, string properties, string myDocsDir, string dlcDir) {
-			return DrawPortrait(ckDir, new Mod.Mod {
-				ModPathType = ModReader.Folder.CKDir,
-				Name = "Vanilla"
-			}, portraitType, dna, properties, myDocsDir, dlcDir);
-		}
-
-		/// <summary>
-		/// Draws a character portrait.
-		/// </summary>
-		/// <param name="ckDir">Path of the Crusader Kings II directory. E.g. C:\Paradox\Crusader Kings II</param>
-		/// <param name="selectedMod">Mod object to use when drawing.</param>
 		/// <param name="portraitType">PortaitType to use for drawing.</param>
 		/// <param name="dna">DNA string to use for drawing.</param>
 		/// <param name="properties">Properties string to use for drawing.</param>
-		/// <param name="myDocsDir">Fath to the My Documents directory.</param>
+		/// <param name="activeMods">Mods to use when drawing.</param>
+		/// <param name="user">User configuration</param>
 		/// <returns>Frameless portrait drawn with the given parameters.</returns>
-		public Bitmap DrawPortrait(string ckDir, Mod.Mod selectedMod, PortraitType portraitType, string dna, string properties, string myDocsDir, string dlcDir) {
+		public Bitmap DrawPortrait(PortraitType portraitType, string dna, string properties, List<Mod.Mod> activeMods, User user) {
 			logger.Info(string.Format("Drawing Portrait - DNA: {0}, Properties: {1}", dna, properties));
 
 			if (dna.Length < 9 || properties.Length < 9) {
@@ -323,13 +306,6 @@ namespace Parsers.Portrait {
 
 			Bitmap portrait = new Bitmap(176, 176);
 			Graphics g = Graphics.FromImage(portrait);
-
-			string dlcOrModDir = ckDir;
-			if (selectedMod.ModPathType == ModReader.Folder.DLC) {
-				dlcOrModDir = dlcDir;
-			} else if (selectedMod.ModPathType == ModReader.Folder.MyDocs) {
-				dlcOrModDir = myDocsDir;
-			}
 
 			foreach (Layer layer in portraitType.Layers) {
 				logger.Debug("Drawing Layer : " + layer);
@@ -340,7 +316,7 @@ namespace Parsers.Portrait {
 
 						//Check if loaded; if not, then load
 						if (!sprite.IsLoaded) {
-							LoadSprite(ckDir, selectedMod, dlcOrModDir, sprite);
+							LoadSprite(sprite, activeMods, user);
 						}
 
 						//Get DNA/Properties letter, then the index of the tile to draw
@@ -361,18 +337,31 @@ namespace Parsers.Portrait {
 			return portrait;
 		}
 
-		private void LoadSprite(string ckDir, Mod.Mod selectedMod, string dlcOrModDir, Sprite sprite) {
+		private void LoadSprite(Sprite sprite, List<Mod.Mod> activeMods, User user) {
 			string filePath = sprite.TextureFilePath;
-			string modPath = dlcOrModDir + "/" + selectedMod.Path;
 
 			string containerPath = null;
-			if (File.Exists(modPath + "/" + filePath)) {
-				containerPath = modPath;
-			} else if (File.Exists(ckDir + "/" + filePath)) {
-				containerPath = ckDir;
-			} else {
-				throw new FileNotFoundException(string.Format("Unable to find file: {0} under mod {1}, nor vanilla {2}", filePath, modPath, ckDir));
+			foreach (Mod.Mod mod in activeMods) {
+				string modPath = null;
+				if (mod.ModPathType == ModReader.Folder.DLC) {
+					modPath = user.DlcDir + "/" + mod.Path;
+				} else {
+					modPath = user.MyDocsDir + "/" + mod.Path;
+				}
+				if (File.Exists(modPath + "/" + filePath)) {
+					containerPath = modPath;
+					break;
+				}
 			}
+
+			if (containerPath == null) {
+				if (File.Exists(user.GameDir + "/" + filePath)) {
+					containerPath = user.GameDir;
+				} else {
+					throw new FileNotFoundException(string.Format("Unable to find file: {0} under mods {1}, nor vanilla {2}", filePath, activeMods, user.GameDir));
+				}
+			}
+
 			logger.Debug("Loading sprite from: " + containerPath);
 			sprite.Load(containerPath);
 		}
