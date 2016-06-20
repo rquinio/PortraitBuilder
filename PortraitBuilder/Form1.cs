@@ -77,8 +77,9 @@ namespace Portrait_Builder {
 
 			user.GameDir = ReadGameDir();
 			user.MyDocsDir = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments) + @"\Paradox Interactive\Crusader Kings II\";
-			user.DlcDir = Environment.CurrentDirectory + @"\dlc";
-			
+			user.DlcDir = Environment.CurrentDirectory + @"\dlc\";
+			// TODO Cleanup DLC Dir
+
 			logger.Info("Configuration: " + user);
 			logger.Info("----------------------------");
 
@@ -131,7 +132,7 @@ namespace Portrait_Builder {
 			LoadPortraitsFromDir(user.GameDir);
 
 
-			foreach (Mod mod in activeMods) {
+			foreach (AdditionalContent mod in activeMods) {
 				if (mod.HasPortraits) {
 					logger.Info("Loading portraits from mod: " + mod.Name);
 					LoadPortraitsFromDir(mod.AbsolutePath);
@@ -169,16 +170,23 @@ namespace Portrait_Builder {
 
 		private void LoadPortraitsFromDir(string dir) {
 			List<string> fileNames = new List<string>();
-			fileNames.AddRange(Directory.GetFiles(dir + @"\interface\", "*.gfx"));
-			fileNames.AddRange(Directory.GetFiles(dir + @"\interface\portraits\", "*.gfx"));
+
+			if(Directory.Exists(dir + @"\interface\")) {
+				fileNames.AddRange(Directory.GetFiles(dir + @"\interface\", "*.gfx"));
+			}
+			if (Directory.Exists(dir + @"\interface\portraits\")){
+				fileNames.AddRange(Directory.GetFiles(dir + @"\interface\portraits\", "*.gfx"));
+			}
 
 			foreach (string fileName in fileNames) {
 				portraitReader.Parse(fileName);
 			}
 
-			string[] offsetFileNames = Directory.GetFiles(dir + @"\interface\portrait_offsets\", "*.txt");
-			foreach (string offsetFileName in offsetFileNames) {
-				portraitOffsetReader.Parse(offsetFileName);
+			if(Directory.Exists(dir + @"\interface\portrait_offsets\")) {
+				string[] offsetFileNames = Directory.GetFiles(dir + @"\interface\portrait_offsets\", "*.txt");
+				foreach (string offsetFileName in offsetFileNames) {
+					portraitOffsetReader.Parse(offsetFileName);
+				}
 			}
 		}
 
@@ -238,28 +246,26 @@ namespace Portrait_Builder {
 		}
 
 		private void LoadDLCs() {
-			logger.Info("Loading DLCs from " + user.GameDir + @"\dlc\");
+			logger.Info("Loading DLCs from " + user.GameDir + @"dlc\");
 			List<DLC> dlcs = dlcReader.ParseFolder(user.GameDir + @"\dlc");
 
 			FastZip fastZip = new FastZip();
 			foreach (DLC dlc in dlcs) {
-				logger.Info("Extracting " + dlc.Name);
-				fastZip.ExtractZip(user.GameDir + dlc.Archive, user.DlcDir, null);
+				string dlcCode = dlc.DLCFile.Replace(".dlc", "");
+				string newDlcAbsolutePath = user.DlcDir + dlcCode;
+				logger.Info(string.Format("Extracting {0} to {1}", dlc.Name, newDlcAbsolutePath));
+				fastZip.ExtractZip(dlc.AbsolutePath, newDlcAbsolutePath, null);
+				dlc.AbsolutePath = newDlcAbsolutePath;
+				dlc.HasPortraits = true;
+
+				if (Directory.Exists(user.DlcDir + @"gfx\characters\")) {
+					dlc.HasPortraits = true;
+				}
+				registerMod(panelDLCs, dlc);
 			}
-
-			if (!Directory.Exists(user.DlcDir + @"\gfx\characters\"))
-				return;
- 
-			Mod mod = new Mod();
-			mod.AbsolutePath = user.DlcDir;
-			mod.Name = "DLC Portraits";
-			mod.Path = string.Empty;
-			mod.HasPortraits = true;
-
-			registerMod(panelDLCs, mod);
 		}
 
-		private void registerMod(Control container, Mod mod) {
+		private void registerMod(Control container, AdditionalContent mod) {
 			CheckBox checkbox = new CheckBox();
 			checkbox.Text = mod.Name;
 			checkbox.Width = 200; // Force overflow

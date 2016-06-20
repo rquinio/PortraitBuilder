@@ -7,7 +7,6 @@ using System.Linq;
 using System.Text;
 using Hime.Redist.Parsers;
 using log4net;
-using Parsers.Mod;
 
 namespace Parsers.Portrait {
 	public class PortraitReader {
@@ -341,7 +340,7 @@ namespace Parsers.Portrait {
 			string filePath = sprite.TextureFilePath;
 
 			string containerPath = null;
-			foreach (Mod.Mod mod in activeMods) {
+			foreach (AdditionalContent mod in activeMods) {
 				string modPath = mod.AbsolutePath;
 				if (File.Exists(modPath + "/" + filePath)) {
 					containerPath = modPath;

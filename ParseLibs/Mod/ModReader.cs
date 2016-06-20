@@ -73,7 +73,7 @@ namespace Parsers.Mod {
 			foreach (FileInfo modFile in modFiles) {
 				Mod mod = Parse(modFile.FullName);
 				if (mod != null) {
-					mod.AbsolutePath = folder + @"\" + mod.Path;
+					mod.AbsolutePath = folder + @"\" + mod.Path.Replace("mod/","");
 					mods.Add(mod);
 				}
 			}
