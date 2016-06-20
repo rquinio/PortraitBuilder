@@ -34,14 +34,31 @@ namespace Portrait_Builder {
 		/// <summary>
 		/// DLCs or Mods that are checked
 		/// </summary>
-		private List<Mod> activeMods = new List<Mod>();
+		private List<AdditionalContent> activeMods = new List<AdditionalContent>();
 
 		/// <summary>
 		/// List of all available DLCs and Mods, indexed by their corresponding checkbox
 		/// </summary>
-		private Dictionary<CheckBox, Mod> usableMods = new Dictionary<CheckBox, Mod>();
+		private Dictionary<CheckBox, AdditionalContent> usableMods = new Dictionary<CheckBox, AdditionalContent>();
 
+		/// <summary>
+		/// Stateless mod scanner
+		/// </summary>
+		private ModReader modReader = new ModReader();
+
+		/// <summary>
+		/// Stateless dlc scanner
+		/// </summary>
+		private DLCReader dlcReader = new DLCReader();
+
+		/// <summary>
+		/// TODO make it stateless
+		/// </summary>
 		private PortraitReader portraitReader = new PortraitReader();
+
+		/// <summary>
+		/// TODO make it stateless
+		/// </summary>
 		private PortraitOffsetReader portraitOffsetReader = new PortraitOffsetReader();
 
 		private string dna;
@@ -117,21 +134,7 @@ namespace Portrait_Builder {
 			foreach (Mod mod in activeMods) {
 				if (mod.HasPortraits) {
 					logger.Info("Loading portraits from mod: " + mod.Name);
-
-					string dir = string.Empty;
-					switch (mod.ModPathType) {
-						case ModReader.Folder.CKDir:
-							dir = user.GameDir;
-							break;
-						case ModReader.Folder.MyDocs:
-							dir = user.MyDocsDir;
-							break;
-						case ModReader.Folder.DLC:
-							dir = user.DlcDir;
-							break;
-					}
-
-					LoadPortraitsFromDir(dir + @"\" + mod.Path);
+					LoadPortraitsFromDir(mod.AbsolutePath);
 				}
 			}
 
@@ -211,26 +214,22 @@ namespace Portrait_Builder {
 		}
 
 		private void LoadMods() {
-			ModReader modReader = new ModReader();
-			logger.Info("Loading mods from " + user.GameDir + @"\mod\");
-			modReader.ParseFolder(user.GameDir + @"\mod\", ModReader.Folder.CKDir);
 			logger.Info("Loading mods from " + user.MyDocsDir + @"\mod\");
-			modReader.ParseFolder(user.MyDocsDir + @"\mod\", ModReader.Folder.MyDocs);
+			List<Mod> mods = modReader.ParseFolder(user.MyDocsDir + @"\mod\");
 
-			foreach (Mod mod in modReader.Mods) {
-				string dir = mod.ModPathType == ModReader.Folder.CKDir ? user.GameDir : user.MyDocsDir;
-
-				if (!Directory.Exists(dir + mod.Path))
+			foreach (Mod mod in mods) {
+				if (!Directory.Exists(user.MyDocsDir + mod.Path))
 					continue;
 
-				if (File.Exists(dir + mod.Path + @"\interface\portraits.gfx")) {
+				// TODO Portraits can be elsewhere
+				if (File.Exists(user.MyDocsDir + mod.Path + @"\interface\portraits.gfx")) {
 					mod.HasPortraits = true;
 					registerMod(panelMods, mod);
 					continue;
 				}
 
-				if (Directory.Exists(dir + mod.Path + @"\gfx\characters\")) {
-					if (Directory.GetDirectories(dir + mod.Path + @"\gfx\characters\").Length > 0) {
+				if (Directory.Exists(user.MyDocsDir + mod.Path + @"\gfx\characters\")) {
+					if (Directory.GetDirectories(user.MyDocsDir + mod.Path + @"\gfx\characters\").Length > 0) {
 						mod.HasPortraits = false;
 						registerMod(panelMods, mod);
 					}
@@ -239,21 +238,20 @@ namespace Portrait_Builder {
 		}
 
 		private void LoadDLCs() {
-			DLCReader dlcReader = new DLCReader();
 			logger.Info("Loading DLCs from " + user.GameDir + @"\dlc\");
-			dlcReader.ParseFolder(user.GameDir + @"\dlc");
+			List<DLC> dlcs = dlcReader.ParseFolder(user.GameDir + @"\dlc");
 
 			FastZip fastZip = new FastZip();
-			foreach (DLC dlc in dlcReader.DLCs) {
+			foreach (DLC dlc in dlcs) {
 				logger.Info("Extracting " + dlc.Name);
 				fastZip.ExtractZip(user.GameDir + dlc.Archive, user.DlcDir, null);
 			}
 
 			if (!Directory.Exists(user.DlcDir + @"\gfx\characters\"))
 				return;
-
+ 
 			Mod mod = new Mod();
-			mod.ModPathType = ModReader.Folder.DLC;
+			mod.AbsolutePath = user.DlcDir;
 			mod.Name = "DLC Portraits";
 			mod.Path = string.Empty;
 			mod.HasPortraits = true;
@@ -572,7 +570,7 @@ namespace Portrait_Builder {
 		}
 
 		private void updateActiveMods() {
-			activeMods = new List<Mod>();
+			activeMods = new List<AdditionalContent>();
 			foreach (Control control in panelDLCs.Controls) {
 				CheckBox checkbox = (CheckBox)control;
 				if (checkbox.Checked) {
@@ -613,14 +611,6 @@ namespace Portrait_Builder {
 		}
 
 		private void Form1_FormClosed(object sender, FormClosedEventArgs e) {
-
-		}
-
-		private void tabPage6_Click(object sender, EventArgs e) {
-
-		}
-
-		private void label21_Click(object sender, EventArgs e) {
 
 		}
 	}

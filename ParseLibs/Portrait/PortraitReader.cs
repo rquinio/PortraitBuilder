@@ -297,7 +297,7 @@ namespace Parsers.Portrait {
 		/// <param name="activeMods">Mods to use when drawing.</param>
 		/// <param name="user">User configuration</param>
 		/// <returns>Frameless portrait drawn with the given parameters.</returns>
-		public Bitmap DrawPortrait(PortraitType portraitType, string dna, string properties, List<Mod.Mod> activeMods, User user) {
+		public Bitmap DrawPortrait(PortraitType portraitType, string dna, string properties, List<AdditionalContent> activeMods, User user) {
 			logger.Info(string.Format("Drawing Portrait - DNA: {0}, Properties: {1}", dna, properties));
 
 			if (dna.Length < 9 || properties.Length < 9) {
@@ -337,17 +337,12 @@ namespace Parsers.Portrait {
 			return portrait;
 		}
 
-		private void LoadSprite(Sprite sprite, List<Mod.Mod> activeMods, User user) {
+		private void LoadSprite(Sprite sprite, List<AdditionalContent> activeMods, User user) {
 			string filePath = sprite.TextureFilePath;
 
 			string containerPath = null;
 			foreach (Mod.Mod mod in activeMods) {
-				string modPath = null;
-				if (mod.ModPathType == ModReader.Folder.DLC) {
-					modPath = user.DlcDir + "/" + mod.Path;
-				} else {
-					modPath = user.MyDocsDir + "/" + mod.Path;
-				}
+				string modPath = mod.AbsolutePath;
 				if (File.Exists(modPath + "/" + filePath)) {
 					containerPath = modPath;
 					break;

@@ -55,6 +55,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="AdditionalContent.cs" />
     <Compile Include="User.cs" />
     <Compile Include="DLC\DLC.cs" />
     <Compile Include="DLC\DLCReader.cs" />

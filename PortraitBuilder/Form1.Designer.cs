@@ -32,6 +32,34 @@
 			this.cbRank = new System.Windows.Forms.ComboBox();
 			this.label20 = new System.Windows.Forms.Label();
 			this.tabControl1 = new System.Windows.Forms.TabControl();
+			this.tabPage2 = new System.Windows.Forms.TabPage();
+			this.label22 = new System.Windows.Forms.Label();
+			this.cbEyeColour = new System.Windows.Forms.ComboBox();
+			this.cbHairColour = new System.Windows.Forms.ComboBox();
+			this.label15 = new System.Windows.Forms.Label();
+			this.label11 = new System.Windows.Forms.Label();
+			this.cbClothes = new System.Windows.Forms.ComboBox();
+			this.label8 = new System.Windows.Forms.Label();
+			this.cbHeadgear = new System.Windows.Forms.ComboBox();
+			this.label10 = new System.Windows.Forms.Label();
+			this.cbBeard = new System.Windows.Forms.ComboBox();
+			this.label12 = new System.Windows.Forms.Label();
+			this.cbHair = new System.Windows.Forms.ComboBox();
+			this.label14 = new System.Windows.Forms.Label();
+			this.tabPage3 = new System.Windows.Forms.TabPage();
+			this.label23 = new System.Windows.Forms.Label();
+			this.cbRedDots = new System.Windows.Forms.ComboBox();
+			this.label9 = new System.Windows.Forms.Label();
+			this.cbBoils = new System.Windows.Forms.ComboBox();
+			this.label13 = new System.Windows.Forms.Label();
+			this.cbScars = new System.Windows.Forms.ComboBox();
+			this.label16 = new System.Windows.Forms.Label();
+			this.cbBlinded = new System.Windows.Forms.ComboBox();
+			this.label19 = new System.Windows.Forms.Label();
+			this.cbPrisoner = new System.Windows.Forms.ComboBox();
+			this.label17 = new System.Windows.Forms.Label();
+			this.cbBackground = new System.Windows.Forms.ComboBox();
+			this.label18 = new System.Windows.Forms.Label();
 			this.tabPage1 = new System.Windows.Forms.TabPage();
 			this.cbMouth = new System.Windows.Forms.ComboBox();
 			this.label4 = new System.Windows.Forms.Label();
@@ -47,32 +75,6 @@
 			this.label5 = new System.Windows.Forms.Label();
 			this.cbNeck = new System.Windows.Forms.ComboBox();
 			this.label1 = new System.Windows.Forms.Label();
-			this.tabPage2 = new System.Windows.Forms.TabPage();
-			this.cbEyeColour = new System.Windows.Forms.ComboBox();
-			this.cbHairColour = new System.Windows.Forms.ComboBox();
-			this.label15 = new System.Windows.Forms.Label();
-			this.label11 = new System.Windows.Forms.Label();
-			this.cbClothes = new System.Windows.Forms.ComboBox();
-			this.label8 = new System.Windows.Forms.Label();
-			this.cbHeadgear = new System.Windows.Forms.ComboBox();
-			this.label10 = new System.Windows.Forms.Label();
-			this.cbBeard = new System.Windows.Forms.ComboBox();
-			this.label12 = new System.Windows.Forms.Label();
-			this.cbHair = new System.Windows.Forms.ComboBox();
-			this.label14 = new System.Windows.Forms.Label();
-			this.tabPage3 = new System.Windows.Forms.TabPage();
-			this.cbRedDots = new System.Windows.Forms.ComboBox();
-			this.label9 = new System.Windows.Forms.Label();
-			this.cbBoils = new System.Windows.Forms.ComboBox();
-			this.label13 = new System.Windows.Forms.Label();
-			this.cbScars = new System.Windows.Forms.ComboBox();
-			this.label16 = new System.Windows.Forms.Label();
-			this.cbBlinded = new System.Windows.Forms.ComboBox();
-			this.label19 = new System.Windows.Forms.Label();
-			this.cbPrisoner = new System.Windows.Forms.ComboBox();
-			this.label17 = new System.Windows.Forms.Label();
-			this.cbBackground = new System.Windows.Forms.ComboBox();
-			this.label18 = new System.Windows.Forms.Label();
 			this.groupBox2 = new System.Windows.Forms.GroupBox();
 			this.label21 = new System.Windows.Forms.Label();
 			this.btnRandom = new System.Windows.Forms.Button();
@@ -86,9 +88,9 @@
 			this.groupBox1.SuspendLayout();
 			((System.ComponentModel.ISupportInitialize)(this.pbPortrait)).BeginInit();
 			this.tabControl1.SuspendLayout();
-			this.tabPage1.SuspendLayout();
 			this.tabPage2.SuspendLayout();
 			this.tabPage3.SuspendLayout();
+			this.tabPage1.SuspendLayout();
 			this.groupBox2.SuspendLayout();
 			this.tabContent.SuspendLayout();
 			this.tabDLCs.SuspendLayout();
@@ -153,12 +155,12 @@
 			// 
 			this.cbRank.FormattingEnabled = true;
 			this.cbRank.Items.AddRange(new object[] {
-						"None",
-						"Baron",
-						"Earl",
-						"Duke",
-						"King",
-						"Emperor"});
+            "None",
+            "Baron",
+            "Count",
+            "Duke",
+            "King",
+            "Emperor"});
 			this.cbRank.Location = new System.Drawing.Point(45, 19);
 			this.cbRank.Name = "cbRank";
 			this.cbRank.Size = new System.Drawing.Size(137, 21);
@@ -184,6 +186,285 @@
 			this.tabControl1.SelectedIndex = 0;
 			this.tabControl1.Size = new System.Drawing.Size(211, 221);
 			this.tabControl1.TabIndex = 3;
+			// 
+			// tabPage2
+			// 
+			this.tabPage2.Controls.Add(this.label22);
+			this.tabPage2.Controls.Add(this.cbEyeColour);
+			this.tabPage2.Controls.Add(this.cbHairColour);
+			this.tabPage2.Controls.Add(this.label15);
+			this.tabPage2.Controls.Add(this.label11);
+			this.tabPage2.Controls.Add(this.cbClothes);
+			this.tabPage2.Controls.Add(this.label8);
+			this.tabPage2.Controls.Add(this.cbHeadgear);
+			this.tabPage2.Controls.Add(this.label10);
+			this.tabPage2.Controls.Add(this.cbBeard);
+			this.tabPage2.Controls.Add(this.label12);
+			this.tabPage2.Controls.Add(this.cbHair);
+			this.tabPage2.Controls.Add(this.label14);
+			this.tabPage2.Location = new System.Drawing.Point(4, 22);
+			this.tabPage2.Name = "tabPage2";
+			this.tabPage2.Padding = new System.Windows.Forms.Padding(3);
+			this.tabPage2.Size = new System.Drawing.Size(203, 195);
+			this.tabPage2.TabIndex = 1;
+			this.tabPage2.Text = "Properties 1";
+			this.tabPage2.UseVisualStyleBackColor = true;
+			// 
+			// label22
+			// 
+			this.label22.AutoSize = true;
+			this.label22.Location = new System.Drawing.Point(5, 176);
+			this.label22.Name = "label22";
+			this.label22.Size = new System.Drawing.Size(173, 13);
+			this.label22.TabIndex = 17;
+			this.label22.Text = "* overriden by portrait_properties.txt";
+			// 
+			// cbEyeColour
+			// 
+			this.cbEyeColour.FormattingEnabled = true;
+			this.cbEyeColour.Location = new System.Drawing.Point(76, 141);
+			this.cbEyeColour.Name = "cbEyeColour";
+			this.cbEyeColour.Size = new System.Drawing.Size(121, 21);
+			this.cbEyeColour.TabIndex = 9;
+			this.cbEyeColour.SelectedIndexChanged += new System.EventHandler(this.cb_SelectedIndexChanged);
+			// 
+			// cbHairColour
+			// 
+			this.cbHairColour.FormattingEnabled = true;
+			this.cbHairColour.Location = new System.Drawing.Point(76, 114);
+			this.cbHairColour.Name = "cbHairColour";
+			this.cbHairColour.Size = new System.Drawing.Size(121, 21);
+			this.cbHairColour.TabIndex = 8;
+			this.cbHairColour.SelectedIndexChanged += new System.EventHandler(this.cb_SelectedIndexChanged);
+			// 
+			// label15
+			// 
+			this.label15.AutoSize = true;
+			this.label15.Location = new System.Drawing.Point(9, 144);
+			this.label15.Name = "label15";
+			this.label15.Size = new System.Drawing.Size(61, 13);
+			this.label15.TabIndex = 15;
+			this.label15.Text = "Eye Colour:";
+			// 
+			// label11
+			// 
+			this.label11.AutoSize = true;
+			this.label11.Location = new System.Drawing.Point(8, 117);
+			this.label11.Name = "label11";
+			this.label11.Size = new System.Drawing.Size(62, 13);
+			this.label11.TabIndex = 16;
+			this.label11.Text = "Hair Colour:";
+			// 
+			// cbClothes
+			// 
+			this.cbClothes.FormattingEnabled = true;
+			this.cbClothes.Location = new System.Drawing.Point(76, 87);
+			this.cbClothes.Name = "cbClothes";
+			this.cbClothes.Size = new System.Drawing.Size(121, 21);
+			this.cbClothes.TabIndex = 7;
+			this.cbClothes.SelectedIndexChanged += new System.EventHandler(this.cb_SelectedIndexChanged);
+			// 
+			// label8
+			// 
+			this.label8.AutoSize = true;
+			this.label8.Location = new System.Drawing.Point(25, 90);
+			this.label8.Name = "label8";
+			this.label8.Size = new System.Drawing.Size(49, 13);
+			this.label8.TabIndex = 7;
+			this.label8.Text = "Clothes*:";
+			// 
+			// cbHeadgear
+			// 
+			this.cbHeadgear.FormattingEnabled = true;
+			this.cbHeadgear.Location = new System.Drawing.Point(76, 60);
+			this.cbHeadgear.Name = "cbHeadgear";
+			this.cbHeadgear.Size = new System.Drawing.Size(121, 21);
+			this.cbHeadgear.TabIndex = 6;
+			this.cbHeadgear.SelectedIndexChanged += new System.EventHandler(this.cb_SelectedIndexChanged);
+			// 
+			// label10
+			// 
+			this.label10.AutoSize = true;
+			this.label10.Location = new System.Drawing.Point(13, 63);
+			this.label10.Name = "label10";
+			this.label10.Size = new System.Drawing.Size(61, 13);
+			this.label10.TabIndex = 3;
+			this.label10.Text = "Headgear*:";
+			// 
+			// cbBeard
+			// 
+			this.cbBeard.FormattingEnabled = true;
+			this.cbBeard.Location = new System.Drawing.Point(76, 33);
+			this.cbBeard.Name = "cbBeard";
+			this.cbBeard.Size = new System.Drawing.Size(121, 21);
+			this.cbBeard.TabIndex = 5;
+			this.cbBeard.SelectedIndexChanged += new System.EventHandler(this.cb_SelectedIndexChanged);
+			// 
+			// label12
+			// 
+			this.label12.AutoSize = true;
+			this.label12.Location = new System.Drawing.Point(32, 36);
+			this.label12.Name = "label12";
+			this.label12.Size = new System.Drawing.Size(38, 13);
+			this.label12.TabIndex = 4;
+			this.label12.Text = "Beard:";
+			// 
+			// cbHair
+			// 
+			this.cbHair.FormattingEnabled = true;
+			this.cbHair.Location = new System.Drawing.Point(76, 6);
+			this.cbHair.Name = "cbHair";
+			this.cbHair.Size = new System.Drawing.Size(121, 21);
+			this.cbHair.TabIndex = 4;
+			this.cbHair.SelectedIndexChanged += new System.EventHandler(this.cb_SelectedIndexChanged);
+			// 
+			// label14
+			// 
+			this.label14.AutoSize = true;
+			this.label14.Location = new System.Drawing.Point(41, 9);
+			this.label14.Name = "label14";
+			this.label14.Size = new System.Drawing.Size(29, 13);
+			this.label14.TabIndex = 8;
+			this.label14.Text = "Hair:";
+			// 
+			// tabPage3
+			// 
+			this.tabPage3.Controls.Add(this.label23);
+			this.tabPage3.Controls.Add(this.cbRedDots);
+			this.tabPage3.Controls.Add(this.label9);
+			this.tabPage3.Controls.Add(this.cbBoils);
+			this.tabPage3.Controls.Add(this.label13);
+			this.tabPage3.Controls.Add(this.cbScars);
+			this.tabPage3.Controls.Add(this.label16);
+			this.tabPage3.Controls.Add(this.cbBlinded);
+			this.tabPage3.Controls.Add(this.label19);
+			this.tabPage3.Controls.Add(this.cbPrisoner);
+			this.tabPage3.Controls.Add(this.label17);
+			this.tabPage3.Controls.Add(this.cbBackground);
+			this.tabPage3.Controls.Add(this.label18);
+			this.tabPage3.Location = new System.Drawing.Point(4, 22);
+			this.tabPage3.Name = "tabPage3";
+			this.tabPage3.Size = new System.Drawing.Size(203, 195);
+			this.tabPage3.TabIndex = 2;
+			this.tabPage3.Text = "Properties 2";
+			this.tabPage3.UseVisualStyleBackColor = true;
+			// 
+			// label23
+			// 
+			this.label23.AutoSize = true;
+			this.label23.Location = new System.Drawing.Point(5, 176);
+			this.label23.Name = "label23";
+			this.label23.Size = new System.Drawing.Size(173, 13);
+			this.label23.TabIndex = 18;
+			this.label23.Text = "* overriden by portrait_properties.txt";
+			// 
+			// cbRedDots
+			// 
+			this.cbRedDots.FormattingEnabled = true;
+			this.cbRedDots.Location = new System.Drawing.Point(76, 87);
+			this.cbRedDots.Name = "cbRedDots";
+			this.cbRedDots.Size = new System.Drawing.Size(121, 21);
+			this.cbRedDots.TabIndex = 7;
+			this.cbRedDots.SelectedIndexChanged += new System.EventHandler(this.cb_SelectedIndexChanged);
+			// 
+			// label9
+			// 
+			this.label9.AutoSize = true;
+			this.label9.Location = new System.Drawing.Point(15, 90);
+			this.label9.Name = "label9";
+			this.label9.Size = new System.Drawing.Size(59, 13);
+			this.label9.TabIndex = 7;
+			this.label9.Text = "Red Dots*:";
+			// 
+			// cbBoils
+			// 
+			this.cbBoils.FormattingEnabled = true;
+			this.cbBoils.Location = new System.Drawing.Point(76, 60);
+			this.cbBoils.Name = "cbBoils";
+			this.cbBoils.Size = new System.Drawing.Size(121, 21);
+			this.cbBoils.TabIndex = 6;
+			this.cbBoils.SelectedIndexChanged += new System.EventHandler(this.cb_SelectedIndexChanged);
+			// 
+			// label13
+			// 
+			this.label13.AutoSize = true;
+			this.label13.Location = new System.Drawing.Point(38, 63);
+			this.label13.Name = "label13";
+			this.label13.Size = new System.Drawing.Size(36, 13);
+			this.label13.TabIndex = 3;
+			this.label13.Text = "Boils*:";
+			// 
+			// cbScars
+			// 
+			this.cbScars.FormattingEnabled = true;
+			this.cbScars.Location = new System.Drawing.Point(76, 33);
+			this.cbScars.Name = "cbScars";
+			this.cbScars.Size = new System.Drawing.Size(121, 21);
+			this.cbScars.TabIndex = 5;
+			this.cbScars.SelectedIndexChanged += new System.EventHandler(this.cb_SelectedIndexChanged);
+			// 
+			// label16
+			// 
+			this.label16.AutoSize = true;
+			this.label16.Location = new System.Drawing.Point(33, 36);
+			this.label16.Name = "label16";
+			this.label16.Size = new System.Drawing.Size(41, 13);
+			this.label16.TabIndex = 4;
+			this.label16.Text = "Scars*:";
+			// 
+			// cbBlinded
+			// 
+			this.cbBlinded.FormattingEnabled = true;
+			this.cbBlinded.Location = new System.Drawing.Point(76, 141);
+			this.cbBlinded.Name = "cbBlinded";
+			this.cbBlinded.Size = new System.Drawing.Size(121, 21);
+			this.cbBlinded.TabIndex = 8;
+			this.cbBlinded.SelectedIndexChanged += new System.EventHandler(this.cb_SelectedIndexChanged);
+			// 
+			// label19
+			// 
+			this.label19.AutoSize = true;
+			this.label19.Location = new System.Drawing.Point(25, 144);
+			this.label19.Name = "label19";
+			this.label19.Size = new System.Drawing.Size(49, 13);
+			this.label19.TabIndex = 2;
+			this.label19.Text = "Blinded*:";
+			// 
+			// cbPrisoner
+			// 
+			this.cbPrisoner.FormattingEnabled = true;
+			this.cbPrisoner.Location = new System.Drawing.Point(76, 114);
+			this.cbPrisoner.Name = "cbPrisoner";
+			this.cbPrisoner.Size = new System.Drawing.Size(121, 21);
+			this.cbPrisoner.TabIndex = 8;
+			this.cbPrisoner.SelectedIndexChanged += new System.EventHandler(this.cb_SelectedIndexChanged);
+			// 
+			// label17
+			// 
+			this.label17.AutoSize = true;
+			this.label17.Location = new System.Drawing.Point(22, 117);
+			this.label17.Name = "label17";
+			this.label17.Size = new System.Drawing.Size(52, 13);
+			this.label17.TabIndex = 2;
+			this.label17.Text = "Prisoner*:";
+			// 
+			// cbBackground
+			// 
+			this.cbBackground.FormattingEnabled = true;
+			this.cbBackground.Location = new System.Drawing.Point(76, 6);
+			this.cbBackground.Name = "cbBackground";
+			this.cbBackground.Size = new System.Drawing.Size(121, 21);
+			this.cbBackground.TabIndex = 4;
+			this.cbBackground.SelectedIndexChanged += new System.EventHandler(this.cb_SelectedIndexChanged);
+			// 
+			// label18
+			// 
+			this.label18.AutoSize = true;
+			this.label18.Location = new System.Drawing.Point(2, 9);
+			this.label18.Name = "label18";
+			this.label18.Size = new System.Drawing.Size(72, 13);
+			this.label18.TabIndex = 8;
+			this.label18.Text = "Background*:";
 			// 
 			// tabPage1
 			// 
@@ -335,265 +616,6 @@
 			this.label1.TabIndex = 0;
 			this.label1.Text = "Neck:";
 			// 
-			// tabPage2
-			// 
-			this.tabPage2.Controls.Add(this.cbEyeColour);
-			this.tabPage2.Controls.Add(this.cbHairColour);
-			this.tabPage2.Controls.Add(this.label15);
-			this.tabPage2.Controls.Add(this.label11);
-			this.tabPage2.Controls.Add(this.cbClothes);
-			this.tabPage2.Controls.Add(this.label8);
-			this.tabPage2.Controls.Add(this.cbHeadgear);
-			this.tabPage2.Controls.Add(this.label10);
-			this.tabPage2.Controls.Add(this.cbBeard);
-			this.tabPage2.Controls.Add(this.label12);
-			this.tabPage2.Controls.Add(this.cbHair);
-			this.tabPage2.Controls.Add(this.label14);
-			this.tabPage2.Location = new System.Drawing.Point(4, 22);
-			this.tabPage2.Name = "tabPage2";
-			this.tabPage2.Padding = new System.Windows.Forms.Padding(3);
-			this.tabPage2.Size = new System.Drawing.Size(203, 195);
-			this.tabPage2.TabIndex = 1;
-			this.tabPage2.Text = "Properties 1";
-			this.tabPage2.UseVisualStyleBackColor = true;
-			// 
-			// cbEyeColour
-			// 
-			this.cbEyeColour.FormattingEnabled = true;
-			this.cbEyeColour.Location = new System.Drawing.Point(76, 141);
-			this.cbEyeColour.Name = "cbEyeColour";
-			this.cbEyeColour.Size = new System.Drawing.Size(121, 21);
-			this.cbEyeColour.TabIndex = 9;
-			this.cbEyeColour.SelectedIndexChanged += new System.EventHandler(this.cb_SelectedIndexChanged);
-			// 
-			// cbHairColour
-			// 
-			this.cbHairColour.FormattingEnabled = true;
-			this.cbHairColour.Location = new System.Drawing.Point(76, 114);
-			this.cbHairColour.Name = "cbHairColour";
-			this.cbHairColour.Size = new System.Drawing.Size(121, 21);
-			this.cbHairColour.TabIndex = 8;
-			this.cbHairColour.SelectedIndexChanged += new System.EventHandler(this.cb_SelectedIndexChanged);
-			// 
-			// label15
-			// 
-			this.label15.AutoSize = true;
-			this.label15.Location = new System.Drawing.Point(9, 144);
-			this.label15.Name = "label15";
-			this.label15.Size = new System.Drawing.Size(61, 13);
-			this.label15.TabIndex = 15;
-			this.label15.Text = "Eye Colour:";
-			// 
-			// label11
-			// 
-			this.label11.AutoSize = true;
-			this.label11.Location = new System.Drawing.Point(8, 117);
-			this.label11.Name = "label11";
-			this.label11.Size = new System.Drawing.Size(62, 13);
-			this.label11.TabIndex = 16;
-			this.label11.Text = "Hair Colour:";
-			// 
-			// cbClothes
-			// 
-			this.cbClothes.FormattingEnabled = true;
-			this.cbClothes.Location = new System.Drawing.Point(76, 87);
-			this.cbClothes.Name = "cbClothes";
-			this.cbClothes.Size = new System.Drawing.Size(121, 21);
-			this.cbClothes.TabIndex = 7;
-			this.cbClothes.SelectedIndexChanged += new System.EventHandler(this.cb_SelectedIndexChanged);
-			// 
-			// label8
-			// 
-			this.label8.AutoSize = true;
-			this.label8.Location = new System.Drawing.Point(25, 90);
-			this.label8.Name = "label8";
-			this.label8.Size = new System.Drawing.Size(45, 13);
-			this.label8.TabIndex = 7;
-			this.label8.Text = "Clothes:";
-			// 
-			// cbHeadgear
-			// 
-			this.cbHeadgear.FormattingEnabled = true;
-			this.cbHeadgear.Location = new System.Drawing.Point(76, 60);
-			this.cbHeadgear.Name = "cbHeadgear";
-			this.cbHeadgear.Size = new System.Drawing.Size(121, 21);
-			this.cbHeadgear.TabIndex = 6;
-			this.cbHeadgear.SelectedIndexChanged += new System.EventHandler(this.cb_SelectedIndexChanged);
-			// 
-			// label10
-			// 
-			this.label10.AutoSize = true;
-			this.label10.Location = new System.Drawing.Point(13, 63);
-			this.label10.Name = "label10";
-			this.label10.Size = new System.Drawing.Size(57, 13);
-			this.label10.TabIndex = 3;
-			this.label10.Text = "Headgear:";
-			// 
-			// cbBeard
-			// 
-			this.cbBeard.FormattingEnabled = true;
-			this.cbBeard.Location = new System.Drawing.Point(76, 33);
-			this.cbBeard.Name = "cbBeard";
-			this.cbBeard.Size = new System.Drawing.Size(121, 21);
-			this.cbBeard.TabIndex = 5;
-			this.cbBeard.SelectedIndexChanged += new System.EventHandler(this.cb_SelectedIndexChanged);
-			// 
-			// label12
-			// 
-			this.label12.AutoSize = true;
-			this.label12.Location = new System.Drawing.Point(32, 36);
-			this.label12.Name = "label12";
-			this.label12.Size = new System.Drawing.Size(38, 13);
-			this.label12.TabIndex = 4;
-			this.label12.Text = "Beard:";
-			// 
-			// cbHair
-			// 
-			this.cbHair.FormattingEnabled = true;
-			this.cbHair.Location = new System.Drawing.Point(76, 6);
-			this.cbHair.Name = "cbHair";
-			this.cbHair.Size = new System.Drawing.Size(121, 21);
-			this.cbHair.TabIndex = 4;
-			this.cbHair.SelectedIndexChanged += new System.EventHandler(this.cb_SelectedIndexChanged);
-			// 
-			// label14
-			// 
-			this.label14.AutoSize = true;
-			this.label14.Location = new System.Drawing.Point(41, 9);
-			this.label14.Name = "label14";
-			this.label14.Size = new System.Drawing.Size(29, 13);
-			this.label14.TabIndex = 8;
-			this.label14.Text = "Hair:";
-			// 
-			// tabPage3
-			// 
-			this.tabPage3.Controls.Add(this.cbRedDots);
-			this.tabPage3.Controls.Add(this.label9);
-			this.tabPage3.Controls.Add(this.cbBoils);
-			this.tabPage3.Controls.Add(this.label13);
-			this.tabPage3.Controls.Add(this.cbScars);
-			this.tabPage3.Controls.Add(this.label16);
-			this.tabPage3.Controls.Add(this.cbBlinded);
-			this.tabPage3.Controls.Add(this.label19);
-			this.tabPage3.Controls.Add(this.cbPrisoner);
-			this.tabPage3.Controls.Add(this.label17);
-			this.tabPage3.Controls.Add(this.cbBackground);
-			this.tabPage3.Controls.Add(this.label18);
-			this.tabPage3.Location = new System.Drawing.Point(4, 22);
-			this.tabPage3.Name = "tabPage3";
-			this.tabPage3.Size = new System.Drawing.Size(203, 195);
-			this.tabPage3.TabIndex = 2;
-			this.tabPage3.Text = "Properties 2";
-			this.tabPage3.UseVisualStyleBackColor = true;
-			// 
-			// cbRedDots
-			// 
-			this.cbRedDots.FormattingEnabled = true;
-			this.cbRedDots.Location = new System.Drawing.Point(76, 87);
-			this.cbRedDots.Name = "cbRedDots";
-			this.cbRedDots.Size = new System.Drawing.Size(121, 21);
-			this.cbRedDots.TabIndex = 7;
-			this.cbRedDots.SelectedIndexChanged += new System.EventHandler(this.cb_SelectedIndexChanged);
-			// 
-			// label9
-			// 
-			this.label9.AutoSize = true;
-			this.label9.Location = new System.Drawing.Point(15, 90);
-			this.label9.Name = "label9";
-			this.label9.Size = new System.Drawing.Size(55, 13);
-			this.label9.TabIndex = 7;
-			this.label9.Text = "Red Dots:";
-			// 
-			// cbBoils
-			// 
-			this.cbBoils.FormattingEnabled = true;
-			this.cbBoils.Location = new System.Drawing.Point(76, 60);
-			this.cbBoils.Name = "cbBoils";
-			this.cbBoils.Size = new System.Drawing.Size(121, 21);
-			this.cbBoils.TabIndex = 6;
-			this.cbBoils.SelectedIndexChanged += new System.EventHandler(this.cb_SelectedIndexChanged);
-			// 
-			// label13
-			// 
-			this.label13.AutoSize = true;
-			this.label13.Location = new System.Drawing.Point(38, 63);
-			this.label13.Name = "label13";
-			this.label13.Size = new System.Drawing.Size(32, 13);
-			this.label13.TabIndex = 3;
-			this.label13.Text = "Boils:";
-			// 
-			// cbScars
-			// 
-			this.cbScars.FormattingEnabled = true;
-			this.cbScars.Location = new System.Drawing.Point(76, 33);
-			this.cbScars.Name = "cbScars";
-			this.cbScars.Size = new System.Drawing.Size(121, 21);
-			this.cbScars.TabIndex = 5;
-			this.cbScars.SelectedIndexChanged += new System.EventHandler(this.cb_SelectedIndexChanged);
-			// 
-			// label16
-			// 
-			this.label16.AutoSize = true;
-			this.label16.Location = new System.Drawing.Point(33, 36);
-			this.label16.Name = "label16";
-			this.label16.Size = new System.Drawing.Size(37, 13);
-			this.label16.TabIndex = 4;
-			this.label16.Text = "Scars:";
-			// 
-			// cbBlinded
-			// 
-			this.cbBlinded.FormattingEnabled = true;
-			this.cbBlinded.Location = new System.Drawing.Point(76, 141);
-			this.cbBlinded.Name = "cbBlinded";
-			this.cbBlinded.Size = new System.Drawing.Size(121, 21);
-			this.cbBlinded.TabIndex = 8;
-			this.cbBlinded.SelectedIndexChanged += new System.EventHandler(this.cb_SelectedIndexChanged);
-			// 
-			// label19
-			// 
-			this.label19.AutoSize = true;
-			this.label19.Location = new System.Drawing.Point(25, 144);
-			this.label19.Name = "label19";
-			this.label19.Size = new System.Drawing.Size(45, 13);
-			this.label19.TabIndex = 2;
-			this.label19.Text = "Blinded:";
-			// 
-			// cbPrisoner
-			// 
-			this.cbPrisoner.FormattingEnabled = true;
-			this.cbPrisoner.Location = new System.Drawing.Point(76, 114);
-			this.cbPrisoner.Name = "cbPrisoner";
-			this.cbPrisoner.Size = new System.Drawing.Size(121, 21);
-			this.cbPrisoner.TabIndex = 8;
-			this.cbPrisoner.SelectedIndexChanged += new System.EventHandler(this.cb_SelectedIndexChanged);
-			// 
-			// label17
-			// 
-			this.label17.AutoSize = true;
-			this.label17.Location = new System.Drawing.Point(22, 117);
-			this.label17.Name = "label17";
-			this.label17.Size = new System.Drawing.Size(48, 13);
-			this.label17.TabIndex = 2;
-			this.label17.Text = "Prisoner:";
-			// 
-			// cbBackground
-			// 
-			this.cbBackground.FormattingEnabled = true;
-			this.cbBackground.Location = new System.Drawing.Point(76, 6);
-			this.cbBackground.Name = "cbBackground";
-			this.cbBackground.Size = new System.Drawing.Size(121, 21);
-			this.cbBackground.TabIndex = 4;
-			this.cbBackground.SelectedIndexChanged += new System.EventHandler(this.cb_SelectedIndexChanged);
-			// 
-			// label18
-			// 
-			this.label18.AutoSize = true;
-			this.label18.Location = new System.Drawing.Point(2, 9);
-			this.label18.Name = "label18";
-			this.label18.Size = new System.Drawing.Size(68, 13);
-			this.label18.TabIndex = 8;
-			this.label18.Text = "Background:";
-			// 
 			// groupBox2
 			// 
 			this.groupBox2.Controls.Add(this.label21);
@@ -616,7 +638,6 @@
 			this.label21.Size = new System.Drawing.Size(66, 13);
 			this.label21.TabIndex = 24;
 			this.label21.Text = "Portrait type:";
-			this.label21.Click += new System.EventHandler(this.label21_Click);
 			// 
 			// btnRandom
 			// 
@@ -687,7 +708,6 @@
 			this.tabMods.TabIndex = 2;
 			this.tabMods.Text = "Mods";
 			this.tabMods.UseVisualStyleBackColor = true;
-			this.tabMods.Click += new System.EventHandler(this.tabPage6_Click);
 			// 
 			// panelMods
 			// 
@@ -715,12 +735,12 @@
 			this.groupBox1.PerformLayout();
 			((System.ComponentModel.ISupportInitialize)(this.pbPortrait)).EndInit();
 			this.tabControl1.ResumeLayout(false);
-			this.tabPage1.ResumeLayout(false);
-			this.tabPage1.PerformLayout();
 			this.tabPage2.ResumeLayout(false);
 			this.tabPage2.PerformLayout();
 			this.tabPage3.ResumeLayout(false);
 			this.tabPage3.PerformLayout();
+			this.tabPage1.ResumeLayout(false);
+			this.tabPage1.PerformLayout();
 			this.groupBox2.ResumeLayout(false);
 			this.groupBox2.PerformLayout();
 			this.tabContent.ResumeLayout(false);
@@ -791,6 +811,8 @@
 		private System.Windows.Forms.FlowLayoutPanel panelDLCs;
 		private System.Windows.Forms.Label label21;
 		private System.Windows.Forms.FlowLayoutPanel panelMods;
+		private System.Windows.Forms.Label label22;
+		private System.Windows.Forms.Label label23;
 	}
 }
 

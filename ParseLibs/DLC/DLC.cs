@@ -1,15 +1,29 @@
 ﻿using System.Collections.Generic;
 
 namespace Parsers.DLC {
-	public class DLC {
+	public class DLC : AdditionalContent {
+
+		/// <summary>
+		/// Name of .dlc file, E.g. dlc060.dlc
+		/// </summary>
 		public string DLCFile;
-		public string Name;
+
+		/// <summary>
+		/// Relative path to the mod archive, E.g. dlc/dlc060.zip
+		/// </summary>
 		public string Archive;
+
+		/// <summary>
+		/// Checksum of DLC
+		/// </summary>
 		public string Checksum;
 
 		public int SteamID;
 		public int GamersGateID;
 
+		/// <summary>
+		/// Wether the DLC affacts the checksum
+		/// </summary>
 		public bool AffectsChecksum;
 
 		public override string ToString() {
