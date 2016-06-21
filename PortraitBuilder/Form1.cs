@@ -78,7 +78,9 @@ namespace Portrait_Builder {
 			user.GameDir = ReadGameDir();
 			user.MyDocsDir = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments) + @"\Paradox Interactive\Crusader Kings II\";
 			user.DlcDir = Environment.CurrentDirectory + @"\dlc\";
-			// TODO Cleanup DLC Dir
+
+			// Cleanup temporary DLC Dir
+			Directory.Delete(user.DlcDir, true);
 
 			logger.Info("Configuration: " + user);
 			logger.Info("----------------------------");
@@ -153,7 +155,7 @@ namespace Portrait_Builder {
 			foreach (KeyValuePair<string, PortraitType> pair in portraitReader.PortraitTypes) {
 				PortraitType portraitType = pair.Value;
 				logger.Debug(" --Setting up flags for " + portraitType.Name);
-				cbPortraitTypes.Items.Add(portraitType.Name);
+				cbPortraitTypes.Items.Add(portraitType.Name.Replace("PORTRAIT_",""));
 
 				foreach (Layer layer in portraitType.Layers) {
 
@@ -254,7 +256,10 @@ namespace Portrait_Builder {
 				string dlcCode = dlc.DLCFile.Replace(".dlc", "");
 				string newDlcAbsolutePath = user.DlcDir + dlcCode;
 				logger.Info(string.Format("Extracting {0} to {1}", dlc.Name, newDlcAbsolutePath));
-				fastZip.ExtractZip(dlc.AbsolutePath, newDlcAbsolutePath, null);
+					
+				// Filter only portraits files, to gain speed/space
+				string fileFilter = @"interface;gfx/characters";
+				fastZip.ExtractZip(dlc.AbsolutePath, newDlcAbsolutePath, fileFilter);
 				dlc.AbsolutePath = newDlcAbsolutePath;
 				dlc.HasPortraits = true;
 
@@ -268,8 +273,11 @@ namespace Portrait_Builder {
 		private void registerMod(Control container, AdditionalContent mod) {
 			CheckBox checkbox = new CheckBox();
 			checkbox.Text = mod.Name;
+			checkbox.AutoEllipsis = true;
 			checkbox.Width = 200; // Force overflow
 			checkbox.CheckedChanged += new System.EventHandler(this.onCheck);
+			checkbox.Padding = new Padding(0);
+			checkbox.Margin = new Padding(0);
 
 			container.Controls.Add(checkbox);
 			usableMods.Add(checkbox, mod);
@@ -300,7 +308,7 @@ namespace Portrait_Builder {
 			Bitmap portrait;
 			logger.Debug("   --Rendering portrait.");
 			try {
-				PortraitType portraitType = portraitReader.PortraitTypes[cbPortraitTypes.SelectedItem.ToString()];
+				PortraitType portraitType = getSelectedPortraitType();
 				portrait = portraitReader.DrawPortrait(portraitType, dna, properties, activeMods, user);
 			}
 			catch (Exception e) {
@@ -429,7 +437,7 @@ namespace Portrait_Builder {
 		private void FillComboBox(ComboBox cb, string flagName) {
 			cb.Items.Clear();
 
-			PortraitType portraitType = portraitReader.PortraitTypes[cbPortraitTypes.SelectedItem.ToString()];
+			PortraitType portraitType = getSelectedPortraitType();
 			if (portraitType.CustomFlags.ContainsKey(flagName)) {
 				string spriteName = (string)portraitType.CustomFlags[flagName];
 				Sprite sprite = portraitReader.Sprites[spriteName];
@@ -440,6 +448,10 @@ namespace Portrait_Builder {
 				logger.Warn(" --No " + flagName + " flag found, setting UI to 26.");
 				FillComboBox(cb, 26);
 			}
+		}
+
+		private PortraitType getSelectedPortraitType() {
+			return portraitReader.PortraitTypes["PORTRAIT_" + cbPortraitTypes.SelectedItem.ToString()];
 		}
 
 		private void SetupSharedUI() {
@@ -454,7 +466,7 @@ namespace Portrait_Builder {
 		}
 
 		private void SetupUI() {
-			PortraitType portraitType = portraitReader.PortraitTypes[cbPortraitTypes.SelectedItem.ToString()];
+			PortraitType portraitType = getSelectedPortraitType();
 
 			logger.Debug("Setting up UI for: " + portraitType.Name);
 			FillComboBox(cbClothes, "clothes");
@@ -617,6 +629,10 @@ namespace Portrait_Builder {
 		}
 
 		private void Form1_FormClosed(object sender, FormClosedEventArgs e) {
+
+		}
+
+		private void label21_Click(object sender, EventArgs e) {
 
 		}
 	}
