@@ -296,15 +296,11 @@ namespace Parsers.Portrait {
 		/// <param name="activeMods">Mods to use when drawing.</param>
 		/// <param name="user">User configuration</param>
 		/// <returns>Frameless portrait drawn with the given parameters.</returns>
-		public Bitmap DrawPortrait(PortraitType portraitType, string dna, string properties, List<AdditionalContent> activeMods, User user) {
-			logger.Info(string.Format("Drawing Portrait - DNA: {0}, Properties: {1}", dna, properties));
+		public Bitmap DrawPortrait(PortraitType portraitType, Portrait portrait, List<AdditionalContent> activeMods, User user) {
+			logger.Info(string.Format("Drawing Portrait {0}", portrait));
 
-			if (dna.Length < 9 || properties.Length < 9) {
-				throw new ArgumentException(string.Format("DNA {0} or Property {1} strings are too short.", dna, properties));
-			}
-
-			Bitmap portrait = new Bitmap(176, 176);
-			Graphics g = Graphics.FromImage(portrait);
+			Bitmap portraitImage = new Bitmap(176, 176);
+			Graphics g = Graphics.FromImage(portraitImage);
 
 			foreach (Layer layer in portraitType.Layers) {
 				logger.Debug("Drawing Layer : " + layer);
@@ -319,12 +315,12 @@ namespace Parsers.Portrait {
 						}
 
 						//Get DNA/Properties letter, then the index of the tile to draw
-						int tileIndex = GetTileIndex(dna, properties, sprite.FrameCount, layer);
+						int tileIndex = GetTileIndex(portrait, sprite.FrameCount, layer);
 
-						DrawTile(portraitType, dna, g, sprite, layer, tileIndex);
+						DrawTile(portraitType, portrait.GetDNA(), g, sprite, layer, tileIndex);
 
 					} else {
-						throw new FileNotFoundException("Sprite not found:" + layer.Name);
+						throw new FileNotFoundException("Sprite not found:" + layer);
 					}
 
 				} catch (Exception e) {
@@ -333,7 +329,7 @@ namespace Parsers.Portrait {
 			}
 
 			g.Dispose();
-			return portrait;
+			return portraitImage;
 		}
 
 		private void LoadSprite(Sprite sprite, List<AdditionalContent> activeMods, User user) {
@@ -360,8 +356,9 @@ namespace Parsers.Portrait {
 			sprite.Load(containerPath);
 		}
 
-		private int GetTileIndex(string dna, string properties, int frameCount, Layer layer) {
-			char letter = layer.LayerType == Layer.Type.DNA ? dna[layer.Index] : properties[layer.Index];;
+		private int GetTileIndex(Portrait portrait, int frameCount, Layer layer) {
+			// TODO Refactor with layers inside Portrait
+			char letter = layer.LayerType == Layer.Type.DNA ? portrait.GetDNA()[layer.Index] : portrait.GetProperties()[layer.Index];;
 			int tileIndex = GetTileIndexFromLetter(letter, frameCount);
 			logger.Debug(string.Format("Layer Letter: {0}, Tile Index: {1}", letter, tileIndex));
 			return tileIndex;

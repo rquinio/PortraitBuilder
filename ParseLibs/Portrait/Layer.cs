@@ -2,9 +2,15 @@ using System.Collections.Generic;
 using System.Drawing;
 
 namespace Parsers.Portrait {
+
+	/// <summary>
+	/// Portrait images are drawn as a succession of layers
+	/// 
+	/// Note: multiple layers may contribute to render the same portrait attribute (E.g. clothes_behind, clothes, clothes_infront).
+	/// </summary>
 	public class Layer {
 		/// <summary>
-		/// The name of the Sprite file.
+		/// The name of the layer (E.g GFX_character_background)
 		/// </summary>
 		public string Name;
 

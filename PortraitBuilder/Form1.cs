@@ -61,13 +61,23 @@ namespace Portrait_Builder {
 		/// </summary>
 		private PortraitOffsetReader portraitOffsetReader = new PortraitOffsetReader();
 
-		private string dna;
-		private string properties;
+		private Portrait portrait = new Portrait();
 
-		private bool hadError = false;
+		/// <summary>
+		/// CheckBox for dna, ordered by their dna index.
+		/// </summary>
+		private List<ComboBox> dnaComboBoxes = new List<ComboBox>();
+
+		/// <summary>
+		/// CheckBox for properties, ordered by their properties index.
+		/// </summary>
+		private List<ComboBox> propertiesComboBoxes = new List<ComboBox>();
 
 		public Form1() {
 			InitializeComponent();
+			dnaComboBoxes.AddRange(new ComboBox[] { cbNeck, cbChin, cbMouth, cbNose, cbCheeks, null, cbEyes, cbEars, cbHairColour, cbEyeColour });
+			propertiesComboBoxes.AddRange(new ComboBox[] { cbBackground, cbHair, null, cbClothes, cbBeard, cbHeadgear, cbPrisoner, cbScars, cbRedDots, cbBoils, cbBlinded, null });
+
 			EnvironmentSetup();
 		}
 
@@ -94,28 +104,25 @@ namespace Portrait_Builder {
 			LoadPortraits();
 			LoadBorders();
 
-			if (hadError)
-				return;
-
 			SetupSharedUI();
 			SetupUI();
 			RandomizeUI(true);
-			UpdatePortrait();
+
+			DrawPortrait();
 
 			started = true;
 		}
 
 		private void LoadBorders() {
 			logger.Debug("Setting up borders.");
-			if (!File.Exists(user.GameDir + @"\gfx\interface\charframe_150.dds")) {
-				logger.Error("Borders file \\gfx\\interface\\charframe_150.dds not found.");
-				hadError = true;
+			string borderSprite = user.GameDir + @"\gfx\interface\charframe_150.dds";
 
-				MessageBox.Show(this, "Unable to find borders graphic.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+			if (!File.Exists(borderSprite)) {
+				logger.Error("Borders file \\gfx\\interface\\charframe_150.dds not found.");
 				return;
 			}
 
-			Bitmap charFrame = DevIL.DevIL.LoadBitmap(user.GameDir + @"\gfx\interface\charframe_150.dds");
+			Bitmap charFrame = DevIL.DevIL.LoadBitmap(borderSprite);
 
 			for (int i = 0; i < 6; i++) {
 				Bitmap border = new Bitmap(176, 176);
@@ -141,13 +148,14 @@ namespace Portrait_Builder {
 				}
 			}
 
+			object previouslySelectedPortrait = null;
+			if (cbPortraitTypes.SelectedItem != null) {
+				previouslySelectedPortrait = cbPortraitTypes.Items[cbPortraitTypes.SelectedIndex];
+			}
 			cbPortraitTypes.Items.Clear();
 
 			if (portraitReader.PortraitTypes.Count == 0) {
-				logger.Error("No portrait types found.");
-				MessageBox.Show(this, "No portraits found in mods " + activeMods + "\n\nCheck errorlog.txt for details.", "Error", MessageBoxButtons.OK,
-												 MessageBoxIcon.Error);
-				hadError = true;
+				logger.Fatal("No portrait types found.");
 				return;
 			}
 
@@ -167,7 +175,13 @@ namespace Portrait_Builder {
 					setupFlags(portraitType, layer);
 				}
 			}
-			cbPortraitTypes.SelectedIndex = 0;
+
+			if (previouslySelectedPortrait != null) {
+				cbPortraitTypes.SelectedIndex = cbPortraitTypes.Items.IndexOf(previouslySelectedPortrait);
+			}
+			if(cbPortraitTypes.SelectedIndex == -1) {
+				cbPortraitTypes.SelectedIndex = 0;
+			}
 		}
 
 		private void LoadPortraitsFromDir(string dir) {
@@ -192,6 +206,7 @@ namespace Portrait_Builder {
 			}
 		}
 
+		// FIXME This should not be needed, as layer are associated via dna/properties letters already
 		private void setupFlags(PortraitType portraitType, Layer layer) {
 			// Shared
 			setupFlag(portraitType, layer, "background");
@@ -228,21 +243,14 @@ namespace Portrait_Builder {
 			List<Mod> mods = modReader.ParseFolder(user.MyDocsDir + @"\mod\");
 
 			foreach (Mod mod in mods) {
-				if (!Directory.Exists(user.MyDocsDir + mod.Path))
+
+				if (!Directory.Exists(mod.AbsolutePath))
 					continue;
 
-				// TODO Portraits can be elsewhere
-				if (File.Exists(user.MyDocsDir + mod.Path + @"\interface\portraits.gfx")) {
-					mod.HasPortraits = true;
+				// FIXME also scan .gfx files
+				if (Directory.Exists(mod.AbsolutePath + @"\gfx\characters\")) {
+					mod.HasPortraits = false;
 					registerMod(panelMods, mod);
-					continue;
-				}
-
-				if (Directory.Exists(user.MyDocsDir + mod.Path + @"\gfx\characters\")) {
-					if (Directory.GetDirectories(user.MyDocsDir + mod.Path + @"\gfx\characters\").Length > 0) {
-						mod.HasPortraits = false;
-						registerMod(panelMods, mod);
-					}
 				}
 			}
 		}
@@ -254,19 +262,19 @@ namespace Portrait_Builder {
 			FastZip fastZip = new FastZip();
 			foreach (DLC dlc in dlcs) {
 				string dlcCode = dlc.DLCFile.Replace(".dlc", "");
-				string newDlcAbsolutePath = user.DlcDir + dlcCode;
+				string newDlcAbsolutePath = user.DlcDir + dlcCode + @"\";
 				logger.Info(string.Format("Extracting {0} to {1}", dlc.Name, newDlcAbsolutePath));
 					
 				// Filter only portraits files, to gain speed/space
 				string fileFilter = @"interface;gfx/characters";
 				fastZip.ExtractZip(dlc.AbsolutePath, newDlcAbsolutePath, fileFilter);
 				dlc.AbsolutePath = newDlcAbsolutePath;
-				dlc.HasPortraits = true;
 
-				if (Directory.Exists(user.DlcDir + @"gfx\characters\")) {
+				// FIXME need to scan gfx too
+				if (Directory.Exists(dlc.AbsolutePath + @"gfx\characters\")) {
 					dlc.HasPortraits = true;
+					registerMod(panelDLCs, dlc);
 				}
-				registerMod(panelDLCs, dlc);
 			}
 		}
 
@@ -289,15 +297,6 @@ namespace Portrait_Builder {
 			return reader.ReadString() + @"\";
 		}
 
-		private void UpdatePortrait() {
-			logger.Debug("Updating portrait.");
-
-			GetDNA();
-			GetProperties();
-			DrawPortrait();
-			OutputDNA();
-		}
-
 		private void DrawPortrait() {
 			logger.Debug(" --Drawing portrait.");
 
@@ -305,24 +304,24 @@ namespace Portrait_Builder {
 
 			logger.Debug("   --Clearing preview.");
 			g.Clear(Color.Empty);
-			Bitmap portrait;
+			Bitmap portraitImage;
 			logger.Debug("   --Rendering portrait.");
 			try {
 				PortraitType portraitType = getSelectedPortraitType();
-				portrait = portraitReader.DrawPortrait(portraitType, dna, properties, activeMods, user);
+				portraitImage = portraitReader.DrawPortrait(portraitType, portrait, activeMods, user);
 			}
 			catch (Exception e) {
 				logger.Error("Error encountered rendering portrait:" + e.ToString());
 				return;
 			}
-			g.DrawImage(portrait, 0, 0);
+			g.DrawImage(portraitImage, 0, 0);
 			logger.Debug("   --Drawing border.");
 			g.DrawImage(borders[cbRank.SelectedIndex], 0, 0);
 
 			pbPortrait.Image = previewImage;
 		}
 
-		private void GetDNA() {
+		private string GetDNA() {
 			logger.Debug(" --Building DNA string.");
 			StringBuilder sb = new StringBuilder();
 
@@ -338,10 +337,10 @@ namespace Portrait_Builder {
 			sb.Append(GetLetter(cbEyeColour));
 			sb.Append("0");
 
-			dna = sb.ToString();
+			return sb.ToString();
 		}
 
-		private void GetProperties() {
+		private string GetProperties() {
 			logger.Debug(" --Building Properties string.");
 			StringBuilder sb = new StringBuilder();
 
@@ -358,19 +357,20 @@ namespace Portrait_Builder {
 			sb.Append(GetLetter(cbBlinded));
 			sb.Append("b"); // Player overlay
 
-			properties = sb.ToString();
+			return sb.ToString();
 		}
 
+		// Needs to be called each time portrait object is modified
 		private void OutputDNA() {
 			logger.Debug(" --Outputting DNA and Property strings.");
 			dnaPropOutput = new StringBuilder();
 
 			dnaPropOutput.Append("  dna=\"");
-			dnaPropOutput.Append(dna);
+			dnaPropOutput.Append(portrait.GetDNA());
 			dnaPropOutput.AppendLine("\"");
 
 			dnaPropOutput.Append("  properties=\"");
-			dnaPropOutput.Append(properties);
+			dnaPropOutput.Append(portrait.GetProperties());
 			dnaPropOutput.AppendLine("\"");
 			tbDNA.Text = dnaPropOutput.ToString();
 		}
@@ -395,8 +395,8 @@ namespace Portrait_Builder {
 			}
 
 			RandomizeComboBox(cbBackground);
-			RandomizeComboBox(cbScars);
 
+			cbScars.SelectedIndex = 0;
 			cbRedDots.SelectedIndex = 0;
 			cbBoils.SelectedIndex = 0;
 			cbPrisoner.SelectedIndex = 0;
@@ -421,6 +421,8 @@ namespace Portrait_Builder {
 			RandomizeComboBox(cbEars);
 			RandomizeComboBox(cbHairColour);
 			RandomizeComboBox(cbEyeColour);
+
+			UpdatePortraitDataFromInputs();
 		}
 
 		private void RandomizeComboBox(ComboBox cb) {
@@ -496,7 +498,8 @@ namespace Portrait_Builder {
 
 		private void cb_SelectedIndexChanged(object sender, EventArgs e) {
 			if (started) {
-				UpdatePortrait();
+				UpdatePortraitDataFromInputs();
+				DrawPortrait();
 			}
 		}
 
@@ -518,48 +521,27 @@ namespace Portrait_Builder {
 			if (dialog.ShowDialog(this) == DialogResult.OK) {
 				started = false;
 
-				cbNeck.SelectedIndex = GetIndex(dialog.Neck, cbNeck);
-				cbChin.SelectedIndex = GetIndex(dialog.Chin, cbChin);
-				cbMouth.SelectedIndex = GetIndex(dialog.Mouth, cbMouth);
-				cbNose.SelectedIndex = GetIndex(dialog.Nose, cbNose);
-				cbCheeks.SelectedIndex = GetIndex(dialog.Cheeks, cbCheeks);
-				cbEyes.SelectedIndex = GetIndex(dialog.Eyes, cbEyes);
-				cbEars.SelectedIndex = GetIndex(dialog.Ears, cbEars);
-				cbHairColour.SelectedIndex = GetIndex(dialog.HairColour, cbHairColour);
-				cbEyeColour.SelectedIndex = GetIndex(dialog.EyeColour, cbEyeColour);
-
-				cbBackground.SelectedIndex = GetIndex(dialog.Background, cbBackground);
-				cbHair.SelectedIndex = GetIndex(dialog.Hair, cbHair);
-				cbClothes.SelectedIndex = GetIndex(dialog.Clothes, cbClothes);
-				cbBeard.SelectedIndex = GetIndex(dialog.Beard, cbBeard);
-				cbHeadgear.SelectedIndex = GetIndex(dialog.Headgear, cbHeadgear);
-				cbPrisoner.SelectedIndex = GetIndex(dialog.Prison, cbPrisoner);
-				cbScars.SelectedIndex = GetIndex(dialog.Scars, cbScars);
-				cbRedDots.SelectedIndex = GetIndex(dialog.RedDots, cbRedDots);
-				cbBoils.SelectedIndex = GetIndex(dialog.Boils, cbBoils);
-				cbBlinded.SelectedIndex = GetIndex(dialog.Blinded, cbBlinded);
+				portrait = dialog.portrait;
+				OutputDNA();
+				UpdateInputsFromPortraitData(portrait);
 
 				started = true;
 
-				UpdatePortrait();
+				DrawPortrait();
 			}
 		}
 
-		private int GetIndex(char letter, ComboBox cb) {
-			int index = 0;
-
-			if (cb.Items.Count == 0)
+		private int GetIndex(char letter, int total) {
+			if (total == 0)
 				return -1;
 
 			if (letter == '0')
-				return index;
+				return 0;
 
-			index = portraitReader.Letters.IndexOf(letter) + 1;
-			index = index % cb.Items.Count;
-
-			if (index == cb.Items.Count)
+			int index = (portraitReader.Letters.IndexOf(letter) + 1) % total;
+			if (index == total) {
 				index = 0;
-
+			}
 			return index;
 		}
 
@@ -568,23 +550,23 @@ namespace Portrait_Builder {
 			RandomizeUI(false);
 			started = true;
 
-			UpdatePortrait();
+			UpdatePortraitDataFromInputs();
+			DrawPortrait();
 		}
 
+		/// <summary>
+		/// Called each time an event a CheckBox is ticked/unticked
+		/// </summary>
 		private void onCheck(object sender, EventArgs e) {
 			started = false;
 			updateActiveMods();
 			LoadPortraits();
 
-			if (hadError)
-				return;
-
 			SetupSharedUI();
 			SetupUI();
-			RandomizeUI(false);
 			started = true;
 
-			UpdatePortrait();
+			DrawPortrait();
 		}
 
 		private void updateActiveMods() {
@@ -602,37 +584,34 @@ namespace Portrait_Builder {
 				started = false;
 				SetupUI();
 
-				cbNeck.SelectedIndex = GetIndex(dna[0], cbNeck);
-				cbChin.SelectedIndex = GetIndex(dna[1], cbChin);
-				cbMouth.SelectedIndex = GetIndex(dna[2], cbMouth);
-				cbNose.SelectedIndex = GetIndex(dna[3], cbNose);
-				cbCheeks.SelectedIndex = GetIndex(dna[4], cbCheeks);
-				cbEyes.SelectedIndex = GetIndex(dna[6], cbEyes);
-				cbEars.SelectedIndex = GetIndex(dna[7], cbEars);
-				cbHairColour.SelectedIndex = GetIndex(dna[8], cbHairColour);
-				cbEyeColour.SelectedIndex = GetIndex(dna[9], cbEyeColour);
-
-				cbBackground.SelectedIndex = GetIndex(properties[0], cbBackground);
-				cbHair.SelectedIndex = GetIndex(properties[1], cbHair);
-				cbClothes.SelectedIndex = GetIndex(properties[3], cbClothes);
-				cbBeard.SelectedIndex = GetIndex(properties[4], cbBeard);
-				cbHeadgear.SelectedIndex = GetIndex(properties[5], cbHeadgear);
-				cbPrisoner.SelectedIndex = GetIndex(properties[6], cbPrisoner);
-				cbScars.SelectedIndex = GetIndex(properties[7], cbScars);
-				cbRedDots.SelectedIndex = GetIndex(properties[8], cbRedDots);
-				cbBoils.SelectedIndex = GetIndex(properties[9], cbBoils);
+				UpdateInputsFromPortraitData(portrait);
 
 				started = true;
 
-				UpdatePortrait();
+				DrawPortrait();
 			}
 		}
 
-		private void Form1_FormClosed(object sender, FormClosedEventArgs e) {
+		private void UpdateInputsFromPortraitData(Portrait portrait) {
+			for (int i = 0; i < dnaComboBoxes.Count; i++) {
+				if (dnaComboBoxes[i] != null) {
+					dnaComboBoxes[i].SelectedIndex = GetIndex(portrait.GetDNA()[i], dnaComboBoxes[i].Items.Count);
+				}
+			}
 
+			for (int i = 0; i < propertiesComboBoxes.Count; i++) {
+				if (propertiesComboBoxes[i] != null) {
+					propertiesComboBoxes[i].SelectedIndex = GetIndex(portrait.GetProperties()[i], propertiesComboBoxes[i].Items.Count);
+				}
+			}
 		}
 
-		private void label21_Click(object sender, EventArgs e) {
+		private void UpdatePortraitDataFromInputs() {
+			portrait.import(GetDNA(), GetProperties());
+			OutputDNA();
+		}
+
+		private void Form1_FormClosed(object sender, FormClosedEventArgs e) {
 
 		}
 	}
