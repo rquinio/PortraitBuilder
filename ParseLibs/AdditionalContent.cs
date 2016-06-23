@@ -36,7 +36,7 @@ namespace Parsers {
 		/// </summary>
 		/// <returns></returns>
 		public bool GetHasPortraitData() {
-			return PortraitData.PortraitTypes.Count > 0;
+			return PortraitData != null && PortraitData.PortraitTypes.Count > 0;
 		}
 	}
 }

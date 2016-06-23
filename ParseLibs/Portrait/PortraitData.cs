@@ -5,9 +5,13 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Parsers.Portrait;
+using log4net;
 
 namespace Parsers.Portrait {
 	public class PortraitData {
+
+		private static readonly ILog logger = LogManager.GetLogger(typeof(PortraitData).Name);
+
 		/// <summary>
 		/// Dictionary of included sprites
 		/// Key is the name of the sprite. E.g. GFX_character_background
@@ -59,10 +63,14 @@ namespace Parsers.Portrait {
 			} else {
 				foreach (Layer layer in portraitType.Layers) {
 					if (layer.Characteristic == characteristic) {
-						Sprite sprite = Sprites[layer.Name];
-						if (sprite != null) {
-							nbTiles = sprite.FrameCount;
-							break;
+						if (Sprites.ContainsKey(layer.Name)) {
+							Sprite sprite = Sprites[layer.Name];
+							if (sprite != null) {
+								nbTiles = sprite.FrameCount;
+								break;
+							}
+						} else {
+							logger.Error("Sprite not found for layer " + layer);
 						}
 					}
 				}

@@ -116,7 +116,7 @@ namespace Portrait_Builder {
 			List<Mod> mods = loader.LoadMods();
 			foreach (Mod mod in mods) {
 				if (mod.GetHasPortraitData()) {
-					registerMod(panelMods, mod);
+					registerContent(panelMods, mod);
 				}
 			}
 		}
@@ -125,22 +125,22 @@ namespace Portrait_Builder {
 			List<DLC> dlcs = loader.LoadDLCs();
 			foreach (DLC dlc in dlcs) {
 				if (dlc.GetHasPortraitData()) {
-					registerMod(panelDLCs, dlc);
+					registerContent(panelDLCs, dlc);
 				}
 			}
 		}
 
-		private void registerMod(Control container, Content mod) {
+		private void registerContent(Control container, Content content) {
 			CheckBox checkbox = new CheckBox();
-			checkbox.Text = mod.Name;
+			checkbox.Text = content.Name;
 			checkbox.AutoEllipsis = true;
-			checkbox.Width = 200; // Force overflow
+			checkbox.Width = 190; // Force overflow
 			checkbox.CheckedChanged += new System.EventHandler(this.onCheck);
 			checkbox.Padding = new Padding(0);
 			checkbox.Margin = new Padding(0);
 
 			container.Controls.Add(checkbox);
-			usableMods.Add(checkbox, mod);
+			usableMods.Add(checkbox, content);
 		}
 		
 		private string ReadGameDir() {
@@ -255,6 +255,12 @@ namespace Portrait_Builder {
 			RandomizeComboBox(cbEars);
 			RandomizeComboBox(cbHairColour);
 			RandomizeComboBox(cbEyeColour);
+
+			cbScars.SelectedIndex = 0;
+			cbRedDots.SelectedIndex = 0;
+			cbBoils.SelectedIndex = 0;
+			cbPrisoner.SelectedIndex = 0;
+			cbBlinded.SelectedIndex = 0;
 
 			UpdatePortraitDataFromInputs();
 		}
@@ -403,13 +409,20 @@ namespace Portrait_Builder {
 
 		private void updateActiveAdditionalContent() {
 			List<Content> activeContent = new List<Content>();
-			foreach (Control control in panelDLCs.Controls) {
+			activeContent.AddRange(getSelectedContent(panelDLCs));
+			activeContent.AddRange(getSelectedContent(panelMods));
+			loader.UpdateActivateAdditionalContent(activeContent);
+		}
+
+		private List<Content> getSelectedContent(Panel panel) {
+			List<Content> selectedContent = new List<Content>();
+			foreach (Control control in panel.Controls) {
 				CheckBox checkbox = (CheckBox)control;
 				if (checkbox.Checked) {
-					activeContent.Add(usableMods[checkbox]);
+					selectedContent.Add(usableMods[checkbox]);
 				}
 			}
-			loader.UpdateActivateAdditionalContent(activeContent);
+			return selectedContent;
 		}
 
 		private void cbPortraitTypes_SelectedIndexChanged(object sender, EventArgs e) {

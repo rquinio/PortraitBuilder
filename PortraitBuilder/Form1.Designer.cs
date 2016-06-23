@@ -85,6 +85,7 @@ namespace Portrait_Builder {
 			this.panelDLCs = new System.Windows.Forms.FlowLayoutPanel();
 			this.tabMods = new System.Windows.Forms.TabPage();
 			this.panelMods = new System.Windows.Forms.FlowLayoutPanel();
+			this.groupBox3 = new System.Windows.Forms.GroupBox();
 			this.groupBox1.SuspendLayout();
 			((System.ComponentModel.ISupportInitialize)(this.pbPortrait)).BeginInit();
 			this.tabControl1.SuspendLayout();
@@ -94,6 +95,7 @@ namespace Portrait_Builder {
 			this.tabContent.SuspendLayout();
 			this.tabDLCs.SuspendLayout();
 			this.tabMods.SuspendLayout();
+			this.groupBox3.SuspendLayout();
 			this.SuspendLayout();
 			// 
 			// groupBox1
@@ -105,7 +107,7 @@ namespace Portrait_Builder {
 			this.groupBox1.Controls.Add(this.pbPortrait);
 			this.groupBox1.Controls.Add(this.cbRank);
 			this.groupBox1.Controls.Add(this.label20);
-			this.groupBox1.Location = new System.Drawing.Point(493, 10);
+			this.groupBox1.Location = new System.Drawing.Point(473, 10);
 			this.groupBox1.Name = "groupBox1";
 			this.groupBox1.Size = new System.Drawing.Size(188, 385);
 			this.groupBox1.TabIndex = 1;
@@ -602,7 +604,7 @@ namespace Portrait_Builder {
 			this.groupBox2.Controls.Add(this.btnImport);
 			this.groupBox2.Controls.Add(this.cbPortraitTypes);
 			this.groupBox2.Controls.Add(this.tabControl1);
-			this.groupBox2.Location = new System.Drawing.Point(263, 10);
+			this.groupBox2.Location = new System.Drawing.Point(245, 10);
 			this.groupBox2.Name = "groupBox2";
 			this.groupBox2.Size = new System.Drawing.Size(224, 385);
 			this.groupBox2.TabIndex = 1;
@@ -651,10 +653,10 @@ namespace Portrait_Builder {
 			// 
 			this.tabContent.Controls.Add(this.tabDLCs);
 			this.tabContent.Controls.Add(this.tabMods);
-			this.tabContent.Location = new System.Drawing.Point(12, 12);
+			this.tabContent.Location = new System.Drawing.Point(6, 17);
 			this.tabContent.Name = "tabContent";
 			this.tabContent.SelectedIndex = 0;
-			this.tabContent.Size = new System.Drawing.Size(245, 383);
+			this.tabContent.Size = new System.Drawing.Size(224, 331);
 			this.tabContent.TabIndex = 4;
 			// 
 			// tabDLCs
@@ -664,7 +666,7 @@ namespace Portrait_Builder {
 			this.tabDLCs.Location = new System.Drawing.Point(4, 22);
 			this.tabDLCs.Name = "tabDLCs";
 			this.tabDLCs.Padding = new System.Windows.Forms.Padding(3);
-			this.tabDLCs.Size = new System.Drawing.Size(237, 357);
+			this.tabDLCs.Size = new System.Drawing.Size(216, 305);
 			this.tabDLCs.TabIndex = 1;
 			this.tabDLCs.Text = "DLCs";
 			this.tabDLCs.UseVisualStyleBackColor = true;
@@ -672,9 +674,9 @@ namespace Portrait_Builder {
 			// panelDLCs
 			// 
 			this.panelDLCs.AutoScroll = true;
-			this.panelDLCs.Location = new System.Drawing.Point(6, 6);
+			this.panelDLCs.Location = new System.Drawing.Point(4, 3);
 			this.panelDLCs.Name = "panelDLCs";
-			this.panelDLCs.Size = new System.Drawing.Size(227, 345);
+			this.panelDLCs.Size = new System.Drawing.Size(207, 299);
 			this.panelDLCs.TabIndex = 0;
 			// 
 			// tabMods
@@ -683,7 +685,7 @@ namespace Portrait_Builder {
 			this.tabMods.Controls.Add(this.panelMods);
 			this.tabMods.Location = new System.Drawing.Point(4, 22);
 			this.tabMods.Name = "tabMods";
-			this.tabMods.Size = new System.Drawing.Size(237, 357);
+			this.tabMods.Size = new System.Drawing.Size(216, 305);
 			this.tabMods.TabIndex = 2;
 			this.tabMods.Text = "Mods";
 			this.tabMods.UseVisualStyleBackColor = true;
@@ -691,17 +693,27 @@ namespace Portrait_Builder {
 			// panelMods
 			// 
 			this.panelMods.AutoScroll = true;
-			this.panelMods.Location = new System.Drawing.Point(5, 6);
+			this.panelMods.Location = new System.Drawing.Point(5, 3);
 			this.panelMods.Name = "panelMods";
-			this.panelMods.Size = new System.Drawing.Size(227, 347);
+			this.panelMods.Size = new System.Drawing.Size(208, 299);
 			this.panelMods.TabIndex = 1;
+			// 
+			// groupBox3
+			// 
+			this.groupBox3.Controls.Add(this.tabContent);
+			this.groupBox3.Location = new System.Drawing.Point(4, 10);
+			this.groupBox3.Name = "groupBox3";
+			this.groupBox3.Size = new System.Drawing.Size(237, 385);
+			this.groupBox3.TabIndex = 5;
+			this.groupBox3.TabStop = false;
+			this.groupBox3.Text = "Content";
 			// 
 			// Form1
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-			this.ClientSize = new System.Drawing.Size(690, 399);
-			this.Controls.Add(this.tabContent);
+			this.ClientSize = new System.Drawing.Size(666, 399);
+			this.Controls.Add(this.groupBox3);
 			this.Controls.Add(this.groupBox2);
 			this.Controls.Add(this.groupBox1);
 			this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
@@ -723,6 +735,7 @@ namespace Portrait_Builder {
 			this.tabContent.ResumeLayout(false);
 			this.tabDLCs.ResumeLayout(false);
 			this.tabMods.ResumeLayout(false);
+			this.groupBox3.ResumeLayout(false);
 			this.ResumeLayout(false);
 
 		}
@@ -788,6 +801,7 @@ namespace Portrait_Builder {
 		private System.Windows.Forms.Label label21;
 		private System.Windows.Forms.FlowLayoutPanel panelMods;
 		private System.Windows.Forms.Label label22;
+		private System.Windows.Forms.GroupBox groupBox3;
 	}
 }
 
