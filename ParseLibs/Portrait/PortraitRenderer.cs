@@ -7,7 +7,6 @@ using System.Threading.Tasks;
 using System.Drawing;
 using System.Drawing.Imaging;
 using log4net;
-using Parsers.Portrait;
 
 namespace Parsers.Portrait {
 	public class PortraitRenderer {
@@ -63,7 +62,12 @@ namespace Parsers.Portrait {
 
 		private int GetTileIndex(Portrait portrait, int frameCount, Layer layer) {
 			// TODO Refactor with layers inside Portrait
-			char letter = layer.LayerType == Layer.Type.DNA ? portrait.GetDNA()[layer.Index] : portrait.GetProperties()[layer.Index]; ;
+			char letter;
+			if (layer.Characteristic.type == Characteristic.Type.DNA) {
+				letter = portrait.GetDNA()[layer.Characteristic.index];
+			} else {
+				letter = portrait.GetProperties()[layer.Characteristic.index]; ;
+			}
 			int tileIndex = Portrait.GetTileIndexFromLetter(letter, frameCount);
 			logger.Debug(string.Format("Layer Letter: {0}, Tile Index: {1}", letter, tileIndex));
 			return tileIndex;

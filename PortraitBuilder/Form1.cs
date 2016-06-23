@@ -88,7 +88,6 @@ namespace Portrait_Builder {
 			LoadPortraits();
 			LoadBorders();
 
-			SetupSharedUI();
 			SetupUI();
 			RandomizeUI(true);
 
@@ -232,6 +231,10 @@ namespace Portrait_Builder {
 			return Portrait.GetLetter(cb.SelectedIndex, cb.Items.Count);
 		}
 
+		/// <summary>
+		/// Some very specific characristics are not randomized: scars, red dots, boils, prisoner, blinded.
+		/// </summary>
+		/// <param name="doRank"></param>
 		private void RandomizeUI(bool doRank) {
 			logger.Debug("Randomizing UI");
 			if (doRank) {
@@ -239,19 +242,6 @@ namespace Portrait_Builder {
 			}
 
 			RandomizeComboBox(cbBackground);
-
-			cbScars.SelectedIndex = 0;
-			cbRedDots.SelectedIndex = 0;
-			cbBoils.SelectedIndex = 0;
-			cbPrisoner.SelectedIndex = 0;
-			if (cbBlinded.Items.Count > 0) {
-				cbBlinded.SelectedIndex = 0;
-				cbBlinded.Enabled = true;
-			}
-			else {
-				cbBlinded.Enabled = false;
-				cbBlinded.SelectedIndex = -1;
-			}
 			RandomizeComboBox(cbClothes);
 			RandomizeComboBox(cbHeadgear);
 			RandomizeComboBox(cbHair);
@@ -280,19 +270,19 @@ namespace Portrait_Builder {
 				cb.Items.Add(i);
 		}
 
-		private void FillComboBox(ComboBox cb, string flagName) {
+		private void FillComboBox(ComboBox cb, Characteristic characteristic) {
 			cb.Items.Clear();
-
 			PortraitType portraitType = getSelectedPortraitType();
-			if (portraitType.CustomFlags.ContainsKey(flagName)) {
-				string spriteName = (string)portraitType.CustomFlags[flagName];
-				Sprite sprite = loader.activePortraitData.Sprites[spriteName];
-				logger.Debug(" --" + flagName + " item count: " + sprite.FrameCount);
-				FillComboBox(cb, sprite.FrameCount);
-			}
-			else {
-				logger.Warn(" --No " + flagName + " flag found, setting UI to 26.");
-				FillComboBox(cb, 26);
+			if(portraitType != null) {
+				int frameCount = loader.activePortraitData.GetFrameCount(portraitType, characteristic);
+				if (frameCount > 0) {
+					logger.Debug(string.Format("Item count for {0} {1} : {2}", portraitType, characteristic, frameCount));
+				}
+				else {
+					logger.Warn(string.Format("Could not find frame count for {0} and {1}, setting UI to 26.", portraitType, characteristic));
+					frameCount = 26;
+				}
+				FillComboBox(cb, frameCount);
 			}
 		}
 
@@ -305,44 +295,27 @@ namespace Portrait_Builder {
 			return selectedPortraitType;
 		}
 
-		private void SetupSharedUI() {
-			logger.Debug("Setting up Shared UI");
-
-			FillComboBox(cbBackground, "background");
-			FillComboBox(cbScars, "scars");
-			FillComboBox(cbRedDots, "reddots");
-			FillComboBox(cbBoils, "boils");
-			FillComboBox(cbPrisoner, "imprisoned");
-			FillComboBox(cbBlinded, "blinded");
-		}
-
 		private void SetupUI() {
-			PortraitType portraitType = getSelectedPortraitType();
+			FillComboBox(cbBackground, Characteristic.BACKGROUND);
+			FillComboBox(cbScars, Characteristic.SCARS);
+			FillComboBox(cbRedDots, Characteristic.RED_DOTS);
+			FillComboBox(cbBoils, Characteristic.BOILS);
+			FillComboBox(cbPrisoner, Characteristic.IMPRISONED);
+			FillComboBox(cbBlinded, Characteristic.BLINDED);
 
-			logger.Debug("Setting up UI for: " + portraitType.Name);
-			FillComboBox(cbClothes, "clothes");
-			FillComboBox(cbHeadgear, "headgear");
-			FillComboBox(cbHair, "hair");
-			FillComboBox(cbBeard, "beard");
-			FillComboBox(cbNeck, "neck");
-			FillComboBox(cbCheeks, "cheeks");
-			FillComboBox(cbChin, "chin");
-			FillComboBox(cbMouth, "mouth");
-			FillComboBox(cbNose, "nose");
-			FillComboBox(cbEyes, "eyes");
-			FillComboBox(cbEars, "ear");
-
-			logger.Debug(" --Setting hair colours: " + portraitType.HairColours.Count);
-			cbHairColour.Items.Clear();
-			for (int i = 0; i < portraitType.HairColours.Count; i++) {
-				cbHairColour.Items.Add(i);
-			}
-
-			logger.Debug(" --Setting eye colours: " + portraitType.EyeColours.Count);
-			cbEyeColour.Items.Clear();
-			for (int i = 0; i < portraitType.EyeColours.Count; i++) {
-				cbEyeColour.Items.Add(i);
-			}
+			FillComboBox(cbClothes, Characteristic.CLOTHES);
+			FillComboBox(cbHeadgear, Characteristic.HEADGEAR);
+			FillComboBox(cbHair, Characteristic.HAIR);
+			FillComboBox(cbBeard, Characteristic.BEARD);
+			FillComboBox(cbNeck, Characteristic.NECK);
+			FillComboBox(cbCheeks, Characteristic.CHEEKS);
+			FillComboBox(cbChin, Characteristic.CHIN);
+			FillComboBox(cbMouth, Characteristic.MOUTH);
+			FillComboBox(cbNose, Characteristic.NOSE);
+			FillComboBox(cbEyes, Characteristic.EYES);
+			FillComboBox(cbEars, Characteristic.EARS);
+			FillComboBox(cbHairColour, Characteristic.HAIR_COLOR);
+			FillComboBox(cbEyeColour, Characteristic.EYE_COLOR);
 		}
 
 		private void cb_SelectedIndexChanged(object sender, EventArgs e) {
@@ -385,7 +358,6 @@ namespace Portrait_Builder {
 			RandomizeUI(false);
 			started = true;
 
-			UpdatePortraitDataFromInputs();
 			DrawPortrait();
 		}
 
@@ -396,8 +368,6 @@ namespace Portrait_Builder {
 			started = false;
 			updateActiveAdditionalContent();
 			LoadPortraits();
-
-			SetupSharedUI();
 			SetupUI();
 			started = true;
 

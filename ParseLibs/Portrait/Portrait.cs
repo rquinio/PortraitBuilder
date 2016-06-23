@@ -32,6 +32,18 @@ namespace Parsers.Portrait {
 			return properties;
 		}
 
+		public char GetLetter(Characteristic characteristic) {
+			char letter;
+			if (characteristic.type == Characteristic.Type.DNA) {
+				letter = GetDNA()[characteristic.index];
+			}
+			else {
+				letter = GetProperties()[characteristic.index]; ;
+			}
+			return letter;
+		}
+
+
 		public override string ToString() {
 
 			return string.Format("DNA: {0}, Properties: {1}", GetDNA(), GetProperties());
@@ -65,7 +77,7 @@ namespace Parsers.Portrait {
 			else if (index == -1)
 				letter = '0';
 			else
-				letter = Letters[total - 1];
+				letter = Letters[index - 1];
 
 			return letter;
 		}

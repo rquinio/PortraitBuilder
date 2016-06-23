@@ -49,5 +49,25 @@ namespace Parsers.Portrait {
 			PortraitTypes = PortraitTypes.Concat(other.PortraitTypes).GroupBy(d => d.Key).ToDictionary(d => d.Key, d => d.Last().Value);
 			Offsets = Offsets.Concat(other.Offsets).GroupBy(d => d.Key).ToDictionary(d => d.Key, d => d.Last().Value);
 		}
+
+		public int GetFrameCount(PortraitType portraitType, Characteristic characteristic) {
+			int nbTiles = 0;
+			if(characteristic == Characteristic.EYE_COLOR) {
+				nbTiles = portraitType.EyeColours.Count;
+			} else if(characteristic == Characteristic.HAIR_COLOR){
+				nbTiles = portraitType.HairColours.Count;
+			} else {
+				foreach (Layer layer in portraitType.Layers) {
+					if (layer.Characteristic == characteristic) {
+						Sprite sprite = Sprites[layer.Name];
+						if (sprite != null) {
+							nbTiles = sprite.FrameCount;
+							break;
+						}
+					}
+				}
+			}
+			return nbTiles;
+		}
 	}
 }

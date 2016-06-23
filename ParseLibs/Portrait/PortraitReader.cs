@@ -18,39 +18,33 @@ namespace Parsers.Portrait {
 		/// </summary>
 		private PortraitOffsetReader portraitOffsetReader = new PortraitOffsetReader();
 
-		/// <summary>
-		/// Dictionary of loaded Sprites.
-		/// Key is the name of the sprite. E.g. GFX_character_background
-		/// </summary>
-		//public Dictionary<string, Sprite> Sprites = new Dictionary<string, Sprite>();
-		/// <summary>
-		/// Dictionary of loaded Portrait Types.
-		/// Key is the name of the Portrait Type. E.g. PORTRAIT_westerngfx_male
-		/// </summary>
-		//public Dictionary<string, PortraitType> PortraitTypes = new Dictionary<string, PortraitType>();
-
 		public PortraitData Parse(string dir) {
 			PortraitData data = new PortraitData();
-			List<string> fileNames = new List<string>();
+			try {
+				List<string> fileNames = new List<string>();
 
-			if (Directory.Exists(dir + @"\interface\")) {
-				fileNames.AddRange(Directory.GetFiles(dir + @"\interface\", "*.gfx"));
-			}
-			if (Directory.Exists(dir + @"\interface\portraits\")) {
-				fileNames.AddRange(Directory.GetFiles(dir + @"\interface\portraits\", "*.gfx"));
-			}
-
-			foreach (string fileName in fileNames) {
-				Parse(fileName, data);
-			}
-
-			if (Directory.Exists(dir + @"\interface\portrait_offsets\")) {
-				string[] offsetFileNames = Directory.GetFiles(dir + @"\interface\portrait_offsets\", "*.txt");
-				foreach (string offsetFileName in offsetFileNames) {
-					Dictionary<string, Point> offsets = portraitOffsetReader.Parse(offsetFileName);
-					data.Offsets = data.Offsets.Concat(offsets).GroupBy(d => d.Key).ToDictionary(d => d.Key, d => d.First().Value);
+				if (Directory.Exists(dir + @"\interface\")) {
+					fileNames.AddRange(Directory.GetFiles(dir + @"\interface\", "*.gfx"));
 				}
+				if (Directory.Exists(dir + @"\interface\portraits\")) {
+					fileNames.AddRange(Directory.GetFiles(dir + @"\interface\portraits\", "*.gfx"));
+				}
+
+				foreach (string fileName in fileNames) {
+					Parse(fileName, data);
+				}
+
+				if (Directory.Exists(dir + @"\interface\portrait_offsets\")) {
+					string[] offsetFileNames = Directory.GetFiles(dir + @"\interface\portrait_offsets\", "*.txt");
+					foreach (string offsetFileName in offsetFileNames) {
+						Dictionary<string, Point> offsets = portraitOffsetReader.Parse(offsetFileName);
+						data.Offsets = data.Offsets.Concat(offsets).GroupBy(d => d.Key).ToDictionary(d => d.Key, d => d.First().Value);
+					}
+				}
+			} catch(Exception e) {
+				logger.Error("Failed to parse portrait data in " + dir, e);
 			}
+			
 			return data;
 		}
 
@@ -253,8 +247,17 @@ namespace Parsers.Portrait {
 			layer.Filename = filename;
 
 			layer.Name = layerParts[0];
-			layer.LayerType = layerParts[1][0] == 'd' ? Layer.Type.DNA : Layer.Type.Property;
-			layer.Index = int.Parse(layerParts[1].Substring(1));
+
+			int index = int.Parse(layerParts[1].Substring(1));
+			if (layerParts[1][0] == 'd') {
+				layer.Characteristic = Characteristic.DNA[index];
+			}
+			else if (layerParts[1][0] == 'p') {
+				layer.Characteristic = Characteristic.PROPERTIES[index];
+			}
+			else {
+				logger.Error(string.Format("Unkown type {0}, for layer {1) in file {2}", layerParts[1], layer, filename));
+			}
 
 			for (int i = 2; i < layerParts.Length; i++) {
 				if (layerParts[i] == "h" || layerParts[2] == "x") {

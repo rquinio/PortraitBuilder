@@ -15,11 +15,6 @@ namespace Parsers.Portrait {
 		public List<Bitmap> Tiles = new List<Bitmap>();
 
 		/// <summary>
-		/// Used for storing data specific to the program.
-		/// </summary>
-		public Dictionary<string, object> CustomFlags = new Dictionary<string, object>();
-
-		/// <summary>
 		/// The file that the data was loaded from.
 		/// </summary>
 		public string Filename;
@@ -27,8 +22,8 @@ namespace Parsers.Portrait {
 		/// <summary>
 		/// Loads the tiles in the sprite. Sets IsLoaded to true.
 		/// </summary>
-		/// <param name="ckDir">Directory to load image from.</param>
-		public void Load(string ckDir) {
+		/// <param name="dir">Directory to load image from.</param>
+		public void Load(string dir) {
 			Bitmap texture;
 
 			if (Tiles.Count > 0) {
@@ -37,10 +32,10 @@ namespace Parsers.Portrait {
 				Tiles = new List<Bitmap>();
 			}
 
-			if (File.Exists(ckDir + "/" + TextureFilePath))
-				texture = DevIL.DevIL.LoadBitmap(ckDir + "/" + TextureFilePath);
+			if (File.Exists(dir + "/" + TextureFilePath))
+				texture = DevIL.DevIL.LoadBitmap(dir + "/" + TextureFilePath);
 			else
-				throw new FileLoadException("Unable to find texture file.", ckDir + TextureFilePath);
+				throw new FileLoadException("Unable to find texture file.", dir + TextureFilePath);
 
 			Size size = new Size(texture.Width / FrameCount, texture.Height);
 

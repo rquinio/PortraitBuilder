@@ -30,9 +30,13 @@ namespace Parsers {
 			return Name;
 		}
 
+		/// <summary>
+		/// True if content has portraitTypes.
+		/// Checking sprites would cause too many false positives.
+		/// </summary>
+		/// <returns></returns>
 		public bool GetHasPortraitData() {
-			return Directory.Exists(AbsolutePath + @"gfx\characters\");
-			// return PortraitData.Sprites.Count > 0 || PortraitData.PortraitTypes.Count > 0;
+			return PortraitData.PortraitTypes.Count > 0;
 		}
 	}
 }

@@ -17,12 +17,22 @@ namespace Parsers.Portrait {
 		/// <summary>
 		/// Index of the letter in the DNA/Properties string
 		/// </summary>
-		public int Index;
+		//public int Index;
 
-		public Type LayerType;
+		public Characteristic Characteristic;
 
+		/// <summary>
+		/// Whether this layer should apply hair coloration 
+		/// 
+		/// Note: used for both hair and beard layers
+		/// </summary>
 		public bool IsHair;
+
+		/// <summary>
+		/// Whether this layer should apply eye coloration 
+		/// </summary>
 		public bool IsEye;
+
 		public bool DontRefreshIfValid = false;
 
 		/// <summary>
@@ -30,18 +40,13 @@ namespace Parsers.Portrait {
 		/// </summary>
 		public Point Offset = new Point(0, 0);
 
-		public enum Type {
-			DNA,
-			Property
-		}
-
 		/// <summary>
 		/// The file that the data was loaded from.
 		/// </summary>
 		public string Filename;
 
 		public override string ToString() {
-			return string.Format("Name: {0}, Index: {1}, LayerType: {2}, Offset: {3}, Hair: {4}, Eye: {5}", Name, Index, LayerType, Offset, IsHair, IsEye);
+			return string.Format("Name: {0}, Characteristic: {1}", Name, Characteristic);
 		}
 	}
 }

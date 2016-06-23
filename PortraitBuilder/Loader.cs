@@ -67,6 +67,12 @@ namespace Portrait_Builder {
 			vanilla = new Content();
 			vanilla.Name = "vanilla";
 			vanilla.AbsolutePath = user.GameDir;
+
+			logger.Info("Loading portraits from vanilla.");
+			vanilla.PortraitData = portraitReader.Parse(user.GameDir);
+
+			// Init
+			activePortraitData = vanilla.PortraitData;
 		}
 
 		public List<DLC> LoadDLCs() {
@@ -83,6 +89,9 @@ namespace Portrait_Builder {
 				string fileFilter = @"interface;gfx/characters";
 				fastZip.ExtractZip(dlc.AbsolutePath, newDlcAbsolutePath, fileFilter);
 				dlc.AbsolutePath = newDlcAbsolutePath;
+
+				logger.Info("Loading portraits from DLC: " + dlc.Name);
+				dlc.PortraitData = portraitReader.Parse(dlc.AbsolutePath);
 			}
 			return dlcs;
 		}
@@ -92,9 +101,12 @@ namespace Portrait_Builder {
 			List<Mod> mods = modReader.ParseFolder(user.MyDocsDir + @"\mod\");
 
 			foreach (Mod mod in mods) {
-
-				if (!Directory.Exists(mod.AbsolutePath))
-					continue;
+				if (Directory.Exists(mod.AbsolutePath)) {
+					logger.Info("Loading portraits from mod: " + mod.Name);
+					mod.PortraitData = portraitReader.Parse(mod.AbsolutePath);
+				} else {
+					logger.Error("Mod path "+ mod.AbsolutePath+ " does not exist");
+				}
 			}
 			return mods;
 		}
@@ -109,7 +121,10 @@ namespace Portrait_Builder {
 
 		private void MergePortraitData() {
 			logger.Info("Disposing of previous portrait data.");
-			activePortraitData.Dispose();
+
+			// FIXME 
+			//activePortraitData.Dispose();
+			activePortraitData = new PortraitData();
 
 			activePortraitData.MergeWith(vanilla.PortraitData);
 			// Recalculate merged portrait data
@@ -119,61 +134,19 @@ namespace Portrait_Builder {
 		}
 
 		public void LoadPortraits() {
-			logger.Info("Loading portraits from vanilla.");
-			vanilla.PortraitData = portraitReader.Parse(user.GameDir);
+			MergePortraitData();
 
-			foreach (Content content in activeContents) {
-				logger.Info("Loading portraits from mod: " + content.Name);
-				content.PortraitData = portraitReader.Parse(content.AbsolutePath);
-			}
-
-			logger.Debug("Setting up type flags");
+			// Apply external offsets
 			foreach (KeyValuePair<string, PortraitType> pair in activePortraitData.PortraitTypes) {
 				PortraitType portraitType = pair.Value;
-				logger.Debug(" --Setting up flags for " + portraitType.Name);
 
 				foreach (Layer layer in portraitType.Layers) {
 					if (activePortraitData.Offsets.ContainsKey(layer.Name)) {
 						layer.Offset = activePortraitData.Offsets[layer.Name];
 						logger.Debug(string.Format("Overriding offset of layer {0} to {1}", layer.Name, layer.Offset));
 					}
-					setupFlags(portraitType, layer);
 				}
 			}
-
-			MergePortraitData();
-		}
-
-		// FIXME This should not be needed, as layer are associated via dna/properties letters already
-		private void setupFlags(PortraitType portraitType, Layer layer) {
-			// Shared
-			setupFlag(portraitType, layer, "background");
-			setupFlag(portraitType, layer, "boils");
-			setupFlag(portraitType, layer, "reddots");
-			setupFlag(portraitType, layer, "scars");
-			setupFlag(portraitType, layer, "imprisoned");
-			setupFlag(portraitType, layer, "blinded");
-
-			// Properties
-			setupFlag(portraitType, layer, "clothes");
-			setupFlag(portraitType, layer, "headgear");
-			setupFlag(portraitType, layer, "beard");
-			setupFlag(portraitType, layer, "hair");
-
-			// DNA
-			setupFlag(portraitType, layer, "base");
-			setupFlag(portraitType, layer, "neck");
-			setupFlag(portraitType, layer, "cheeks");
-			setupFlag(portraitType, layer, "chin");
-			setupFlag(portraitType, layer, "mouth");
-			setupFlag(portraitType, layer, "nose");
-			setupFlag(portraitType, layer, "eyes");
-			setupFlag(portraitType, layer, "ear");
-		}
-
-		private void setupFlag(PortraitType portraitType, Layer layer, string layerName) {
-			if (layer.Name.Contains(layerName) && !portraitType.CustomFlags.ContainsKey(layerName))
-				portraitType.CustomFlags.Add(layerName, layer.Name);
 		}
 
 		// Note: only loads from vanilla
