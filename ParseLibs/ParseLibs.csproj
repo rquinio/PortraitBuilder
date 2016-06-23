@@ -57,6 +57,8 @@
   <ItemGroup>
     <Compile Include="AdditionalContent.cs" />
     <Compile Include="Portrait\Portrait.cs" />
+    <Compile Include="Portrait\PortraitData.cs" />
+    <Compile Include="Portrait\PortraitRenderer.cs" />
     <Compile Include="User.cs" />
     <Compile Include="DLC\DLC.cs" />
     <Compile Include="DLC\DLCReader.cs" />

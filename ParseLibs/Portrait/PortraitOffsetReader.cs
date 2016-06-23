@@ -13,15 +13,17 @@ namespace Parsers.Portrait {
 		private static readonly ILog logger = LogManager.GetLogger(typeof(PortraitOffsetReader).Name);
 
 		/// <summary>
-		/// GFX_byzantine_male_mouth 75x49
+		/// Parse offset files
 		/// </summary>
-		public Dictionary<string, Point> Offsets = new Dictionary<string, Point>();
-
-		public void Parse(string filename) {
+		/// <param name="filename"></param>
+		/// <returns>Map sprite name / offset, E.g GFX_byzantine_male_mouth 75x49</returns>
+		public Dictionary<string, Point> Parse(string filename) {
 			if (!File.Exists(filename)) {
 				logger.Error(string.Format("File not found: {0}", filename));
-				return;
+				return null;
 			}
+
+			Dictionary<string, Point> offsets = new Dictionary<string, Point>();
 
 			string line;
 			using (StreamReader reader = new StreamReader(filename, Encoding.GetEncoding(1252))) {
@@ -29,12 +31,13 @@ namespace Parsers.Portrait {
 					if (line.StartsWith("#"))
 						continue;
 
-					parseLine(filename, line);
+					parseLine(filename, line, offsets);
 				}
 			}
+			return offsets;
 		}
 
-		private void parseLine(string filename, string line) {
+		private void parseLine(string filename, string line, Dictionary<string, Point>  offsets) {
 			string[] words = line.Split(' ');
 			if (words.Length == 2) {
 				Point offset = new Point();
@@ -42,12 +45,12 @@ namespace Parsers.Portrait {
 
 				offset.X = int.Parse(words[1].Split('x')[0]);
 				offset.Y = int.Parse(words[1].Split('x')[1]);
-				if (Offsets.ContainsKey(layerName)) {
-					if (offset != Offsets[layerName]) {
-						logger.Warn(string.Format("Duplicate offsets for {0}: {1} and {2} (ignored)", layerName, Offsets[layerName], offset));
+				if (offsets.ContainsKey(layerName)) {
+					if (offset != offsets[layerName]) {
+						logger.Warn(string.Format("Duplicate offsets for {0}: {1} and {2} (ignored)", layerName, offsets[layerName], offset));
 					}
 				} else {
-					Offsets.Add(layerName, offset);
+				offsets.Add(layerName, offset);
 				}
 			} else {
 				logger.Error(string.Format("Syntax error in file {0} on line: {1} ", filename, line));

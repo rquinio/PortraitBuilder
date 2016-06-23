@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 
 namespace Parsers.DLC {
-	public class DLC : AdditionalContent {
+	public class DLC : Content {
 
 		/// <summary>
 		/// Name of .dlc file, E.g. dlc060.dlc

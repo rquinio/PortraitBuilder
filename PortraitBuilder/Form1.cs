@@ -15,6 +15,10 @@ using Parsers.Portrait;
 using Parsers;
 
 namespace Portrait_Builder {
+
+	/// <summary>
+	/// Controller class
+	/// </summary>
 	public partial class Form1 : Form {
 
 		private static readonly ILog logger = LogManager.GetLogger(typeof(Form1).Name);
@@ -26,41 +30,18 @@ namespace Portrait_Builder {
 		private StringBuilder dnaPropOutput;
 		public static Random rand = new Random();
 
-		/// <summary>
-		/// User configuration: game path, etc.
-		/// </summary>
-		User user = new User();
+		private Loader loader;
 
-		/// <summary>
-		/// DLCs or Mods that are checked
-		/// </summary>
-		private List<AdditionalContent> activeMods = new List<AdditionalContent>();
+		private PortraitRenderer portraitRenderer = new PortraitRenderer();
 
 		/// <summary>
 		/// List of all available DLCs and Mods, indexed by their corresponding checkbox
 		/// </summary>
-		private Dictionary<CheckBox, AdditionalContent> usableMods = new Dictionary<CheckBox, AdditionalContent>();
+		private Dictionary<CheckBox, Content> usableMods = new Dictionary<CheckBox, Content>();
 
 		/// <summary>
-		/// Stateless mod scanner
+		/// The portrait being previewed
 		/// </summary>
-		private ModReader modReader = new ModReader();
-
-		/// <summary>
-		/// Stateless dlc scanner
-		/// </summary>
-		private DLCReader dlcReader = new DLCReader();
-
-		/// <summary>
-		/// TODO make it stateless
-		/// </summary>
-		private PortraitReader portraitReader = new PortraitReader();
-
-		/// <summary>
-		/// TODO make it stateless
-		/// </summary>
-		private PortraitOffsetReader portraitOffsetReader = new PortraitOffsetReader();
-
 		private Portrait portrait = new Portrait();
 
 		/// <summary>
@@ -84,7 +65,10 @@ namespace Portrait_Builder {
 		private void EnvironmentSetup() {
 			logger.Info("Portrait Builder Version " + Application.ProductVersion);
 			logger.Info("Portrait Builder Parser Library " + Parsers.Version.GetVersion());
+			// Add the version to title
+			this.Text += " " + Application.ProductVersion;
 
+			User user = new User();
 			user.GameDir = ReadGameDir();
 			user.MyDocsDir = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments) + @"\Paradox Interactive\Crusader Kings II\";
 			user.DlcDir = Environment.CurrentDirectory + @"\dlc\";
@@ -95,9 +79,9 @@ namespace Portrait_Builder {
 			logger.Info("Configuration: " + user);
 			logger.Info("----------------------------");
 
-			// Add the version to title
-			this.Text += " " + Application.ProductVersion;
+			loader = new Loader(user);
 
+			loader.LoadVanilla();
 			LoadDLCs();
 			LoadMods();
 
@@ -114,171 +98,40 @@ namespace Portrait_Builder {
 		}
 
 		private void LoadBorders() {
-			logger.Debug("Setting up borders.");
-			string borderSprite = user.GameDir + @"\gfx\interface\charframe_150.dds";
+			string borderSprite = loader.LoadBorders();
 
-			if (!File.Exists(borderSprite)) {
-				logger.Error("Borders file \\gfx\\interface\\charframe_150.dds not found.");
-				return;
-			}
+			if(borderSprite != null) {
+				Bitmap charFrame = DevIL.DevIL.LoadBitmap(borderSprite);
 
-			Bitmap charFrame = DevIL.DevIL.LoadBitmap(borderSprite);
-
-			for (int i = 0; i < 6; i++) {
-				Bitmap border = new Bitmap(176, 176);
-				Graphics g = Graphics.FromImage(border);
-				g.DrawImage(charFrame, 0, 0, new Rectangle(i * 176, 0, 176, 176), GraphicsUnit.Pixel);
-				g.Dispose();
-				borders.Add(border);
-			}
-		}
-
-		private void LoadPortraits() {
-			logger.Info("Disposing of previous portrait data.");
-			portraitReader.Dispose();
-
-			logger.Info("Loading portraits from vanilla.");
-			LoadPortraitsFromDir(user.GameDir);
-
-
-			foreach (AdditionalContent mod in activeMods) {
-				if (mod.HasPortraits) {
-					logger.Info("Loading portraits from mod: " + mod.Name);
-					LoadPortraitsFromDir(mod.AbsolutePath);
+				for (int i = 0; i < 6; i++) {
+					Bitmap border = new Bitmap(176, 176);
+					Graphics g = Graphics.FromImage(border);
+					g.DrawImage(charFrame, 0, 0, new Rectangle(i * 176, 0, 176, 176), GraphicsUnit.Pixel);
+					g.Dispose();
+					borders.Add(border);
 				}
 			}
-
-			object previouslySelectedPortrait = null;
-			if (cbPortraitTypes.SelectedItem != null) {
-				previouslySelectedPortrait = cbPortraitTypes.Items[cbPortraitTypes.SelectedIndex];
-			}
-			cbPortraitTypes.Items.Clear();
-
-			if (portraitReader.PortraitTypes.Count == 0) {
-				logger.Fatal("No portrait types found.");
-				return;
-			}
-
-			logger.Debug("Setting up type flags");
-			foreach (KeyValuePair<string, PortraitType> pair in portraitReader.PortraitTypes) {
-				PortraitType portraitType = pair.Value;
-				logger.Debug(" --Setting up flags for " + portraitType.Name);
-				cbPortraitTypes.Items.Add(portraitType.Name.Replace("PORTRAIT_",""));
-
-				foreach (Layer layer in portraitType.Layers) {
-
-					if (portraitOffsetReader.Offsets.ContainsKey(layer.Name)) {
-						layer.Offset = portraitOffsetReader.Offsets[layer.Name];
-						logger.Debug(string.Format("Overriding offset of layer {0} to {1}", layer.Name, layer.Offset));
-					}
-
-					setupFlags(portraitType, layer);
-				}
-			}
-
-			if (previouslySelectedPortrait != null) {
-				cbPortraitTypes.SelectedIndex = cbPortraitTypes.Items.IndexOf(previouslySelectedPortrait);
-			}
-			if(cbPortraitTypes.SelectedIndex == -1) {
-				cbPortraitTypes.SelectedIndex = 0;
-			}
-		}
-
-		private void LoadPortraitsFromDir(string dir) {
-			List<string> fileNames = new List<string>();
-
-			if(Directory.Exists(dir + @"\interface\")) {
-				fileNames.AddRange(Directory.GetFiles(dir + @"\interface\", "*.gfx"));
-			}
-			if (Directory.Exists(dir + @"\interface\portraits\")){
-				fileNames.AddRange(Directory.GetFiles(dir + @"\interface\portraits\", "*.gfx"));
-			}
-
-			foreach (string fileName in fileNames) {
-				portraitReader.Parse(fileName);
-			}
-
-			if(Directory.Exists(dir + @"\interface\portrait_offsets\")) {
-				string[] offsetFileNames = Directory.GetFiles(dir + @"\interface\portrait_offsets\", "*.txt");
-				foreach (string offsetFileName in offsetFileNames) {
-					portraitOffsetReader.Parse(offsetFileName);
-				}
-			}
-		}
-
-		// FIXME This should not be needed, as layer are associated via dna/properties letters already
-		private void setupFlags(PortraitType portraitType, Layer layer) {
-			// Shared
-			setupFlag(portraitType, layer, "background");
-			setupFlag(portraitType, layer, "boils");
-			setupFlag(portraitType, layer, "reddots");
-			setupFlag(portraitType, layer, "scars");
-			setupFlag(portraitType, layer, "imprisoned");
-			setupFlag(portraitType, layer, "blinded");
-
-			// Properties
-			setupFlag(portraitType, layer, "clothes");
-			setupFlag(portraitType, layer, "headgear");
-			setupFlag(portraitType, layer, "beard");
-			setupFlag(portraitType, layer, "hair");
-
-			// DNA
-			setupFlag(portraitType, layer, "base");
-			setupFlag(portraitType, layer, "neck");
-			setupFlag(portraitType, layer, "cheeks");
-			setupFlag(portraitType, layer, "chin");
-			setupFlag(portraitType, layer, "mouth");
-			setupFlag(portraitType, layer, "nose");
-			setupFlag(portraitType, layer, "eyes");
-			setupFlag(portraitType, layer, "ear");
-		}
-
-		private void setupFlag(PortraitType portraitType, Layer layer, string layerName) {
-			if (layer.Name.Contains(layerName) && !portraitType.CustomFlags.ContainsKey(layerName))
-				portraitType.CustomFlags.Add(layerName, layer.Name);
 		}
 
 		private void LoadMods() {
-			logger.Info("Loading mods from " + user.MyDocsDir + @"\mod\");
-			List<Mod> mods = modReader.ParseFolder(user.MyDocsDir + @"\mod\");
-
+			List<Mod> mods = loader.LoadMods();
 			foreach (Mod mod in mods) {
-
-				if (!Directory.Exists(mod.AbsolutePath))
-					continue;
-
-				// FIXME also scan .gfx files
-				if (Directory.Exists(mod.AbsolutePath + @"\gfx\characters\")) {
-					mod.HasPortraits = false;
+				if (mod.GetHasPortraitData()) {
 					registerMod(panelMods, mod);
 				}
 			}
 		}
 
 		private void LoadDLCs() {
-			logger.Info("Loading DLCs from " + user.GameDir + @"dlc\");
-			List<DLC> dlcs = dlcReader.ParseFolder(user.GameDir + @"\dlc");
-
-			FastZip fastZip = new FastZip();
+			List<DLC> dlcs = loader.LoadDLCs();
 			foreach (DLC dlc in dlcs) {
-				string dlcCode = dlc.DLCFile.Replace(".dlc", "");
-				string newDlcAbsolutePath = user.DlcDir + dlcCode + @"\";
-				logger.Info(string.Format("Extracting {0} to {1}", dlc.Name, newDlcAbsolutePath));
-					
-				// Filter only portraits files, to gain speed/space
-				string fileFilter = @"interface;gfx/characters";
-				fastZip.ExtractZip(dlc.AbsolutePath, newDlcAbsolutePath, fileFilter);
-				dlc.AbsolutePath = newDlcAbsolutePath;
-
-				// FIXME need to scan gfx too
-				if (Directory.Exists(dlc.AbsolutePath + @"gfx\characters\")) {
-					dlc.HasPortraits = true;
+				if (dlc.GetHasPortraitData()) {
 					registerMod(panelDLCs, dlc);
 				}
 			}
 		}
 
-		private void registerMod(Control container, AdditionalContent mod) {
+		private void registerMod(Control container, Content mod) {
 			CheckBox checkbox = new CheckBox();
 			checkbox.Text = mod.Name;
 			checkbox.AutoEllipsis = true;
@@ -308,7 +161,7 @@ namespace Portrait_Builder {
 			logger.Debug("   --Rendering portrait.");
 			try {
 				PortraitType portraitType = getSelectedPortraitType();
-				portraitImage = portraitReader.DrawPortrait(portraitType, portrait, activeMods, user);
+				portraitImage = portraitRenderer.DrawPortrait(portraitType, portrait, loader.activeContents, loader.user, loader.activePortraitData.Sprites);
 			}
 			catch (Exception e) {
 				logger.Error("Error encountered rendering portrait:" + e.ToString());
@@ -375,17 +228,8 @@ namespace Portrait_Builder {
 			tbDNA.Text = dnaPropOutput.ToString();
 		}
 
-		public char GetLetter(ComboBox cb) {
-			char letter;
-
-			if (cb.SelectedIndex == 0)
-				letter = portraitReader.Letters[cb.Items.Count - 1];
-			else if (cb.SelectedIndex == -1)
-				letter = '0';
-			else
-				letter = portraitReader.Letters[cb.SelectedIndex - 1];
-
-			return letter;
+		private char GetLetter(ComboBox cb) {
+			return Portrait.GetLetter(cb.SelectedIndex, cb.Items.Count);
 		}
 
 		private void RandomizeUI(bool doRank) {
@@ -442,7 +286,7 @@ namespace Portrait_Builder {
 			PortraitType portraitType = getSelectedPortraitType();
 			if (portraitType.CustomFlags.ContainsKey(flagName)) {
 				string spriteName = (string)portraitType.CustomFlags[flagName];
-				Sprite sprite = portraitReader.Sprites[spriteName];
+				Sprite sprite = loader.activePortraitData.Sprites[spriteName];
 				logger.Debug(" --" + flagName + " item count: " + sprite.FrameCount);
 				FillComboBox(cb, sprite.FrameCount);
 			}
@@ -453,7 +297,12 @@ namespace Portrait_Builder {
 		}
 
 		private PortraitType getSelectedPortraitType() {
-			return portraitReader.PortraitTypes["PORTRAIT_" + cbPortraitTypes.SelectedItem.ToString()];
+			PortraitType selectedPortraitType = null;
+			object selectedItem = cbPortraitTypes.SelectedItem;
+			if(selectedItem != null) {
+				return loader.activePortraitData.PortraitTypes["PORTRAIT_" + selectedItem.ToString()];
+			}
+			return selectedPortraitType;
 		}
 
 		private void SetupSharedUI() {
@@ -531,20 +380,6 @@ namespace Portrait_Builder {
 			}
 		}
 
-		private int GetIndex(char letter, int total) {
-			if (total == 0)
-				return -1;
-
-			if (letter == '0')
-				return 0;
-
-			int index = (portraitReader.Letters.IndexOf(letter) + 1) % total;
-			if (index == total) {
-				index = 0;
-			}
-			return index;
-		}
-
 		private void btnRandom_Click(object sender, EventArgs e) {
 			started = false;
 			RandomizeUI(false);
@@ -559,7 +394,7 @@ namespace Portrait_Builder {
 		/// </summary>
 		private void onCheck(object sender, EventArgs e) {
 			started = false;
-			updateActiveMods();
+			updateActiveAdditionalContent();
 			LoadPortraits();
 
 			SetupSharedUI();
@@ -569,14 +404,42 @@ namespace Portrait_Builder {
 			DrawPortrait();
 		}
 
-		private void updateActiveMods() {
-			activeMods = new List<AdditionalContent>();
+		private void LoadPortraits() {
+			object previouslySelectedPortrait = null;
+			if (cbPortraitTypes.SelectedItem != null) {
+				previouslySelectedPortrait = cbPortraitTypes.Items[cbPortraitTypes.SelectedIndex];
+			}
+			cbPortraitTypes.Items.Clear();
+
+			loader.LoadPortraits();
+
+			if (loader.activePortraitData.PortraitTypes.Count == 0) {
+				logger.Fatal("No portrait types found.");
+				return;
+			}
+
+			foreach (KeyValuePair<string, PortraitType> pair in loader.activePortraitData.PortraitTypes) {
+				PortraitType portraitType = pair.Value;
+				cbPortraitTypes.Items.Add(portraitType.Name.Replace("PORTRAIT_", ""));
+			}
+
+			if (previouslySelectedPortrait != null) {
+				cbPortraitTypes.SelectedIndex = cbPortraitTypes.Items.IndexOf(previouslySelectedPortrait);
+			}
+			if (cbPortraitTypes.SelectedIndex == -1) {
+				cbPortraitTypes.SelectedIndex = 0;
+			}
+		}
+
+		private void updateActiveAdditionalContent() {
+			List<Content> activeContent = new List<Content>();
 			foreach (Control control in panelDLCs.Controls) {
 				CheckBox checkbox = (CheckBox)control;
 				if (checkbox.Checked) {
-					activeMods.Add(usableMods[checkbox]);
+					activeContent.Add(usableMods[checkbox]);
 				}
 			}
+			loader.UpdateActivateAdditionalContent(activeContent);
 		}
 
 		private void cbPortraitTypes_SelectedIndexChanged(object sender, EventArgs e) {
@@ -595,13 +458,13 @@ namespace Portrait_Builder {
 		private void UpdateInputsFromPortraitData(Portrait portrait) {
 			for (int i = 0; i < dnaComboBoxes.Count; i++) {
 				if (dnaComboBoxes[i] != null) {
-					dnaComboBoxes[i].SelectedIndex = GetIndex(portrait.GetDNA()[i], dnaComboBoxes[i].Items.Count);
+					dnaComboBoxes[i].SelectedIndex = Portrait.GetIndex(portrait.GetDNA()[i], dnaComboBoxes[i].Items.Count);
 				}
 			}
 
 			for (int i = 0; i < propertiesComboBoxes.Count; i++) {
 				if (propertiesComboBoxes[i] != null) {
-					propertiesComboBoxes[i].SelectedIndex = GetIndex(portrait.GetProperties()[i], propertiesComboBoxes[i].Items.Count);
+					propertiesComboBoxes[i].SelectedIndex = Portrait.GetIndex(portrait.GetProperties()[i], propertiesComboBoxes[i].Items.Count);
 				}
 			}
 		}

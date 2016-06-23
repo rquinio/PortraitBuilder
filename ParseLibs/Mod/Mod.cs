@@ -2,7 +2,7 @@ using System.Collections.Generic;
 using Parsers;
 
 namespace Parsers.Mod {
-	public class Mod : AdditionalContent {
+	public class Mod : Content {
 
 		/// <summary>
 		/// Name of .mod file, E.g. mymod.mod

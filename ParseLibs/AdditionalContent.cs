@@ -1,12 +1,18 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.IO;
+using Parsers.Portrait;
 
 namespace Parsers {
 
-	public abstract class AdditionalContent {
+	/// <summary>
+	/// Represents a loadable unit of content (vanilla, DLC, mod, ...).
+	/// </summary>
+	public class Content {
 
 		/// <summary>
 		/// Name to be displayed, E.g. "My Mod"
@@ -18,10 +24,15 @@ namespace Parsers {
 		/// </summary>
 		public string AbsolutePath;
 
-		public bool HasPortraits = false;
+		public PortraitData PortraitData;
 
 		public override string ToString() {
 			return Name;
+		}
+
+		public bool GetHasPortraitData() {
+			return Directory.Exists(AbsolutePath + @"gfx\characters\");
+			// return PortraitData.Sprites.Count > 0 || PortraitData.PortraitTypes.Count > 0;
 		}
 	}
 }
