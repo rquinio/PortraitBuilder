@@ -26,6 +26,7 @@ namespace Parsers.Portrait {
 				if (Directory.Exists(dir + @"\interface\")) {
 					fileNames.AddRange(Directory.GetFiles(dir + @"\interface\", "*.gfx"));
 				}
+				// interface/portraits seems to be loaded after interface/, and override (cf byzantinegfx)
 				if (Directory.Exists(dir + @"\interface\portraits\")) {
 					fileNames.AddRange(Directory.GetFiles(dir + @"\interface\portraits\", "*.gfx"));
 				}
@@ -115,11 +116,11 @@ namespace Parsers.Portrait {
 				} else if (id.ValueText == "portraitType") {
 					PortraitType portraitType = ParsePortraitType(child, filename);
 
-					if (!data.PortraitTypes.ContainsKey(portraitType.Name))
-						data.PortraitTypes.Add(portraitType.Name, portraitType);
-					else {
-						logger.Warn("Portrait type " + portraitType.Name + " has already been defined.");
+					if (data.PortraitTypes.ContainsKey(portraitType.Name)) {
+						logger.Debug("Portrait type " + portraitType.Name + "exists. Replacing.");
+						data.PortraitTypes.Remove(portraitType.Name);
 					}
+					data.PortraitTypes.Add(portraitType.Name, portraitType);
 				}
 			}
 		}

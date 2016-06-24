@@ -75,25 +75,47 @@ namespace Portrait_Builder {
 			activePortraitData = vanilla.PortraitData;
 		}
 
+		public List<DLC> LoadDLCs(Boolean clean) {
+			if (clean) {
+				// Cleanup temporary DLC Dir
+				Directory.Delete(user.DlcDir, true);
+			}
+			return LoadDLCs();
+		}
+
 		public List<DLC> LoadDLCs() {
 			logger.Info("Loading DLCs from " + user.GameDir + @"dlc\");
 			List<DLC> dlcs = dlcReader.ParseFolder(user.GameDir + @"\dlc");
 
-			FastZip fastZip = new FastZip();
+			UnzipDLCs(dlcs);
+
 			foreach (DLC dlc in dlcs) {
-				string dlcCode = dlc.DLCFile.Replace(".dlc", "");
-				string newDlcAbsolutePath = user.DlcDir + dlcCode + @"\";
-				logger.Info(string.Format("Extracting {0} to {1}", dlc.Name, newDlcAbsolutePath));
-
-				// Filter only portraits files, to gain speed/space
-				string fileFilter = @"interface;gfx/characters";
-				fastZip.ExtractZip(dlc.AbsolutePath, newDlcAbsolutePath, fileFilter);
-				dlc.AbsolutePath = newDlcAbsolutePath;
-
 				logger.Info("Loading portraits from DLC: " + dlc.Name);
 				dlc.PortraitData = portraitReader.Parse(dlc.AbsolutePath);
 			}
 			return dlcs;
+		}
+
+		/// <summary>
+		/// Unzip DLC, only if tmp folder doesn't already exist
+		/// </summary>
+		/// <param name="dlcs"></param>
+		private void UnzipDLCs(List<DLC> dlcs) {
+			FastZip fastZip = new FastZip();
+			foreach (DLC dlc in dlcs) {
+				string dlcCode = dlc.DLCFile.Replace(".dlc", "");
+				string newDlcAbsolutePath = user.DlcDir + dlcCode + @"\";
+				if (!Directory.Exists(newDlcAbsolutePath)) {
+					logger.Info(string.Format("Extracting {0} to {1}", dlc.Name, newDlcAbsolutePath));
+					// Filter only portraits files, to gain speed/space
+					string fileFilter = @"interface;gfx/characters";
+					fastZip.ExtractZip(dlc.AbsolutePath, newDlcAbsolutePath, fileFilter);
+
+					// In any case, create the directory, so that it is ignored for next load.
+					Directory.CreateDirectory(newDlcAbsolutePath);
+				}
+				dlc.AbsolutePath = newDlcAbsolutePath;
+			}
 		}
 
 		public List<Mod> LoadMods() {

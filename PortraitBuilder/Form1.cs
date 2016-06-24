@@ -27,8 +27,9 @@ namespace Portrait_Builder {
 		private List<Bitmap> borders = new List<Bitmap>();
 
 		private bool started = false;
-		private StringBuilder dnaPropOutput;
 		public static Random rand = new Random();
+
+		private Boolean nextToogleIsSelectAll = true;
 
 		private Loader loader;
 
@@ -59,44 +60,42 @@ namespace Portrait_Builder {
 			dnaComboBoxes.AddRange(new ComboBox[] { cbNeck, cbChin, cbMouth, cbNose, cbCheeks, null, cbEyes, cbEars, cbHairColour, cbEyeColour });
 			propertiesComboBoxes.AddRange(new ComboBox[] { cbBackground, cbHair, null, cbClothes, cbBeard, cbHeadgear, cbPrisoner, cbScars, cbRedDots, cbBoils, cbBlinded, null });
 
-			EnvironmentSetup();
+			initialize();
+			load(false);
+			started = true;
 		}
 
-		private void EnvironmentSetup() {
+		private void initialize() {
 			logger.Info("Portrait Builder Version " + Application.ProductVersion);
 			logger.Info("Portrait Builder Parser Library " + Parsers.Version.GetVersion());
 			// Add the version to title
 			this.Text += " " + Application.ProductVersion;
 
 			User user = new User();
-			user.GameDir = ReadGameDir();
+			user.GameDir = readGameDir();
 			user.MyDocsDir = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments) + @"\Paradox Interactive\Crusader Kings II\";
 			user.DlcDir = Environment.CurrentDirectory + @"\dlc\";
-
-			// Cleanup temporary DLC Dir
-			Directory.Delete(user.DlcDir, true);
-
 			logger.Info("Configuration: " + user);
 			logger.Info("----------------------------");
 
 			loader = new Loader(user);
-
-			loader.LoadVanilla();
-			LoadDLCs();
-			LoadMods();
-
-			LoadPortraits();
-			LoadBorders();
-
-			SetupUI();
-			RandomizeUI(true);
-
-			DrawPortrait();
-
-			started = true;
 		}
 
-		private void LoadBorders() {
+		private void load(bool clean) {
+			loader.LoadVanilla();
+			loadDLCs(clean);
+			loadMods();
+
+			loadPortraits();
+			loadBorders();
+
+			fillCharacteristicComboBoxes();
+			randomizeCharacteristics(true);
+
+			drawPortrait();
+		}
+
+		private void loadBorders() {
 			string borderSprite = loader.LoadBorders();
 
 			if(borderSprite != null) {
@@ -112,8 +111,9 @@ namespace Portrait_Builder {
 			}
 		}
 
-		private void LoadMods() {
+		private void loadMods() {
 			List<Mod> mods = loader.LoadMods();
+			panelMods.Controls.Clear();
 			foreach (Mod mod in mods) {
 				if (mod.GetHasPortraitData()) {
 					registerContent(panelMods, mod);
@@ -121,8 +121,9 @@ namespace Portrait_Builder {
 			}
 		}
 
-		private void LoadDLCs() {
-			List<DLC> dlcs = loader.LoadDLCs();
+		private void loadDLCs(bool clean) {
+			List<DLC> dlcs = loader.LoadDLCs(clean);
+			panelDLCs.Controls.Clear();
 			foreach (DLC dlc in dlcs) {
 				if (dlc.GetHasPortraitData()) {
 					registerContent(panelDLCs, dlc);
@@ -135,7 +136,7 @@ namespace Portrait_Builder {
 			checkbox.Text = content.Name;
 			checkbox.AutoEllipsis = true;
 			checkbox.Width = 190; // Force overflow
-			checkbox.CheckedChanged += new System.EventHandler(this.onCheck);
+			checkbox.CheckedChanged += this.onCheckContent;
 			checkbox.Padding = new Padding(0);
 			checkbox.Margin = new Padding(0);
 
@@ -143,13 +144,13 @@ namespace Portrait_Builder {
 			usableMods.Add(checkbox, content);
 		}
 		
-		private string ReadGameDir() {
+		private string readGameDir() {
 			Stream stream = new FileStream("gamedir", FileMode.Open);
 			BinaryReader reader = new BinaryReader(stream);
 			return reader.ReadString() + @"\";
 		}
 
-		private void DrawPortrait() {
+		private void drawPortrait() {
 			logger.Debug(" --Drawing portrait.");
 
 			Graphics g = Graphics.FromImage(previewImage);
@@ -173,7 +174,7 @@ namespace Portrait_Builder {
 			pbPortrait.Image = previewImage;
 		}
 
-		private string GetDNA() {
+		private string getDNA() {
 			logger.Debug(" --Building DNA string.");
 			StringBuilder sb = new StringBuilder();
 
@@ -192,7 +193,7 @@ namespace Portrait_Builder {
 			return sb.ToString();
 		}
 
-		private string GetProperties() {
+		private string getProperties() {
 			logger.Debug(" --Building Properties string.");
 			StringBuilder sb = new StringBuilder();
 
@@ -213,9 +214,9 @@ namespace Portrait_Builder {
 		}
 
 		// Needs to be called each time portrait object is modified
-		private void OutputDNA() {
+		private void outputDNA() {
 			logger.Debug(" --Outputting DNA and Property strings.");
-			dnaPropOutput = new StringBuilder();
+			StringBuilder dnaPropOutput = new StringBuilder();
 
 			dnaPropOutput.Append("  dna=\"");
 			dnaPropOutput.Append(portrait.GetDNA());
@@ -235,26 +236,26 @@ namespace Portrait_Builder {
 		/// Some very specific characristics are not randomized: scars, red dots, boils, prisoner, blinded.
 		/// </summary>
 		/// <param name="doRank"></param>
-		private void RandomizeUI(bool doRank) {
+		private void randomizeCharacteristics(bool doRank) {
 			logger.Debug("Randomizing UI");
 			if (doRank) {
-				RandomizeComboBox(cbRank);
+				randomizeComboBox(cbRank);
 			}
 
-			RandomizeComboBox(cbBackground);
-			RandomizeComboBox(cbClothes);
-			RandomizeComboBox(cbHeadgear);
-			RandomizeComboBox(cbHair);
-			RandomizeComboBox(cbBeard);
-			RandomizeComboBox(cbNeck);
-			RandomizeComboBox(cbCheeks);
-			RandomizeComboBox(cbChin);
-			RandomizeComboBox(cbMouth);
-			RandomizeComboBox(cbNose);
-			RandomizeComboBox(cbEyes);
-			RandomizeComboBox(cbEars);
-			RandomizeComboBox(cbHairColour);
-			RandomizeComboBox(cbEyeColour);
+			randomizeComboBox(cbBackground);
+			randomizeComboBox(cbClothes);
+			randomizeComboBox(cbHeadgear);
+			randomizeComboBox(cbHair);
+			randomizeComboBox(cbBeard);
+			randomizeComboBox(cbNeck);
+			randomizeComboBox(cbCheeks);
+			randomizeComboBox(cbChin);
+			randomizeComboBox(cbMouth);
+			randomizeComboBox(cbNose);
+			randomizeComboBox(cbEyes);
+			randomizeComboBox(cbEars);
+			randomizeComboBox(cbHairColour);
+			randomizeComboBox(cbEyeColour);
 
 			cbScars.SelectedIndex = 0;
 			cbRedDots.SelectedIndex = 0;
@@ -262,21 +263,21 @@ namespace Portrait_Builder {
 			cbPrisoner.SelectedIndex = 0;
 			cbBlinded.SelectedIndex = 0;
 
-			UpdatePortraitDataFromInputs();
+			updatePortraitDataFromInputs();
 		}
 
-		private void RandomizeComboBox(ComboBox cb) {
+		private void randomizeComboBox(ComboBox cb) {
 			if (cb.Items.Count > 0) {
 				cb.SelectedIndex = rand.Next(cb.Items.Count - 1);
 			}
 		}
 
-		private void FillComboBox(ComboBox cb, int count) {
+		private void fillComboBox(ComboBox cb, int count) {
 			for (int i = 0; i < count; i++)
 				cb.Items.Add(i);
 		}
 
-		private void FillComboBox(ComboBox cb, Characteristic characteristic) {
+		private void fillComboBox(ComboBox cb, Characteristic characteristic) {
 			cb.Items.Clear();
 			PortraitType portraitType = getSelectedPortraitType();
 			if(portraitType != null) {
@@ -288,7 +289,7 @@ namespace Portrait_Builder {
 					logger.Warn(string.Format("Could not find frame count for {0} and {1}, setting UI to 26.", portraitType, characteristic));
 					frameCount = 26;
 				}
-				FillComboBox(cb, frameCount);
+				fillComboBox(cb, frameCount);
 			}
 		}
 
@@ -301,86 +302,30 @@ namespace Portrait_Builder {
 			return selectedPortraitType;
 		}
 
-		private void SetupUI() {
-			FillComboBox(cbBackground, Characteristic.BACKGROUND);
-			FillComboBox(cbScars, Characteristic.SCARS);
-			FillComboBox(cbRedDots, Characteristic.RED_DOTS);
-			FillComboBox(cbBoils, Characteristic.BOILS);
-			FillComboBox(cbPrisoner, Characteristic.IMPRISONED);
-			FillComboBox(cbBlinded, Characteristic.BLINDED);
+		private void fillCharacteristicComboBoxes() {
+			fillComboBox(cbBackground, Characteristic.BACKGROUND);
+			fillComboBox(cbScars, Characteristic.SCARS);
+			fillComboBox(cbRedDots, Characteristic.RED_DOTS);
+			fillComboBox(cbBoils, Characteristic.BOILS);
+			fillComboBox(cbPrisoner, Characteristic.IMPRISONED);
+			fillComboBox(cbBlinded, Characteristic.BLINDED);
 
-			FillComboBox(cbClothes, Characteristic.CLOTHES);
-			FillComboBox(cbHeadgear, Characteristic.HEADGEAR);
-			FillComboBox(cbHair, Characteristic.HAIR);
-			FillComboBox(cbBeard, Characteristic.BEARD);
-			FillComboBox(cbNeck, Characteristic.NECK);
-			FillComboBox(cbCheeks, Characteristic.CHEEKS);
-			FillComboBox(cbChin, Characteristic.CHIN);
-			FillComboBox(cbMouth, Characteristic.MOUTH);
-			FillComboBox(cbNose, Characteristic.NOSE);
-			FillComboBox(cbEyes, Characteristic.EYES);
-			FillComboBox(cbEars, Characteristic.EARS);
-			FillComboBox(cbHairColour, Characteristic.HAIR_COLOR);
-			FillComboBox(cbEyeColour, Characteristic.EYE_COLOR);
+			fillComboBox(cbClothes, Characteristic.CLOTHES);
+			fillComboBox(cbHeadgear, Characteristic.HEADGEAR);
+			fillComboBox(cbHair, Characteristic.HAIR);
+			fillComboBox(cbBeard, Characteristic.BEARD);
+			fillComboBox(cbNeck, Characteristic.NECK);
+			fillComboBox(cbCheeks, Characteristic.CHEEKS);
+			fillComboBox(cbChin, Characteristic.CHIN);
+			fillComboBox(cbMouth, Characteristic.MOUTH);
+			fillComboBox(cbNose, Characteristic.NOSE);
+			fillComboBox(cbEyes, Characteristic.EYES);
+			fillComboBox(cbEars, Characteristic.EARS);
+			fillComboBox(cbHairColour, Characteristic.HAIR_COLOR);
+			fillComboBox(cbEyeColour, Characteristic.EYE_COLOR);
 		}
 
-		private void cb_SelectedIndexChanged(object sender, EventArgs e) {
-			if (started) {
-				UpdatePortraitDataFromInputs();
-				DrawPortrait();
-			}
-		}
-
-		private void btnCopy_Click(object sender, EventArgs e) {
-			Clipboard.SetText(dnaPropOutput.ToString());
-		}
-
-		private void btnSave_Click(object sender, EventArgs e) {
-			string file = Measter.Snippets.SaveFileDialog("Save Image", "PNG|*.png", null);
-
-			if (file != null) {
-				previewImage.Save(file, ImageFormat.Png);
-			}
-		}
-
-		private void btnImport_Click(object sender, EventArgs e) {
-			ImportDialog dialog = new ImportDialog();
-
-			if (dialog.ShowDialog(this) == DialogResult.OK) {
-				started = false;
-
-				portrait = dialog.portrait;
-				OutputDNA();
-				UpdateInputsFromPortraitData(portrait);
-
-				started = true;
-
-				DrawPortrait();
-			}
-		}
-
-		private void btnRandom_Click(object sender, EventArgs e) {
-			started = false;
-			RandomizeUI(false);
-			started = true;
-
-			DrawPortrait();
-		}
-
-		/// <summary>
-		/// Called each time an event a CheckBox is ticked/unticked
-		/// </summary>
-		private void onCheck(object sender, EventArgs e) {
-			started = false;
-			updateActiveAdditionalContent();
-			LoadPortraits();
-			SetupUI();
-			started = true;
-
-			DrawPortrait();
-		}
-
-		private void LoadPortraits() {
+		private void loadPortraits() {
 			object previouslySelectedPortrait = null;
 			if (cbPortraitTypes.SelectedItem != null) {
 				previouslySelectedPortrait = cbPortraitTypes.Items[cbPortraitTypes.SelectedIndex];
@@ -425,20 +370,7 @@ namespace Portrait_Builder {
 			return selectedContent;
 		}
 
-		private void cbPortraitTypes_SelectedIndexChanged(object sender, EventArgs e) {
-			if (started) {
-				started = false;
-				SetupUI();
-
-				UpdateInputsFromPortraitData(portrait);
-
-				started = true;
-
-				DrawPortrait();
-			}
-		}
-
-		private void UpdateInputsFromPortraitData(Portrait portrait) {
+		private void updateInputsFromPortraitData(Portrait portrait) {
 			for (int i = 0; i < dnaComboBoxes.Count; i++) {
 				if (dnaComboBoxes[i] != null) {
 					dnaComboBoxes[i].SelectedIndex = Portrait.GetIndex(portrait.GetDNA()[i], dnaComboBoxes[i].Items.Count);
@@ -452,13 +384,96 @@ namespace Portrait_Builder {
 			}
 		}
 
-		private void UpdatePortraitDataFromInputs() {
-			portrait.import(GetDNA(), GetProperties());
-			OutputDNA();
+		private void updatePortraitDataFromInputs() {
+			portrait.import(getDNA(), getProperties());
+			outputDNA();
 		}
 
-		private void Form1_FormClosed(object sender, FormClosedEventArgs e) {
+		// Event handlers
 
+		private void onChangeCharacteristic(object sender, EventArgs e) {
+			if (started) {
+				updatePortraitDataFromInputs();
+				drawPortrait();
+			}
+		}
+
+		private void onClickCopy(object sender, EventArgs e) {
+			Clipboard.SetText(tbDNA.Text);
+		}
+
+		private void onClickSave(object sender, EventArgs e) {
+			string file = Measter.Snippets.SaveFileDialog("Save Image", "PNG|*.png", null);
+
+			if (file != null) {
+				previewImage.Save(file, ImageFormat.Png);
+			}
+		}
+
+		private void onClickImport(object sender, EventArgs e) {
+			ImportDialog dialog = new ImportDialog();
+
+			if (dialog.ShowDialog(this) == DialogResult.OK) {
+				started = false;
+
+				portrait = dialog.portrait;
+				outputDNA();
+				updateInputsFromPortraitData(portrait);
+
+				started = true;
+
+				drawPortrait();
+			}
+		}
+
+		private void onClickRandomize(object sender, EventArgs e) {
+			started = false;
+			randomizeCharacteristics(false);
+			started = true;
+
+			drawPortrait();
+		}
+
+		/// <summary>
+		/// Called each time an event a CheckBox is ticked/unticked
+		/// </summary>
+		private void onCheckContent(object sender, EventArgs e) {
+			started = false;
+			updateActiveAdditionalContent();
+			loadPortraits();
+			fillCharacteristicComboBoxes();
+			started = true;
+
+			drawPortrait();
+		}
+
+		private void onChangePortraitType(object sender, EventArgs e) {
+			if (started) {
+				started = false;
+				fillCharacteristicComboBoxes();
+
+				updateInputsFromPortraitData(portrait);
+
+				started = true;
+
+				drawPortrait();
+			}
+		}
+
+		private void onClickReload(object sender, EventArgs e) {
+			load(true);
+		}
+
+		private void onClickToogleAll(object sender, EventArgs e) {
+			TabPage tabPage = tabContent.SelectedTab;
+			foreach (CheckBox checkbox in tabPage.Controls[0].Controls) {
+				// Remove handler so it doesn't trigger
+				checkbox.CheckedChanged -= onCheckContent;
+				checkbox.Checked = nextToogleIsSelectAll;
+				checkbox.CheckedChanged += onCheckContent;
+			}
+			nextToogleIsSelectAll = !nextToogleIsSelectAll;
+			onCheckContent(sender, e);
 		}
 	}
 }

@@ -86,6 +86,8 @@ namespace Portrait_Builder {
 			this.tabMods = new System.Windows.Forms.TabPage();
 			this.panelMods = new System.Windows.Forms.FlowLayoutPanel();
 			this.groupBox3 = new System.Windows.Forms.GroupBox();
+			this.button2 = new System.Windows.Forms.Button();
+			this.button1 = new System.Windows.Forms.Button();
 			this.groupBox1.SuspendLayout();
 			((System.ComponentModel.ISupportInitialize)(this.pbPortrait)).BeginInit();
 			this.tabControl1.SuspendLayout();
@@ -131,7 +133,7 @@ namespace Portrait_Builder {
 			this.btnSave.TabIndex = 22;
 			this.btnSave.Text = "Save Image";
 			this.btnSave.UseVisualStyleBackColor = true;
-			this.btnSave.Click += new System.EventHandler(this.btnSave_Click);
+			this.btnSave.Click += new System.EventHandler(this.onClickSave);
 			// 
 			// btnCopy
 			// 
@@ -141,7 +143,7 @@ namespace Portrait_Builder {
 			this.btnCopy.TabIndex = 23;
 			this.btnCopy.Text = "Copy";
 			this.btnCopy.UseVisualStyleBackColor = true;
-			this.btnCopy.Click += new System.EventHandler(this.btnCopy_Click);
+			this.btnCopy.Click += new System.EventHandler(this.onClickCopy);
 			// 
 			// tbDNA
 			// 
@@ -176,7 +178,7 @@ namespace Portrait_Builder {
 			this.cbRank.Name = "cbRank";
 			this.cbRank.Size = new System.Drawing.Size(137, 21);
 			this.cbRank.TabIndex = 21;
-			this.cbRank.SelectedIndexChanged += new System.EventHandler(this.cb_SelectedIndexChanged);
+			this.cbRank.SelectedIndexChanged += new System.EventHandler(this.onChangeCharacteristic);
 			// 
 			// label20
 			// 
@@ -195,6 +197,7 @@ namespace Portrait_Builder {
 			this.tabControl1.Name = "tabControl1";
 			this.tabControl1.SelectedIndex = 0;
 			this.tabControl1.Size = new System.Drawing.Size(211, 302);
+			this.tabControl1.SizeMode = System.Windows.Forms.TabSizeMode.Fixed;
 			this.tabControl1.TabIndex = 3;
 			// 
 			// tabPage1
@@ -241,7 +244,7 @@ namespace Portrait_Builder {
 			this.cbEyeColour.Name = "cbEyeColour";
 			this.cbEyeColour.Size = new System.Drawing.Size(90, 21);
 			this.cbEyeColour.TabIndex = 9;
-			this.cbEyeColour.SelectedIndexChanged += new System.EventHandler(this.cb_SelectedIndexChanged);
+			this.cbEyeColour.SelectedIndexChanged += new System.EventHandler(this.onChangeCharacteristic);
 			// 
 			// label11
 			// 
@@ -259,7 +262,7 @@ namespace Portrait_Builder {
 			this.cbHairColour.Name = "cbHairColour";
 			this.cbHairColour.Size = new System.Drawing.Size(90, 21);
 			this.cbHairColour.TabIndex = 8;
-			this.cbHairColour.SelectedIndexChanged += new System.EventHandler(this.cb_SelectedIndexChanged);
+			this.cbHairColour.SelectedIndexChanged += new System.EventHandler(this.onChangeCharacteristic);
 			// 
 			// label2
 			// 
@@ -277,7 +280,7 @@ namespace Portrait_Builder {
 			this.cbCheeks.Name = "cbCheeks";
 			this.cbCheeks.Size = new System.Drawing.Size(90, 21);
 			this.cbCheeks.TabIndex = 5;
-			this.cbCheeks.SelectedIndexChanged += new System.EventHandler(this.cb_SelectedIndexChanged);
+			this.cbCheeks.SelectedIndexChanged += new System.EventHandler(this.onChangeCharacteristic);
 			// 
 			// cbMouth
 			// 
@@ -286,7 +289,7 @@ namespace Portrait_Builder {
 			this.cbMouth.Name = "cbMouth";
 			this.cbMouth.Size = new System.Drawing.Size(90, 21);
 			this.cbMouth.TabIndex = 7;
-			this.cbMouth.SelectedIndexChanged += new System.EventHandler(this.cb_SelectedIndexChanged);
+			this.cbMouth.SelectedIndexChanged += new System.EventHandler(this.onChangeCharacteristic);
 			// 
 			// label4
 			// 
@@ -304,7 +307,7 @@ namespace Portrait_Builder {
 			this.cbEars.Name = "cbEars";
 			this.cbEars.Size = new System.Drawing.Size(90, 21);
 			this.cbEars.TabIndex = 10;
-			this.cbEars.SelectedIndexChanged += new System.EventHandler(this.cb_SelectedIndexChanged);
+			this.cbEars.SelectedIndexChanged += new System.EventHandler(this.onChangeCharacteristic);
 			// 
 			// cbChin
 			// 
@@ -313,7 +316,7 @@ namespace Portrait_Builder {
 			this.cbChin.Name = "cbChin";
 			this.cbChin.Size = new System.Drawing.Size(90, 21);
 			this.cbChin.TabIndex = 6;
-			this.cbChin.SelectedIndexChanged += new System.EventHandler(this.cb_SelectedIndexChanged);
+			this.cbChin.SelectedIndexChanged += new System.EventHandler(this.onChangeCharacteristic);
 			// 
 			// label7
 			// 
@@ -340,7 +343,7 @@ namespace Portrait_Builder {
 			this.cbEyes.Name = "cbEyes";
 			this.cbEyes.Size = new System.Drawing.Size(90, 21);
 			this.cbEyes.TabIndex = 9;
-			this.cbEyes.SelectedIndexChanged += new System.EventHandler(this.cb_SelectedIndexChanged);
+			this.cbEyes.SelectedIndexChanged += new System.EventHandler(this.onChangeCharacteristic);
 			// 
 			// label6
 			// 
@@ -358,7 +361,7 @@ namespace Portrait_Builder {
 			this.cbNose.Name = "cbNose";
 			this.cbNose.Size = new System.Drawing.Size(90, 21);
 			this.cbNose.TabIndex = 8;
-			this.cbNose.SelectedIndexChanged += new System.EventHandler(this.cb_SelectedIndexChanged);
+			this.cbNose.SelectedIndexChanged += new System.EventHandler(this.onChangeCharacteristic);
 			// 
 			// label5
 			// 
@@ -376,7 +379,7 @@ namespace Portrait_Builder {
 			this.cbNeck.Name = "cbNeck";
 			this.cbNeck.Size = new System.Drawing.Size(90, 21);
 			this.cbNeck.TabIndex = 4;
-			this.cbNeck.SelectedIndexChanged += new System.EventHandler(this.cb_SelectedIndexChanged);
+			this.cbNeck.SelectedIndexChanged += new System.EventHandler(this.onChangeCharacteristic);
 			// 
 			// label1
 			// 
@@ -433,7 +436,7 @@ namespace Portrait_Builder {
 			this.cbBlinded.Name = "cbBlinded";
 			this.cbBlinded.Size = new System.Drawing.Size(90, 21);
 			this.cbBlinded.TabIndex = 8;
-			this.cbBlinded.SelectedIndexChanged += new System.EventHandler(this.cb_SelectedIndexChanged);
+			this.cbBlinded.SelectedIndexChanged += new System.EventHandler(this.onChangeCharacteristic);
 			// 
 			// label13
 			// 
@@ -451,7 +454,7 @@ namespace Portrait_Builder {
 			this.cbBoils.Name = "cbBoils";
 			this.cbBoils.Size = new System.Drawing.Size(90, 21);
 			this.cbBoils.TabIndex = 6;
-			this.cbBoils.SelectedIndexChanged += new System.EventHandler(this.cb_SelectedIndexChanged);
+			this.cbBoils.SelectedIndexChanged += new System.EventHandler(this.onChangeCharacteristic);
 			// 
 			// label9
 			// 
@@ -469,7 +472,7 @@ namespace Portrait_Builder {
 			this.cbRedDots.Name = "cbRedDots";
 			this.cbRedDots.Size = new System.Drawing.Size(90, 21);
 			this.cbRedDots.TabIndex = 7;
-			this.cbRedDots.SelectedIndexChanged += new System.EventHandler(this.cb_SelectedIndexChanged);
+			this.cbRedDots.SelectedIndexChanged += new System.EventHandler(this.onChangeCharacteristic);
 			// 
 			// label16
 			// 
@@ -487,7 +490,7 @@ namespace Portrait_Builder {
 			this.cbScars.Name = "cbScars";
 			this.cbScars.Size = new System.Drawing.Size(90, 21);
 			this.cbScars.TabIndex = 5;
-			this.cbScars.SelectedIndexChanged += new System.EventHandler(this.cb_SelectedIndexChanged);
+			this.cbScars.SelectedIndexChanged += new System.EventHandler(this.onChangeCharacteristic);
 			// 
 			// label17
 			// 
@@ -514,7 +517,7 @@ namespace Portrait_Builder {
 			this.cbPrisoner.Name = "cbPrisoner";
 			this.cbPrisoner.Size = new System.Drawing.Size(90, 21);
 			this.cbPrisoner.TabIndex = 8;
-			this.cbPrisoner.SelectedIndexChanged += new System.EventHandler(this.cb_SelectedIndexChanged);
+			this.cbPrisoner.SelectedIndexChanged += new System.EventHandler(this.onChangeCharacteristic);
 			// 
 			// cbBackground
 			// 
@@ -523,7 +526,7 @@ namespace Portrait_Builder {
 			this.cbBackground.Name = "cbBackground";
 			this.cbBackground.Size = new System.Drawing.Size(90, 21);
 			this.cbBackground.TabIndex = 4;
-			this.cbBackground.SelectedIndexChanged += new System.EventHandler(this.cb_SelectedIndexChanged);
+			this.cbBackground.SelectedIndexChanged += new System.EventHandler(this.onChangeCharacteristic);
 			// 
 			// cbClothes
 			// 
@@ -532,7 +535,7 @@ namespace Portrait_Builder {
 			this.cbClothes.Name = "cbClothes";
 			this.cbClothes.Size = new System.Drawing.Size(90, 21);
 			this.cbClothes.TabIndex = 7;
-			this.cbClothes.SelectedIndexChanged += new System.EventHandler(this.cb_SelectedIndexChanged);
+			this.cbClothes.SelectedIndexChanged += new System.EventHandler(this.onChangeCharacteristic);
 			// 
 			// label8
 			// 
@@ -550,7 +553,7 @@ namespace Portrait_Builder {
 			this.cbHeadgear.Name = "cbHeadgear";
 			this.cbHeadgear.Size = new System.Drawing.Size(90, 21);
 			this.cbHeadgear.TabIndex = 6;
-			this.cbHeadgear.SelectedIndexChanged += new System.EventHandler(this.cb_SelectedIndexChanged);
+			this.cbHeadgear.SelectedIndexChanged += new System.EventHandler(this.onChangeCharacteristic);
 			// 
 			// label10
 			// 
@@ -568,7 +571,7 @@ namespace Portrait_Builder {
 			this.cbBeard.Name = "cbBeard";
 			this.cbBeard.Size = new System.Drawing.Size(90, 21);
 			this.cbBeard.TabIndex = 5;
-			this.cbBeard.SelectedIndexChanged += new System.EventHandler(this.cb_SelectedIndexChanged);
+			this.cbBeard.SelectedIndexChanged += new System.EventHandler(this.onChangeCharacteristic);
 			// 
 			// label12
 			// 
@@ -586,7 +589,7 @@ namespace Portrait_Builder {
 			this.cbHair.Name = "cbHair";
 			this.cbHair.Size = new System.Drawing.Size(90, 21);
 			this.cbHair.TabIndex = 4;
-			this.cbHair.SelectedIndexChanged += new System.EventHandler(this.cb_SelectedIndexChanged);
+			this.cbHair.SelectedIndexChanged += new System.EventHandler(this.onChangeCharacteristic);
 			// 
 			// label14
 			// 
@@ -628,7 +631,7 @@ namespace Portrait_Builder {
 			this.btnRandom.TabIndex = 11;
 			this.btnRandom.Text = "Randomize";
 			this.btnRandom.UseVisualStyleBackColor = true;
-			this.btnRandom.Click += new System.EventHandler(this.btnRandom_Click);
+			this.btnRandom.Click += new System.EventHandler(this.onClickRandomize);
 			// 
 			// btnImport
 			// 
@@ -636,9 +639,9 @@ namespace Portrait_Builder {
 			this.btnImport.Name = "btnImport";
 			this.btnImport.Size = new System.Drawing.Size(75, 23);
 			this.btnImport.TabIndex = 11;
-			this.btnImport.Text = "Import DNA";
+			this.btnImport.Text = "Import";
 			this.btnImport.UseVisualStyleBackColor = true;
-			this.btnImport.Click += new System.EventHandler(this.btnImport_Click);
+			this.btnImport.Click += new System.EventHandler(this.onClickImport);
 			// 
 			// cbPortraitTypes
 			// 
@@ -647,7 +650,7 @@ namespace Portrait_Builder {
 			this.cbPortraitTypes.Name = "cbPortraitTypes";
 			this.cbPortraitTypes.Size = new System.Drawing.Size(164, 21);
 			this.cbPortraitTypes.TabIndex = 2;
-			this.cbPortraitTypes.SelectedIndexChanged += new System.EventHandler(this.cbPortraitTypes_SelectedIndexChanged);
+			this.cbPortraitTypes.SelectedIndexChanged += new System.EventHandler(this.onChangePortraitType);
 			// 
 			// tabContent
 			// 
@@ -657,6 +660,7 @@ namespace Portrait_Builder {
 			this.tabContent.Name = "tabContent";
 			this.tabContent.SelectedIndex = 0;
 			this.tabContent.Size = new System.Drawing.Size(224, 331);
+			this.tabContent.SizeMode = System.Windows.Forms.TabSizeMode.Fixed;
 			this.tabContent.TabIndex = 4;
 			// 
 			// tabDLCs
@@ -700,6 +704,8 @@ namespace Portrait_Builder {
 			// 
 			// groupBox3
 			// 
+			this.groupBox3.Controls.Add(this.button2);
+			this.groupBox3.Controls.Add(this.button1);
 			this.groupBox3.Controls.Add(this.tabContent);
 			this.groupBox3.Location = new System.Drawing.Point(4, 10);
 			this.groupBox3.Name = "groupBox3";
@@ -707,6 +713,26 @@ namespace Portrait_Builder {
 			this.groupBox3.TabIndex = 5;
 			this.groupBox3.TabStop = false;
 			this.groupBox3.Text = "Content";
+			// 
+			// button2
+			// 
+			this.button2.Location = new System.Drawing.Point(6, 354);
+			this.button2.Name = "button2";
+			this.button2.Size = new System.Drawing.Size(75, 23);
+			this.button2.TabIndex = 6;
+			this.button2.Text = "Toogle All";
+			this.button2.UseVisualStyleBackColor = true;
+			this.button2.Click += new System.EventHandler(this.onClickToogleAll);
+			// 
+			// button1
+			// 
+			this.button1.Location = new System.Drawing.Point(155, 354);
+			this.button1.Name = "button1";
+			this.button1.Size = new System.Drawing.Size(75, 23);
+			this.button1.TabIndex = 5;
+			this.button1.Text = "Reload";
+			this.button1.UseVisualStyleBackColor = true;
+			this.button1.Click += new System.EventHandler(this.onClickReload);
 			// 
 			// Form1
 			// 
@@ -721,7 +747,6 @@ namespace Portrait_Builder {
 			this.MaximizeBox = false;
 			this.Name = "Form1";
 			this.Text = "Portrait Builder";
-			this.FormClosed += new System.Windows.Forms.FormClosedEventHandler(this.Form1_FormClosed);
 			this.groupBox1.ResumeLayout(false);
 			this.groupBox1.PerformLayout();
 			((System.ComponentModel.ISupportInitialize)(this.pbPortrait)).EndInit();
@@ -802,6 +827,8 @@ namespace Portrait_Builder {
 		private System.Windows.Forms.FlowLayoutPanel panelMods;
 		private System.Windows.Forms.Label label22;
 		private System.Windows.Forms.GroupBox groupBox3;
+		private System.Windows.Forms.Button button2;
+		private System.Windows.Forms.Button button1;
 	}
 }
 
