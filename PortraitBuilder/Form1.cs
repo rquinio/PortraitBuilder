@@ -58,7 +58,7 @@ namespace Portrait_Builder {
 		public Form1() {
 			InitializeComponent();
 			dnaComboBoxes.AddRange(new ComboBox[] { cbNeck, cbChin, cbMouth, cbNose, cbCheeks, null, cbEyes, cbEars, cbHairColour, cbEyeColour });
-			propertiesComboBoxes.AddRange(new ComboBox[] { cbBackground, cbHair, null, cbClothes, cbBeard, cbHeadgear, cbPrisoner, cbScars, cbRedDots, cbBoils, cbBlinded, null });
+			propertiesComboBoxes.AddRange(new ComboBox[] { cbBackground, cbHair, null, cbClothes, cbBeard, cbHeadgear, cbPrisoner, cbScars, cbRedDots, cbBoils, cbBlinded, cbPlayer });
 
 			initialize();
 			load(false);
@@ -161,7 +161,7 @@ namespace Portrait_Builder {
 			logger.Debug("   --Rendering portrait.");
 			try {
 				PortraitType portraitType = getSelectedPortraitType();
-				portraitImage = portraitRenderer.DrawPortrait(portraitType, portrait, loader.activeContents, loader.user, loader.activePortraitData.Sprites);
+				portraitImage = portraitRenderer.DrawPortrait(portraitType, portrait, loader.activeContents, loader.activePortraitData.Sprites);
 			}
 			catch (Exception e) {
 				logger.Error("Error encountered rendering portrait:" + e.ToString());
@@ -203,12 +203,12 @@ namespace Portrait_Builder {
 			sb.Append(GetLetter(cbClothes));
 			sb.Append(GetLetter(cbBeard));
 			sb.Append(GetLetter(cbHeadgear));
-			sb.Append(GetLetter(cbPrisoner)); //Imprisoned
-			sb.Append(GetLetter(cbScars)); //Scars
-			sb.Append(GetLetter(cbRedDots)); //Red Dots
-			sb.Append(GetLetter(cbBoils)); //Boils
+			sb.Append(GetLetter(cbPrisoner));
+			sb.Append(GetLetter(cbScars));
+			sb.Append(GetLetter(cbRedDots));
+			sb.Append(GetLetter(cbBoils));
 			sb.Append(GetLetter(cbBlinded));
-			sb.Append("b"); // Player overlay
+			sb.Append(GetLetter(cbPlayer));
 
 			return sb.ToString();
 		}
@@ -262,6 +262,7 @@ namespace Portrait_Builder {
 			cbBoils.SelectedIndex = 0;
 			cbPrisoner.SelectedIndex = 0;
 			cbBlinded.SelectedIndex = 0;
+			cbPlayer.SelectedIndex = 0;
 
 			updatePortraitDataFromInputs();
 		}
@@ -309,6 +310,7 @@ namespace Portrait_Builder {
 			fillComboBox(cbBoils, Characteristic.BOILS);
 			fillComboBox(cbPrisoner, Characteristic.IMPRISONED);
 			fillComboBox(cbBlinded, Characteristic.BLINDED);
+			fillComboBox(cbPlayer, Characteristic.PLAYER);
 
 			fillComboBox(cbClothes, Characteristic.CLOTHES);
 			fillComboBox(cbHeadgear, Characteristic.HEADGEAR);
@@ -356,7 +358,7 @@ namespace Portrait_Builder {
 			List<Content> activeContent = new List<Content>();
 			activeContent.AddRange(getSelectedContent(panelDLCs));
 			activeContent.AddRange(getSelectedContent(panelMods));
-			loader.UpdateActivateAdditionalContent(activeContent);
+			loader.UpdateActiveAdditionalContent(activeContent);
 		}
 
 		private List<Content> getSelectedContent(Panel panel) {
@@ -396,6 +398,10 @@ namespace Portrait_Builder {
 				updatePortraitDataFromInputs();
 				drawPortrait();
 			}
+		}
+
+		private void onChangeRank(object sender, EventArgs e) {
+			drawPortrait();
 		}
 
 		private void onClickCopy(object sender, EventArgs e) {

@@ -22,9 +22,8 @@ namespace Portrait_Builder {
 
 		/// <summary>
 		/// User configuration: game path, etc.
-		/// FIXME Should be private
 		/// </summary>
-		public User user;
+		private User user;
 
 		/// <summary>
 		/// Stateless mod scanner
@@ -73,6 +72,7 @@ namespace Portrait_Builder {
 
 			// Init
 			activePortraitData = vanilla.PortraitData;
+			activeContents.Add(vanilla);
 		}
 
 		public List<DLC> LoadDLCs(Boolean clean) {
@@ -133,7 +133,7 @@ namespace Portrait_Builder {
 			return mods;
 		}
 
-		public void UpdateActivateAdditionalContent(List<Content> contents) {
+		public void UpdateActiveAdditionalContent(List<Content> contents) {
 			activeContents.Clear();
 			activeContents.Add(vanilla);
 			activeContents.AddRange(contents);

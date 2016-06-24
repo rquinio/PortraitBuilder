@@ -73,7 +73,8 @@ namespace Parsers.Portrait {
 			char letter;
 
 			if (index == 0)
-				letter = Letters[total - 1];
+				// TODO Handle the case were total = 27 (blgrabs)
+				letter = Letters[(total - 1)%26];
 			else if (index == -1)
 				letter = '0';
 			else

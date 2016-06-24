@@ -19,10 +19,9 @@ namespace Parsers.Portrait {
 		/// <param name="portraitType">PortaitType to use for drawing.</param>
 		/// <param name="dna">DNA string to use for drawing.</param>
 		/// <param name="properties">Properties string to use for drawing.</param>
-		/// <param name="activeMods">Mods to use when drawing.</param>
-		/// <param name="user">User configuration</param>
+		/// <param name="activeContents">Content to load sprites from</param>
 		/// <returns>Frameless portrait drawn with the given parameters.</returns>
-		public Bitmap DrawPortrait(PortraitType portraitType, Portrait portrait, List<Content> activeMods, User user, Dictionary<string, Sprite> sprites) {
+		public Bitmap DrawPortrait(PortraitType portraitType, Portrait portrait, List<Content> activeContents, Dictionary<string, Sprite> sprites) {
 			logger.Info(string.Format("Drawing Portrait {0}", portrait));
 
 			Bitmap portraitImage = new Bitmap(176, 176);
@@ -37,7 +36,7 @@ namespace Parsers.Portrait {
 
 						//Check if loaded; if not, then load
 						if (!sprite.IsLoaded) {
-							LoadSprite(sprite, activeMods, user);
+							LoadSprite(sprite, activeContents);
 						}
 
 						//Get DNA/Properties letter, then the index of the tile to draw
@@ -73,25 +72,23 @@ namespace Parsers.Portrait {
 			return tileIndex;
 		}
 
-		private void LoadSprite(Sprite sprite, List<Content> activeMods, User user) {
+		private void LoadSprite(Sprite sprite, List<Content> activeContents) {
 			string filePath = sprite.TextureFilePath;
 
 			string containerPath = null;
-			foreach (Content mod in activeMods) {
-				string modPath = mod.AbsolutePath;
-				if (File.Exists(modPath + "/" + filePath)) {
-					containerPath = modPath;
+
+			// Loop on reverse order - last occurence wins if asset is overriden
+			for (int i = activeContents.Count-1; i >= 0; i--) {
+				Content content = activeContents[i];
+				string contentPath = content.AbsolutePath;
+				if (File.Exists(contentPath + "/" + filePath)) {
+					containerPath = contentPath;
 					break;
 				}
 			}
 
 			if (containerPath == null) {
-				if (File.Exists(user.GameDir + "/" + filePath)) {
-					containerPath = user.GameDir;
-				}
-				else {
-					throw new FileNotFoundException(string.Format("Unable to find file: {0} under mods {1}, nor vanilla {2}", filePath, activeMods, user.GameDir));
-				}
+					throw new FileNotFoundException(string.Format("Unable to find file: {0} under active content {1}", filePath, activeContents));
 			}
 
 			logger.Debug("Loading sprite from: " + containerPath);
