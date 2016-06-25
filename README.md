@@ -2,7 +2,7 @@
 
 This project is a fork of [Measter's 1.x PortraitBuilder](https://github.com/Measter/PortraitBuilder).
 
-See the dedicated [CK2 forum thread](https://forum.paradoxplaza.com/forum/index.php?threads/utility-portrait-builder.604169/), after registering your CK2 game.
+See the dedicated [CK2 forum thread](https://forum.paradoxplaza.com/forum/index.php?threads/utility-portrait-builder-v2.941117/), after registering your CK2 game.
 
 ## Description
 
