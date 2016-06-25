@@ -10,9 +10,8 @@ This tool allows to create custom characters, by previewing their appearance, wh
 
 Features:
 
-- Reading portraits from vanilla folders
-- Reading portraits from DLCs zip archives
-- Saving current portrait as png
+- Reading portraits from vanilla, DLCs zip archives and mod folders
+- Saving current portrait as png image
 - Import/export of DNA & properties strings
 
 ## Users

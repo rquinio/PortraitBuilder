@@ -742,7 +742,7 @@ namespace PortraitBuilder.UI {
 			this.btnToogleAll.Name = "btnToogleAll";
 			this.btnToogleAll.Size = new System.Drawing.Size(75, 23);
 			this.btnToogleAll.TabIndex = 6;
-			this.btnToogleAll.Text = "Toogle All";
+			this.btnToogleAll.Text = "Toggle All";
 			this.btnToogleAll.UseVisualStyleBackColor = true;
 			this.btnToogleAll.Click += new System.EventHandler(this.onClickToogleAll);
 			// 

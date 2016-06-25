@@ -229,12 +229,12 @@ namespace PortraitBuilder.UI {
 			randomizeComboBox(cbHairColour);
 			randomizeComboBox(cbEyeColour);
 
-			cbScars.SelectedIndex = 0;
-			cbRedDots.SelectedIndex = 0;
-			cbBoils.SelectedIndex = 0;
-			cbPrisoner.SelectedIndex = 0;
-			cbBlinded.SelectedIndex = 0;
-			cbPlayer.SelectedIndex = 0;
+			resetComboBox(cbScars);
+			resetComboBox(cbRedDots);
+			resetComboBox(cbBoils);
+			resetComboBox(cbPrisoner);
+			resetComboBox(cbBlinded);
+			resetComboBox(cbPlayer);
 
 			updatePortraitDataFromInputs();
 		}
@@ -242,6 +242,12 @@ namespace PortraitBuilder.UI {
 		private void randomizeComboBox(ComboBox cb) {
 			if (cb.Items.Count > 0) {
 				cb.SelectedIndex = rand.Next(cb.Items.Count - 1);
+			}
+		}
+
+		private void resetComboBox(ComboBox cb) {
+			if (cb.Items.Count > 0) {
+				cb.SelectedIndex = 0;
 			}
 		}
 

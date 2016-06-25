@@ -1,6 +1,39 @@
 By Romulien:
 
-Version 2.0.0 - 2016-04-04
+Version 2.1.0 - 2016-06-25
+
+ UI:
+ - Use better icon
+ - Add DLC/mod tabs
+ - Add "Toggle All" and "Reload" buttons for content.
+ - Keep selected portraitType when enabling DLC/mod
+ - Use 2 tabs instead of 3, and move hair/eye color to DNA tab
+ - Move PORTRAIT_ prefix as a label for portraitType dropdown
+ - Add d/p codes in labels
+ - Add warning for properties overridden via portrait_properties.txt
+ - Rename Earl to Count
+ - Add dropdown for Player (p11), used in certain mods
+ - Disable dropdown when a dna/property is not used by any portraitType layer, rather than adding index 0-26.
+ 
+ Engine:
+ - Split DLCs so they can be activated separately
+ - Support rendering from multiple mods
+ - Parse vanilla/DLCs/mods portrait data only once during startup
+ - Avoid unzipping DLCs at startup if not needed (use Reload button to force refresh)
+ - Filter files to unzip from DLC, to reduce loading time & size.
+ - Allow content to only contain sprites in gfx/characters/, without portraitTypes
+ - Fix bug were duplicate portraitType definition would not override previous one (byzantinegfx)
+ - Fix load order of assets that was using vanilla instead of mod
+ - Optimize memory usage, by unloading assets when reloading/unchecking content
+ - Catch parsing failures at spriteType / portraitType level
+ 
+ Code re-factoring:
+ - Simplify code structure within a single project
+ - Separate class concerns to have smaller files
+ - Adapt class namespaces to match new folder structure
+ - Replace redundant CustomFlags by proper characteristics
+
+Version 2.0.0  - 2016-06-04
  - Compatibility with vanilla 2.5.2
  - Update lookup of ck2.exe to CK2game.exe
  - Support for offsets (inline and external)
