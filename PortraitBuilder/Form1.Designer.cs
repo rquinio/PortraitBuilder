@@ -121,7 +121,7 @@ namespace Portrait_Builder {
 			// label22
 			// 
 			this.label22.AutoSize = true;
-			this.label22.Location = new System.Drawing.Point(5, 293);
+			this.label22.Location = new System.Drawing.Point(2, 325);
 			this.label22.Name = "label22";
 			this.label22.Size = new System.Drawing.Size(181, 26);
 			this.label22.TabIndex = 24;
@@ -129,7 +129,7 @@ namespace Portrait_Builder {
 			// 
 			// btnSave
 			// 
-			this.btnSave.Location = new System.Drawing.Point(6, 374);
+			this.btnSave.Location = new System.Drawing.Point(6, 375);
 			this.btnSave.Name = "btnSave";
 			this.btnSave.Size = new System.Drawing.Size(75, 23);
 			this.btnSave.TabIndex = 22;
@@ -225,7 +225,7 @@ namespace Portrait_Builder {
 			this.tabPage1.Location = new System.Drawing.Point(4, 22);
 			this.tabPage1.Name = "tabPage1";
 			this.tabPage1.Padding = new System.Windows.Forms.Padding(3);
-			this.tabPage1.Size = new System.Drawing.Size(203, 306);
+			this.tabPage1.Size = new System.Drawing.Size(203, 301);
 			this.tabPage1.TabIndex = 0;
 			this.tabPage1.Text = "DNA";
 			this.tabPage1.UseVisualStyleBackColor = true;

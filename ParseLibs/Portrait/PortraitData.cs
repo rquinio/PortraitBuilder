@@ -8,6 +8,10 @@ using Parsers.Portrait;
 using log4net;
 
 namespace Parsers.Portrait {
+
+	/// <summary>
+	/// 
+	/// </summary>
 	public class PortraitData {
 
 		private static readonly ILog logger = LogManager.GetLogger(typeof(PortraitData).Name);
@@ -25,26 +29,35 @@ namespace Parsers.Portrait {
 		public Dictionary<string, PortraitType> PortraitTypes = new Dictionary<string, PortraitType>();
 
 		/// <summary>
-		/// Dictionary of offsets 
+		/// Dictionary of optional external offsets 
 		/// Key is the name of the sprite. E.g. GFX_byzantine_male_mouth
+		/// 
+		/// Note: external offsets (if any) are applied globally during the merging, and not per content.
 		/// </summary>
 		public Dictionary<string, Point> Offsets = new Dictionary<string, Point>();
 
 		/// <summary>
-		/// Unloads all loaded portrait data.
+		/// Removes all data from memory
 		/// </summary>
 		public void Dispose() {
-			foreach (KeyValuePair<string, Sprite> pair in Sprites) {
-				if (pair.Value.IsLoaded) {
-					foreach (Bitmap b in pair.Value.Tiles) {
-						b.Dispose();
-					}	
-				}
-			}
+			logger.Info("Disposing of previous portrait data.");
+
+			Unload();
 
 			Sprites.Clear();
 			PortraitTypes.Clear();
 			Offsets.Clear();
+		}
+
+		/// <summary>
+		/// Unloads all loaded portrait data.
+		/// </summary>
+		public void Unload() {
+			foreach (KeyValuePair<string, Sprite> pair in Sprites) {
+				if (pair.Value.IsLoaded) {
+					pair.Value.Unload();
+				}
+			}
 		}
 
 		// Last wins implementation

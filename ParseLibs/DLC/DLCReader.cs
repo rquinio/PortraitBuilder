@@ -73,7 +73,7 @@ namespace Parsers.DLC {
 				DLC dlc = Parse(dlcFile.FullName);
 				if(dlc != null) {
 					// Note: path will be overriden when extracting the archive
-					dlc.AbsolutePath = folder + "/" + dlc.Archive.Replace("dlc/", "");
+					dlc.AbsolutePath = folder + Path.DirectorySeparatorChar + dlc.Archive.Replace("dlc/", "");
 					dlcs.Add(dlc);
 				}
 			}

@@ -41,5 +41,17 @@ namespace Parsers {
 		public bool GetHasPortraitData() {
 			return (PortraitData != null && PortraitData.PortraitTypes.Count > 0) || Directory.Exists(AbsolutePath + @"gfx\characters\");
 		}
+
+		public void Unload() {
+			if(PortraitData != null) {
+				PortraitData.Unload();
+			}
+		}
+
+		public void Dispose() {
+			if (PortraitData != null) {
+				PortraitData.Dispose();
+			}
+		}
 	}
 }

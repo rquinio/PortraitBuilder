@@ -9,6 +9,10 @@ using Hime.Redist.Parsers;
 using log4net;
 
 namespace Parsers.Portrait {
+
+	/// <summary>
+	/// Handles the parsing of portraits *.gfx files.
+	/// </summary>
 	public class PortraitReader {
 
 		private static readonly ILog logger = LogManager.GetLogger(typeof(PortraitReader).Name);
@@ -18,6 +22,13 @@ namespace Parsers.Portrait {
 		/// </summary>
 		private PortraitOffsetReader portraitOffsetReader = new PortraitOffsetReader();
 
+		/// <summary>
+		/// Parse Portrait data.
+		/// 
+		/// Parsing errors are catched at layer, propertyType or file level, so the PortraitData may be partial or even empty.
+		/// </summary>
+		/// <param name="dir">The content root directory to parse from</param>
+		/// <returns></returns>
 		public PortraitData Parse(string dir) {
 			PortraitData data = new PortraitData();
 			try {
@@ -106,21 +117,28 @@ namespace Parsers.Portrait {
 				id = child.Children[0].Symbol as SymbolTokenText;
 
 				if (id.ValueText == "spriteType") {
-					Sprite sprite = ParseSpriteType(child, filename);
-					if (data.Sprites.ContainsKey(sprite.Name)) {
-						logger.Debug("Sprite already exists. Replacing.");
-						data.Sprites.Remove(sprite.Name);
+					try {
+						Sprite sprite = ParseSpriteType(child, filename);
+						if (data.Sprites.ContainsKey(sprite.Name)) {
+							logger.Debug("Sprite already exists. Replacing.");
+							data.Sprites.Remove(sprite.Name);
+						}
+						data.Sprites.Add(sprite.Name, sprite);
+					} catch (Exception e) {
+						logger.Error(string.Format("Could not parse spriteType in file {0}", filename), e);
 					}
-					data.Sprites.Add(sprite.Name, sprite);
-					
 				} else if (id.ValueText == "portraitType") {
-					PortraitType portraitType = ParsePortraitType(child, filename);
+					try {
+						PortraitType portraitType = ParsePortraitType(child, filename);
+						if (data.PortraitTypes.ContainsKey(portraitType.Name)) {
+							logger.Debug("Portrait type " + portraitType.Name + "exists. Replacing.");
+							data.PortraitTypes.Remove(portraitType.Name);
+						}
+						data.PortraitTypes.Add(portraitType.Name, portraitType);
 
-					if (data.PortraitTypes.ContainsKey(portraitType.Name)) {
-						logger.Debug("Portrait type " + portraitType.Name + "exists. Replacing.");
-						data.PortraitTypes.Remove(portraitType.Name);
+					} catch(Exception e) {
+						logger.Error(string.Format("Could not parse portraitType in file {0}", filename), e);
 					}
-					data.PortraitTypes.Add(portraitType.Name, portraitType);
 				}
 			}
 		}

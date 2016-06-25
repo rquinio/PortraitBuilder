@@ -42,16 +42,13 @@ namespace Portrait_Builder {
 
 		/// <summary>
 		/// DLCs or Mods that are checked
-		/// FIXME Should be private
 		/// </summary>
-		public List<Content> activeContents = new List<Content>();
+		private List<Content> activeContents = new List<Content>();
 
 		/// <summary>
 		/// Merged portraitData of all active content.
-		/// 
-		/// FIXME Should be private
 		/// </summary>
-		public PortraitData activePortraitData = new PortraitData();
+		private PortraitData activePortraitData = new PortraitData();
 
 		/// <summary>
 		/// Vanilla data - never reloaded dynamically
@@ -60,6 +57,14 @@ namespace Portrait_Builder {
 
 		public Loader(User user) {
 			this.user = user;
+		}
+
+		public PortraitData GetActivePortraitData() {
+			return activePortraitData;
+		}
+
+		public List<Content> GetActiveContents() {
+			return activeContents;
 		}
 
 		public void LoadVanilla() {
@@ -134,18 +139,19 @@ namespace Portrait_Builder {
 		}
 
 		public void UpdateActiveAdditionalContent(List<Content> contents) {
+			foreach(Content content in activeContents) {
+				if (!contents.Contains(content)) {
+					//Unload sprites
+					content.Unload();
+				}
+			}
+
 			activeContents.Clear();
 			activeContents.Add(vanilla);
 			activeContents.AddRange(contents);
-
-			//MergePortraitData();
 		}
 
 		private void MergePortraitData() {
-			logger.Info("Disposing of previous portrait data.");
-
-			// FIXME 
-			//activePortraitData.Dispose();
 			activePortraitData = new PortraitData();
 
 			activePortraitData.MergeWith(vanilla.PortraitData);

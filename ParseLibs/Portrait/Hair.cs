@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 
 namespace Parsers.Portrait {
+
 	public class Hair {
 		public Colour Dark;
 		public Colour Base;

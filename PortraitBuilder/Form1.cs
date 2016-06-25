@@ -38,7 +38,7 @@ namespace Portrait_Builder {
 		/// <summary>
 		/// List of all available DLCs and Mods, indexed by their corresponding checkbox
 		/// </summary>
-		private Dictionary<CheckBox, Content> usableMods = new Dictionary<CheckBox, Content>();
+		private Dictionary<CheckBox, Content> usableContents = new Dictionary<CheckBox, Content>();
 
 		/// <summary>
 		/// The portrait being previewed
@@ -57,7 +57,7 @@ namespace Portrait_Builder {
 
 		public Form1() {
 			InitializeComponent();
-			dnaComboBoxes.AddRange(new ComboBox[] { cbNeck, cbChin, cbMouth, cbNose, cbCheeks, null, cbEyes, cbEars, cbHairColour, cbEyeColour });
+			dnaComboBoxes.AddRange(new ComboBox[] { cbNeck, cbChin, cbMouth, cbNose, cbCheeks, null, cbEyes, cbEars, cbHairColour, cbEyeColour, null });
 			propertiesComboBoxes.AddRange(new ComboBox[] { cbBackground, cbHair, null, cbClothes, cbBeard, cbHeadgear, cbPrisoner, cbScars, cbRedDots, cbBoils, cbBlinded, cbPlayer });
 
 			initialize();
@@ -141,7 +141,7 @@ namespace Portrait_Builder {
 			checkbox.Margin = new Padding(0);
 
 			container.Controls.Add(checkbox);
-			usableMods.Add(checkbox, content);
+			usableContents.Add(checkbox, content);
 		}
 		
 		private string readGameDir() {
@@ -161,7 +161,7 @@ namespace Portrait_Builder {
 			logger.Debug("   --Rendering portrait.");
 			try {
 				PortraitType portraitType = getSelectedPortraitType();
-				portraitImage = portraitRenderer.DrawPortrait(portraitType, portrait, loader.activeContents, loader.activePortraitData.Sprites);
+				portraitImage = portraitRenderer.DrawPortrait(portraitType, portrait, loader.GetActiveContents(), loader.GetActivePortraitData().Sprites);
 			}
 			catch (Exception e) {
 				logger.Error("Error encountered rendering portrait:" + e.ToString());
@@ -174,42 +174,15 @@ namespace Portrait_Builder {
 			pbPortrait.Image = previewImage;
 		}
 
-		private string getDNA() {
-			logger.Debug(" --Building DNA string.");
+		private string getCharacteristicsString(List<ComboBox> characteristics) {
 			StringBuilder sb = new StringBuilder();
-
-			sb.Append(GetLetter(cbNeck));
-			sb.Append(GetLetter(cbChin));
-			sb.Append(GetLetter(cbMouth));
-			sb.Append(GetLetter(cbNose));
-			sb.Append(GetLetter(cbCheeks));
-			sb.Append("0"); //Head(Unused)
-			sb.Append(GetLetter(cbEyes));
-			sb.Append(GetLetter(cbEars));
-			sb.Append(GetLetter(cbHairColour));
-			sb.Append(GetLetter(cbEyeColour));
-			sb.Append("0");
-
-			return sb.ToString();
-		}
-
-		private string getProperties() {
-			logger.Debug(" --Building Properties string.");
-			StringBuilder sb = new StringBuilder();
-
-			sb.Append(GetLetter(cbBackground));
-			sb.Append(GetLetter(cbHair));
-			sb.Append("0"); //Base(Unused)
-			sb.Append(GetLetter(cbClothes));
-			sb.Append(GetLetter(cbBeard));
-			sb.Append(GetLetter(cbHeadgear));
-			sb.Append(GetLetter(cbPrisoner));
-			sb.Append(GetLetter(cbScars));
-			sb.Append(GetLetter(cbRedDots));
-			sb.Append(GetLetter(cbBoils));
-			sb.Append(GetLetter(cbBlinded));
-			sb.Append(GetLetter(cbPlayer));
-
+			foreach(ComboBox cb in characteristics) {
+				char letter = '0';
+				if(cb != null) {
+					letter = GetLetter(cb);
+				}
+				sb.Append(letter);
+			}
 			return sb.ToString();
 		}
 
@@ -282,15 +255,16 @@ namespace Portrait_Builder {
 			cb.Items.Clear();
 			PortraitType portraitType = getSelectedPortraitType();
 			if(portraitType != null) {
-				int frameCount = loader.activePortraitData.GetFrameCount(portraitType, characteristic);
+				int frameCount = loader.GetActivePortraitData().GetFrameCount(portraitType, characteristic);
 				if (frameCount > 0) {
 					logger.Debug(string.Format("Item count for {0} {1} : {2}", portraitType, characteristic, frameCount));
+					cb.Enabled = true;
+					fillComboBox(cb, frameCount);
 				}
 				else {
-					logger.Warn(string.Format("Could not find frame count for {0} and {1}, setting UI to 26.", portraitType, characteristic));
-					frameCount = 26;
+					logger.Warn(string.Format("Could not find frame count for {0} and {1}, disabling dropdown.", portraitType, characteristic));
+					cb.Enabled = false;
 				}
-				fillComboBox(cb, frameCount);
 			}
 		}
 
@@ -298,7 +272,7 @@ namespace Portrait_Builder {
 			PortraitType selectedPortraitType = null;
 			object selectedItem = cbPortraitTypes.SelectedItem;
 			if(selectedItem != null) {
-				return loader.activePortraitData.PortraitTypes["PORTRAIT_" + selectedItem.ToString()];
+				return loader.GetActivePortraitData().PortraitTypes["PORTRAIT_" + selectedItem.ToString()];
 			}
 			return selectedPortraitType;
 		}
@@ -336,12 +310,12 @@ namespace Portrait_Builder {
 
 			loader.LoadPortraits();
 
-			if (loader.activePortraitData.PortraitTypes.Count == 0) {
+			if (loader.GetActivePortraitData().PortraitTypes.Count == 0) {
 				logger.Fatal("No portrait types found.");
 				return;
 			}
 
-			foreach (KeyValuePair<string, PortraitType> pair in loader.activePortraitData.PortraitTypes) {
+			foreach (KeyValuePair<string, PortraitType> pair in loader.GetActivePortraitData().PortraitTypes) {
 				PortraitType portraitType = pair.Value;
 				cbPortraitTypes.Items.Add(portraitType.Name.Replace("PORTRAIT_", ""));
 			}
@@ -366,7 +340,7 @@ namespace Portrait_Builder {
 			foreach (Control control in panel.Controls) {
 				CheckBox checkbox = (CheckBox)control;
 				if (checkbox.Checked) {
-					selectedContent.Add(usableMods[checkbox]);
+					selectedContent.Add(usableContents[checkbox]);
 				}
 			}
 			return selectedContent;
@@ -387,7 +361,7 @@ namespace Portrait_Builder {
 		}
 
 		private void updatePortraitDataFromInputs() {
-			portrait.import(getDNA(), getProperties());
+			portrait.import(getCharacteristicsString(dnaComboBoxes), getCharacteristicsString(propertiesComboBoxes));
 			outputDNA();
 		}
 
@@ -467,6 +441,10 @@ namespace Portrait_Builder {
 		}
 
 		private void onClickReload(object sender, EventArgs e) {
+			foreach (Content content in usableContents.Values){
+				content.Dispose();
+			}
+			usableContents.Clear();
 			load(true);
 		}
 

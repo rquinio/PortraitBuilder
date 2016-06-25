@@ -9,6 +9,10 @@ using System.Drawing.Imaging;
 using log4net;
 
 namespace Parsers.Portrait {
+
+	/// <summary>
+	/// Handles the rendering of portraits
+	/// </summary>
 	public class PortraitRenderer {
 
 		private static readonly ILog logger = LogManager.GetLogger(typeof(PortraitRenderer).Name);
@@ -17,8 +21,7 @@ namespace Parsers.Portrait {
 		/// Draws a character portrait.
 		/// </summary>
 		/// <param name="portraitType">PortaitType to use for drawing.</param>
-		/// <param name="dna">DNA string to use for drawing.</param>
-		/// <param name="properties">Properties string to use for drawing.</param>
+		/// <param name="portrait">Portrait input to draw.</param>
 		/// <param name="activeContents">Content to load sprites from</param>
 		/// <returns>Frameless portrait drawn with the given parameters.</returns>
 		public Bitmap DrawPortrait(PortraitType portraitType, Portrait portrait, List<Content> activeContents, Dictionary<string, Sprite> sprites) {
@@ -60,15 +63,9 @@ namespace Parsers.Portrait {
 		}
 
 		private int GetTileIndex(Portrait portrait, int frameCount, Layer layer) {
-			// TODO Refactor with layers inside Portrait
-			char letter;
-			if (layer.Characteristic.type == Characteristic.Type.DNA) {
-				letter = portrait.GetDNA()[layer.Characteristic.index];
-			} else {
-				letter = portrait.GetProperties()[layer.Characteristic.index]; ;
-			}
+			char letter = portrait.GetLetter(layer.Characteristic);
 			int tileIndex = Portrait.GetTileIndexFromLetter(letter, frameCount);
-			logger.Debug(string.Format("Layer Letter: {0}, Tile Index: {1}", letter, tileIndex));
+			logger.Debug(string.Format("Layer letter: {0}, Tile Index: {1}", letter, tileIndex));
 			return tileIndex;
 		}
 
@@ -77,11 +74,11 @@ namespace Parsers.Portrait {
 
 			string containerPath = null;
 
-			// Loop on reverse order - last occurence wins if asset is overriden
+			// Loop on reverse order - last occurence wins if asset is overriden !
 			for (int i = activeContents.Count-1; i >= 0; i--) {
 				Content content = activeContents[i];
 				string contentPath = content.AbsolutePath;
-				if (File.Exists(contentPath + "/" + filePath)) {
+				if (File.Exists(contentPath + Path.DirectorySeparatorChar + filePath)) {
 					containerPath = contentPath;
 					break;
 				}

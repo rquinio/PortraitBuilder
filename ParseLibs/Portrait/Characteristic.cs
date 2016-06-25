@@ -5,6 +5,10 @@ using System.Text;
 using System.Threading.Tasks;
 
 namespace Parsers.Portrait {
+
+	/// <summary>
+	/// Represents one DNA or Property element
+	/// </summary>
 	public class Characteristic {
 
 		public Characteristic(string name, int index, Type type) {
@@ -28,7 +32,8 @@ namespace Parsers.Portrait {
 		}
 
 		public override string ToString() {
-			return string.Format("Name: {0}, Type: {1}, Index: {2}", name, type, index);
+			char typeCode = (type == Type.DNA) ? 'd' : 'p';
+			return string.Format("{0} ({1})", name, typeCode + index);
 		}
 
 		public static Characteristic BACKGROUND = new Characteristic("background", 0, Type.Property);
@@ -49,14 +54,14 @@ namespace Parsers.Portrait {
 		public static Characteristic MOUTH = new Characteristic("mouth", 2, Type.DNA);
 		public static Characteristic NOSE = new Characteristic("nose", 3, Type.DNA);
 		public static Characteristic CHEEKS = new Characteristic("cheeks", 4, Type.DNA);
-		public static Characteristic UNUSED = new Characteristic("unused-5", 5, Type.DNA);
+		public static Characteristic D5 = new Characteristic("d5", 5, Type.DNA);
 		public static Characteristic EYES = new Characteristic("eyes", 6, Type.DNA);
 		public static Characteristic EARS = new Characteristic("ears", 7, Type.DNA);
 		public static Characteristic HAIR_COLOR = new Characteristic("haircolor", 8, Type.DNA);
 		public static Characteristic EYE_COLOR = new Characteristic("eyecolor", 9, Type.DNA);
-		public static Characteristic UNUSED2 = new Characteristic("unused-10", 10, Type.DNA);
+		public static Characteristic D10 = new Characteristic("d10", 10, Type.DNA);
 
-		public static Characteristic[] DNA = new Characteristic[] { NECK, CHIN, MOUTH, NOSE, CHEEKS, UNUSED, EYES, EARS, HAIR_COLOR, EYE_COLOR, UNUSED2 };
+		public static Characteristic[] DNA = new Characteristic[] { NECK, CHIN, MOUTH, NOSE, CHEEKS, D5, EYES, EARS, HAIR_COLOR, EYE_COLOR, D10 };
 		public static Characteristic[] PROPERTIES = new Characteristic[] { BACKGROUND, HAIR, HEAD, CLOTHES, BEARD, HEADGEAR, IMPRISONED, SCARS, RED_DOTS, BOILS, BLINDED, PLAYER };
 	}
 }

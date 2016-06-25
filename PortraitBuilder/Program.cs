@@ -72,9 +72,8 @@ namespace Portrait_Builder {
 				Application.Run(new Form1());
 			}
 			catch (Exception e) {
-				logger.Fatal("Fatal error: " + e.ToString());
+				logger.Fatal("Fatal error." + e);
 			}
-
 		}
 	}
 }

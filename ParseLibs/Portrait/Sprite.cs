@@ -26,16 +26,18 @@ namespace Parsers.Portrait {
 		public void Load(string dir) {
 			Bitmap texture;
 
-			if (Tiles.Count > 0) {
-				foreach (Bitmap tile in Tiles)
-					tile.Dispose();
-				Tiles = new List<Bitmap>();
+			Unload();
+
+			string path = dir + Path.DirectorySeparatorChar + TextureFilePath;
+			if (File.Exists(path)) {
+				texture = DevIL.DevIL.LoadBitmap(path);
+			} else {
+				throw new FileLoadException("Unable to find texture file.", path);
 			}
 
-			if (File.Exists(dir + "/" + TextureFilePath))
-				texture = DevIL.DevIL.LoadBitmap(dir + "/" + TextureFilePath);
-			else
-				throw new FileLoadException("Unable to find texture file.", dir + TextureFilePath);
+			if(texture == null) {
+				throw new FileLoadException("Texture file is empty.", path);
+			}
 
 			Size size = new Size(texture.Width / FrameCount, texture.Height);
 
@@ -53,8 +55,18 @@ namespace Parsers.Portrait {
 			IsLoaded = true;
 		}
 
+		public void Unload() {
+			if (Tiles.Count > 0) {
+				foreach (Bitmap tile in Tiles) {
+					tile.Dispose();
+				}
+				IsLoaded = false;
+				Tiles = new List<Bitmap>();
+			}
+		}
+
 		public override string ToString() {
-			return string.Format("Name: {0}, Texture: {1}, FrameCount: {2}, NoRefCount: {3}, IsLoaded: {4}", Name, TextureFilePath, FrameCount, NoRefCount, IsLoaded);
+			return string.Format("Name: {0}, Texture: {1}, FrameCount: {2}, IsLoaded: {3}", Name, TextureFilePath, FrameCount, IsLoaded);
 		}
 	}
 }

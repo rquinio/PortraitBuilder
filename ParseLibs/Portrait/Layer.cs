@@ -4,9 +4,9 @@ using System.Drawing;
 namespace Parsers.Portrait {
 
 	/// <summary>
-	/// Portrait images are drawn as a succession of layers
+	/// Portrait images are composed of a succession of layers
 	/// 
-	/// Note: multiple layers may contribute to render the same portrait attribute (E.g. clothes_behind, clothes, clothes_infront).
+	/// Note: multiple layers may contribute to render the same portrait characteristic (E.g. clothes_behind, clothes, clothes_infront).
 	/// </summary>
 	public class Layer {
 		/// <summary>
@@ -15,10 +15,10 @@ namespace Parsers.Portrait {
 		public string Name;
 
 		/// <summary>
-		/// Index of the letter in the DNA/Properties string
+		/// The characteristic associated to this layer.
+		/// 
+		/// It used to determine which variation will be used within the asset sprite
 		/// </summary>
-		//public int Index;
-
 		public Characteristic Characteristic;
 
 		/// <summary>
@@ -46,7 +46,7 @@ namespace Parsers.Portrait {
 		public string Filename;
 
 		public override string ToString() {
-			return string.Format("Name: {0}, Characteristic: {1}", Name, Characteristic);
+			return string.Format("{0} from {1}", Name + ":" + Characteristic, Filename);
 		}
 	}
 }

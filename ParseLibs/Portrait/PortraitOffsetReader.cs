@@ -8,6 +8,10 @@ using System.IO;
 using System.Drawing;
 
 namespace Parsers.Portrait {
+
+	/// <summary>
+	/// Handles the parsing of portrait_offsets.txt files.
+	/// </summary>
 	public class PortraitOffsetReader {
 
 		private static readonly ILog logger = LogManager.GetLogger(typeof(PortraitOffsetReader).Name);
