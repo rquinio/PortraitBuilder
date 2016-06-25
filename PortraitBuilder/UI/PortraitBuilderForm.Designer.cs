@@ -1,7 +1,7 @@
 ﻿using System;
 
 namespace Portrait_Builder {
-	partial class Form1 {
+	partial class PortraitBuilderForm {
 		/// <summary>
 		/// Required designer variable.
 		/// </summary>
@@ -25,7 +25,7 @@ namespace Portrait_Builder {
 		/// the contents of this method with the code editor.
 		/// </summary>
 		private void InitializeComponent() {
-			System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Form1));
+			System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(PortraitBuilderForm));
 			this.groupBox1 = new System.Windows.Forms.GroupBox();
 			this.label22 = new System.Windows.Forms.Label();
 			this.btnSave = new System.Windows.Forms.Button();

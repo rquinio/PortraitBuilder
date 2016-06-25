@@ -19,9 +19,9 @@ namespace Portrait_Builder {
 	/// <summary>
 	/// Controller class
 	/// </summary>
-	public partial class Form1 : Form {
+	public partial class PortraitBuilderForm : Form {
 
-		private static readonly ILog logger = LogManager.GetLogger(typeof(Form1).Name);
+		private static readonly ILog logger = LogManager.GetLogger(typeof(PortraitBuilderForm).Name);
 
 		private Image previewImage = new Bitmap(176, 176);
 		private List<Bitmap> borders = new List<Bitmap>();
@@ -55,7 +55,7 @@ namespace Portrait_Builder {
 		/// </summary>
 		private List<ComboBox> propertiesComboBoxes = new List<ComboBox>();
 
-		public Form1() {
+		public PortraitBuilderForm() {
 			InitializeComponent();
 			dnaComboBoxes.AddRange(new ComboBox[] { cbNeck, cbChin, cbMouth, cbNose, cbCheeks, null, cbEyes, cbEars, cbHairColour, cbEyeColour, null });
 			propertiesComboBoxes.AddRange(new ComboBox[] { cbBackground, cbHair, null, cbClothes, cbBeard, cbHeadgear, cbPrisoner, cbScars, cbRedDots, cbBoils, cbBlinded, cbPlayer });
@@ -67,7 +67,6 @@ namespace Portrait_Builder {
 
 		private void initialize() {
 			logger.Info("Portrait Builder Version " + Application.ProductVersion);
-			logger.Info("Portrait Builder Parser Library " + Parsers.Version.GetVersion());
 			// Add the version to title
 			this.Text += " " + Application.ProductVersion;
 

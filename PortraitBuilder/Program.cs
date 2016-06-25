@@ -69,7 +69,7 @@ namespace Portrait_Builder {
 				((Hierarchy)LogManager.GetRepository()).Root.Level = Level.Debug;
 			}
 			try {
-				Application.Run(new Form1());
+				Application.Run(new PortraitBuilderForm());
 			}
 			catch (Exception e) {
 				logger.Fatal("Fatal error." + e);

@@ -38,12 +38,16 @@
     <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <PropertyGroup>
-    <ApplicationIcon>unknown_character.ico</ApplicationIcon>
+    <ApplicationIcon>UI\unknown_character.ico</ApplicationIcon>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="DevIL.NET2, Version=1.1.2619.31671, Culture=neutral, processorArchitecture=x86">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\libs\DevIL.NET2.dll</HintPath>
+    </Reference>
+    <Reference Include="Hime.Redist, Version=0.4.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\libs\Hime.Redist.dll</HintPath>
     </Reference>
     <Reference Include="ICSharpCode.SharpZipLib, Version=0.86.0.518, Culture=neutral, PublicKeyToken=1b03e6acf1164f73, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
@@ -63,26 +67,45 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="ImportDialog.cs">
+    <Compile Include="Engine\PortraitRenderer.cs" />
+    <Compile Include="Model\Content\Content.cs" />
+    <Compile Include="Model\Content\DLC.cs" />
+    <Compile Include="Model\Content\Mod.cs" />
+    <Compile Include="Model\Portrait\Characteristic.cs" />
+    <Compile Include="Model\Portrait\Colour.cs" />
+    <Compile Include="Model\Portrait\Hair.cs" />
+    <Compile Include="Model\Portrait\Layer.cs" />
+    <Compile Include="Model\Portrait\Portrait.cs" />
+    <Compile Include="Model\Portrait\PortraitData.cs" />
+    <Compile Include="Model\Portrait\PortraitType.cs" />
+    <Compile Include="Model\Portrait\Sprite.cs" />
+    <Compile Include="Model\User.cs" />
+    <Compile Include="Parser\DLCReader.cs" />
+    <Compile Include="Parser\ModReader.cs" />
+    <Compile Include="Parser\PortraitOffsetReader.cs" />
+    <Compile Include="Parser\PortraitReader.cs" />
+    <Compile Include="Parser\PortraitReaderLexer.cs" />
+    <Compile Include="Parser\PortraitReaderParser.cs" />
+    <Compile Include="UI\ImportDialog.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="ImportDialog.Designer.cs">
+    <Compile Include="UI\ImportDialog.Designer.cs">
       <DependentUpon>ImportDialog.cs</DependentUpon>
     </Compile>
-    <Compile Include="Form1.cs">
+    <Compile Include="UI\PortraitBuilderForm.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Form1.Designer.cs">
-      <DependentUpon>Form1.cs</DependentUpon>
+    <Compile Include="UI\PortraitBuilderForm.Designer.cs">
+      <DependentUpon>PortraitBuilderForm.cs</DependentUpon>
     </Compile>
-    <Compile Include="Loader.cs" />
+    <Compile Include="Engine\Loader.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Snippets.cs" />
-    <EmbeddedResource Include="Form1.resx">
-      <DependentUpon>Form1.cs</DependentUpon>
+    <Compile Include="UI\Snippets.cs" />
+    <EmbeddedResource Include="UI\PortraitBuilderForm.resx">
+      <DependentUpon>PortraitBuilderForm.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="ImportDialog.resx">
+    <EmbeddedResource Include="UI\ImportDialog.resx">
       <DependentUpon>ImportDialog.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
@@ -96,7 +119,7 @@
       <DesignTime>True</DesignTime>
     </Compile>
     <None Include="app.config" />
-    <None Include="packages.config" />
+    <None Include="Parser\PortraitReader.gram" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
@@ -106,16 +129,9 @@
       <DependentUpon>Settings.settings</DependentUpon>
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
     </Compile>
-    <None Include="Run With Logging.bat" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\ParseLibs\ParseLibs.csproj">
-      <Project>{f70d6b3b-c58b-4e50-8a2c-4c3365f17084}</Project>
-      <Name>ParseLibs</Name>
-    </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
-    <Content Include="unknown_character.ico" />
+    <Content Include="UI\unknown_character.ico" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

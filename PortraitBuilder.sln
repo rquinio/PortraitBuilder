@@ -1,9 +1,9 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 2012
+# Visual Studio 14
+VisualStudioVersion = 14.0.25123.0
+MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PortraitBuilder", "PortraitBuilder\PortraitBuilder.csproj", "{B8C477CE-DC33-4DE2-BBE4-CEE170CE8994}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ParseLibs", "ParseLibs\ParseLibs.csproj", "{F70D6B3B-C58B-4E50-8A2C-4C3365F17084}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -25,16 +25,6 @@ Global
 		{B8C477CE-DC33-4DE2-BBE4-CEE170CE8994}.Release|Mixed Platforms.Build.0 = Release|x86
 		{B8C477CE-DC33-4DE2-BBE4-CEE170CE8994}.Release|x86.ActiveCfg = Release|x86
 		{B8C477CE-DC33-4DE2-BBE4-CEE170CE8994}.Release|x86.Build.0 = Release|x86
-		{F70D6B3B-C58B-4E50-8A2C-4C3365F17084}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{F70D6B3B-C58B-4E50-8A2C-4C3365F17084}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{F70D6B3B-C58B-4E50-8A2C-4C3365F17084}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
-		{F70D6B3B-C58B-4E50-8A2C-4C3365F17084}.Debug|Mixed Platforms.Build.0 = Debug|Any CPU
-		{F70D6B3B-C58B-4E50-8A2C-4C3365F17084}.Debug|x86.ActiveCfg = Debug|Any CPU
-		{F70D6B3B-C58B-4E50-8A2C-4C3365F17084}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{F70D6B3B-C58B-4E50-8A2C-4C3365F17084}.Release|Any CPU.Build.0 = Release|Any CPU
-		{F70D6B3B-C58B-4E50-8A2C-4C3365F17084}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
-		{F70D6B3B-C58B-4E50-8A2C-4C3365F17084}.Release|Mixed Platforms.Build.0 = Release|Any CPU
-		{F70D6B3B-C58B-4E50-8A2C-4C3365F17084}.Release|x86.ActiveCfg = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
