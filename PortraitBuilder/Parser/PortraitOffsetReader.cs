@@ -7,7 +7,7 @@ using log4net;
 using System.IO;
 using System.Drawing;
 
-namespace Parsers.Portrait {
+namespace PortraitBuilder.Parser {
 
 	/// <summary>
 	/// Handles the parsing of portrait_offsets.txt files.

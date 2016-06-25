@@ -4,14 +4,14 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using Parsers.DLC;
-using Parsers.Mod;
-using Parsers.Portrait;
-using Parsers;
 using ICSharpCode.SharpZipLib.Zip;
 using log4net;
+using PortraitBuilder.Model;
+using PortraitBuilder.Parser;
+using PortraitBuilder.Model.Content;
+using PortraitBuilder.Model.Portrait;
 
-namespace Portrait_Builder {
+namespace Engine {
 
 	/// <summary>
 	/// Loads content based on hierachical override: vanilla -> DLC -> mod -> dependent mod

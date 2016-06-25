@@ -3,8 +3,9 @@ using System.Collections.Generic;
 using System.IO;
 using System.Text;
 using log4net;
+using PortraitBuilder.Model.Content;
 
-namespace Parsers.DLC {
+namespace PortraitBuilder.Parser {
 	public class DLCReader {
 
 		private static readonly ILog logger = LogManager.GetLogger(typeof(DLC).Name);

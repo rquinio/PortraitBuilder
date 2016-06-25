@@ -1,7 +1,6 @@
 using System.Collections.Generic;
-using Parsers;
 
-namespace Parsers.Mod {
+namespace PortraitBuilder.Model.Content {
 	public class Mod : Content {
 
 		/// <summary>

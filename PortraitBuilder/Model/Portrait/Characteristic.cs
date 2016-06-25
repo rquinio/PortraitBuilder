@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Parsers.Portrait {
+namespace PortraitBuilder.Model.Portrait {
 
 	/// <summary>
 	/// Represents one DNA or Property element

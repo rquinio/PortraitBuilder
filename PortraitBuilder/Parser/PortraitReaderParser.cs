@@ -6,8 +6,7 @@
 using System.Collections.Generic;
 using Hime.Redist.Parsers;
 
-namespace Parsers.Portrait
-{
+namespace PortraitBuilder.Parser {
     public class PortraitReaderParser : BaseRNGLR1Parser
     {
         public static readonly SymbolVariable[] variables = {

@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace Parsers.DLC {
+namespace PortraitBuilder.Model.Content {
 	public class DLC : Content {
 
 		/// <summary>

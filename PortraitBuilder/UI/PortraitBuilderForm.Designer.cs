@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Portrait_Builder {
+namespace PortraitBuilder.UI {
 	partial class PortraitBuilderForm {
 		/// <summary>
 		/// Required designer variable.
@@ -756,7 +756,7 @@ namespace Portrait_Builder {
 			this.btnReload.UseVisualStyleBackColor = true;
 			this.btnReload.Click += new System.EventHandler(this.onClickReload);
 			// 
-			// Form1
+			// PortraitBuilderForm
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
@@ -767,7 +767,7 @@ namespace Portrait_Builder {
 			this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
 			this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
 			this.MaximizeBox = false;
-			this.Name = "Form1";
+			this.Name = "PortraitBuilderForm";
 			this.Text = "Portrait Builder";
 			this.groupBox1.ResumeLayout(false);
 			this.groupBox1.PerformLayout();

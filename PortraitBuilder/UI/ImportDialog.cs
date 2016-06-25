@@ -1,9 +1,9 @@
-﻿using System;
+﻿using PortraitBuilder.Model.Portrait;
+using System;
 using System.Text.RegularExpressions;
 using System.Windows.Forms;
-using Parsers.Portrait;
 
-namespace Portrait_Builder {
+namespace PortraitBuilder.UI {
 	public partial class ImportDialog : Form {
 		private bool isDNAValid = false; 
 		private bool isPropertiesValid = false;

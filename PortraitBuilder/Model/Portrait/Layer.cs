@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using System.Drawing;
 
-namespace Parsers.Portrait {
+namespace PortraitBuilder.Model.Portrait {
 
 	/// <summary>
 	/// Portrait images are composed of a succession of layers

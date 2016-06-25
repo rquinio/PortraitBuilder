@@ -1,6 +1,10 @@
 using System.Collections.Generic;
 
-namespace Parsers.Portrait {
+namespace PortraitBuilder.Model.Portrait {
+
+	/// <summary>
+	/// Definition of how a portrait for a given ethnicity, sex, age and date is composed.
+	/// </summary>
 	public class PortraitType {
 
 		/// <summary>

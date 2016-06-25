@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Windows.Forms;
 
-namespace Measter {
+namespace PortraitBuilder.UI {
 	static class Snippets {
 
 		public static string OpenFileDialog(string sTitle, string sFilter, string sReturn) {

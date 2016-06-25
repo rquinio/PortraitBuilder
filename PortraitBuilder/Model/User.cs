@@ -4,7 +4,11 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Parsers {
+namespace PortraitBuilder.Model {
+
+	/// <summary>
+	/// User configuration
+	/// </summary>
 	public class User {
 		/// <summary>
 		/// Path of the Crusader Kings II game directory in Steam. E.g. C:\Paradox\Crusader Kings II

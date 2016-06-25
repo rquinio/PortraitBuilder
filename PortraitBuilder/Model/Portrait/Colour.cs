@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using System.Drawing;
 
-namespace Parsers.Portrait {
+namespace PortraitBuilder.Model.Portrait {
 
 	/// <summary>
 	/// Used for drawing in portraits because it's faster than the .net Color object.

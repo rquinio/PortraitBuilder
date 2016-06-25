@@ -33,4 +33,4 @@ Dependencies:
 
 To re-generate the Lexer/Parser from the grammar, install Hime Parser Generator v0.5.0 (won't work with v1.0), and run the following:
 
-> himecc PortraitReader.gram -n Parsers.Portrait
+> himecc PortraitReader.gram -n PortraitBuilder.Parser

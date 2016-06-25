@@ -2,7 +2,7 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.IO;
 
-namespace Parsers.Portrait {
+namespace PortraitBuilder.Model.Portrait {
 	public class Sprite {
 		public string Name;
 		public string TextureFilePath;

@@ -4,10 +4,9 @@ using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using Parsers.Portrait;
 using log4net;
 
-namespace Parsers.Portrait {
+namespace PortraitBuilder.Model.Portrait {
 
 	/// <summary>
 	/// 

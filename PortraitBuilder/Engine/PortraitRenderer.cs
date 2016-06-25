@@ -7,8 +7,10 @@ using System.Threading.Tasks;
 using System.Drawing;
 using System.Drawing.Imaging;
 using log4net;
+using PortraitBuilder.Model.Portrait;
+using PortraitBuilder.Model.Content;
 
-namespace Parsers.Portrait {
+namespace Engine {
 
 	/// <summary>
 	/// Handles the rendering of portraits

@@ -5,9 +5,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.IO;
-using Parsers.Portrait;
+using PortraitBuilder.Model.Portrait;
 
-namespace Parsers {
+namespace PortraitBuilder.Model.Content {
 
 	/// <summary>
 	/// Represents a loadable unit of content (vanilla, DLC, mod, ...).

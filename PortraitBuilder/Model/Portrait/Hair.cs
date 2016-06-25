@@ -1,6 +1,6 @@
 using System.Collections.Generic;
 
-namespace Parsers.Portrait {
+namespace PortraitBuilder.Model.Portrait {
 
 	public class Hair {
 		public Colour Dark;

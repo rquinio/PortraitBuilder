@@ -2,8 +2,9 @@
 using System.IO;
 using System.Text;
 using log4net;
+using PortraitBuilder.Model.Content;
 
-namespace Parsers.Mod {
+namespace PortraitBuilder.Parser {
 	public class ModReader {
 
 		private static readonly ILog logger = LogManager.GetLogger(typeof(Mod).Name);

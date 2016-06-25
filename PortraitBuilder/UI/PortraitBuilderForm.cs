@@ -9,12 +9,12 @@ using System.Text;
 using System.Windows.Forms;
 using ICSharpCode.SharpZipLib.Zip;
 using log4net;
-using Parsers.DLC;
-using Parsers.Mod;
-using Parsers.Portrait;
-using Parsers;
+using Engine;
+using PortraitBuilder.Model.Content;
+using PortraitBuilder.Model.Portrait;
+using PortraitBuilder.Model;
 
-namespace Portrait_Builder {
+namespace PortraitBuilder.UI {
 
 	/// <summary>
 	/// Controller class
@@ -382,7 +382,7 @@ namespace Portrait_Builder {
 		}
 
 		private void onClickSave(object sender, EventArgs e) {
-			string file = Measter.Snippets.SaveFileDialog("Save Image", "PNG|*.png", null);
+			string file = Snippets.SaveFileDialog("Save Image", "PNG|*.png", null);
 
 			if (file != null) {
 				previewImage.Save(file, ImageFormat.Png);

@@ -7,8 +7,9 @@ using System.Linq;
 using System.Text;
 using Hime.Redist.Parsers;
 using log4net;
+using PortraitBuilder.Model.Portrait;
 
-namespace Parsers.Portrait {
+namespace PortraitBuilder.Parser {
 
 	/// <summary>
 	/// Handles the parsing of portraits *.gfx files.

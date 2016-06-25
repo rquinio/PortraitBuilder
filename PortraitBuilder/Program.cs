@@ -6,8 +6,9 @@ using System.Windows.Forms;
 using log4net;
 using log4net.Core;
 using log4net.Repository.Hierarchy;
+using PortraitBuilder.UI;
 
-namespace Portrait_Builder {
+namespace PortraitBuilder {
 	static class Program {
 
 		private static readonly ILog logger = LogManager.GetLogger(typeof(Program).Name);
@@ -29,7 +30,7 @@ namespace Portrait_Builder {
 				string dir = null;
 
 				while (dir == null) {
-					string ck2exePath = Measter.Snippets.OpenFileDialog("Please select the location of your " + CK2_EXE, "Application (*.exe)|*.exe", null);
+					string ck2exePath = Snippets.OpenFileDialog("Please select the location of your " + CK2_EXE, "Application (*.exe)|*.exe", null);
 
 					if (ck2exePath == null) {
 						if (MessageBox.Show("This program cannot run without data from the Crusader Kings II installation directory. \n To find the directory in Steam: right-click the game in the library, Properties / Local Files / Browse Local Files.",
