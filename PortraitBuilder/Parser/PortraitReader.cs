@@ -276,7 +276,7 @@ namespace PortraitBuilder.Parser {
 				layer.Characteristic = Characteristic.PROPERTIES[index];
 			}
 			else {
-				logger.Error(string.Format("Unkown type {0}, for layer {1) in file {2}", layerParts[1], layer, filename));
+				logger.Error(string.Format("Unkown type {0}, for layer {1} in file {2}", layerParts[1], layer, filename));
 			}
 
 			for (int i = 2; i < layerParts.Length; i++) {

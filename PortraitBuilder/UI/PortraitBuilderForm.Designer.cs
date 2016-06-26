@@ -14,6 +14,7 @@ namespace PortraitBuilder.UI {
 		protected override void Dispose(bool disposing) {
 			if (disposing && (components != null)) {
 				components.Dispose();
+				previewImage.Dispose();
 			}
 			base.Dispose(disposing);
 		}

@@ -59,10 +59,10 @@ namespace PortraitBuilder {
 		}
 
 		private static void SetDir(string dir) {
-			using (Stream stream = new FileStream("gamedir", FileMode.Create))
-			using (BinaryWriter writer = new BinaryWriter(stream)) {
-				writer.Write(dir);
-			}
+			Stream stream = new FileStream("gamedir", FileMode.Create);
+			BinaryWriter writer = new BinaryWriter(stream);
+			writer.Write(dir);
+			stream.Close();
 		}
 
 		private static void StartUI(string[] args) {

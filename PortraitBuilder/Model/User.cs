@@ -26,7 +26,7 @@ namespace PortraitBuilder.Model {
 		public string DlcDir;
 
 		public override string ToString() {
-			return string.Format("CK2 directory {0}, Mod directory: {1}, DLC directory:", GameDir, MyDocsDir, DlcDir);
+			return string.Format("CK2 directory {0}, Mod directory: {1}, DLC directory: {2}", GameDir, MyDocsDir, DlcDir);
 		}
 	}
 }
