@@ -54,7 +54,7 @@ namespace PortraitBuilder.Parser {
 						data.Offsets = data.Offsets.Concat(offsets).GroupBy(d => d.Key).ToDictionary(d => d.Key, d => d.First().Value);
 					}
 				}
-			} catch(Exception e) {
+			} catch (Exception e) {
 				logger.Error("Failed to parse portrait data in " + dir, e);
 			}
 			
@@ -137,7 +137,7 @@ namespace PortraitBuilder.Parser {
 						}
 						data.PortraitTypes.Add(portraitType.Name, portraitType);
 
-					} catch(Exception e) {
+					} catch (Exception e) {
 						logger.Error(string.Format("Could not parse portraitType in file {0}", filename), e);
 					}
 				}
@@ -161,18 +161,18 @@ namespace PortraitBuilder.Parser {
 				value = token.Children[1].Symbol as SymbolTokenText;
 
 				switch (token.Symbol.Name) {
-					case "stringOption":
-						if (id.ValueText == "name")
-							portraitType.Name = value.ValueText.Replace("\"", "");
-						if (id.ValueText == "effectFile")
-							portraitType.EffectFile = value.ValueText.Replace("\"", "").Replace(@"\\", @"\");
-						break;
-					case "numberOption":
-						if (id.ValueText == "hair_color_index")
-							portraitType.HairColourIndex = Int32.Parse(value.ValueText);
-						if (id.ValueText == "eye_color_index")
-							portraitType.EyeColourIndex = Int32.Parse(value.ValueText);
-						break;
+				case "stringOption":
+					if (id.ValueText == "name")
+						portraitType.Name = value.ValueText.Replace("\"", "");
+					if (id.ValueText == "effectFile")
+						portraitType.EffectFile = value.ValueText.Replace("\"", "").Replace(@"\\", @"\");
+					break;
+				case "numberOption":
+					if (id.ValueText == "hair_color_index")
+						portraitType.HairColourIndex = Int32.Parse(value.ValueText);
+					if (id.ValueText == "eye_color_index")
+						portraitType.EyeColourIndex = Int32.Parse(value.ValueText);
+					break;
 				}
 			}
 
@@ -196,8 +196,7 @@ namespace PortraitBuilder.Parser {
 
 				if (id.ValueText == "hair_color") {
 					portraitType.HairColours.AddRange(ParseHairColours(child));
-				}
-				else if (id.ValueText == "eye_color") {
+				} else if (id.ValueText == "eye_color") {
 					portraitType.EyeColours.AddRange(ParseEyeColours(child));
 				}
 			}
@@ -271,11 +270,9 @@ namespace PortraitBuilder.Parser {
 			int index = int.Parse(layerParts[1].Substring(1));
 			if (layerParts[1][0] == 'd') {
 				layer.Characteristic = Characteristic.DNA[index];
-			}
-			else if (layerParts[1][0] == 'p') {
+			} else if (layerParts[1][0] == 'p') {
 				layer.Characteristic = Characteristic.PROPERTIES[index];
-			}
-			else {
+			} else {
 				logger.Error(string.Format("Unkown type {0}, for layer {1} in file {2}", layerParts[1], layer, filename));
 			}
 
@@ -314,20 +311,20 @@ namespace PortraitBuilder.Parser {
 				value = token.Children[1].Symbol as SymbolTokenText;
 
 				switch (token.Symbol.Name) {
-					case "stringOption":
-						if (id.ValueText == "name")
-							sprite.Name = value.ValueText.Replace("\"", "");
-						if (id.ValueText == "texturefile")
-							sprite.TextureFilePath = value.ValueText.Replace("\"", "").Replace(@"\\", @"\");
-						break;
-					case "boolOption":
-						if (id.ValueText == "norefcount")
-							sprite.NoRefCount = value.ValueText == "yes";
-						break;
-					case "numberOption":
-						if (id.ValueText == "noOfFrames")
-							sprite.FrameCount = Int32.Parse(value.ValueText);
-						break;
+				case "stringOption":
+					if (id.ValueText == "name")
+						sprite.Name = value.ValueText.Replace("\"", "");
+					if (id.ValueText == "texturefile")
+						sprite.TextureFilePath = value.ValueText.Replace("\"", "").Replace(@"\\", @"\");
+					break;
+				case "boolOption":
+					if (id.ValueText == "norefcount")
+						sprite.NoRefCount = value.ValueText == "yes";
+					break;
+				case "numberOption":
+					if (id.ValueText == "noOfFrames")
+						sprite.FrameCount = Int32.Parse(value.ValueText);
+					break;
 				}
 			}
 			logger.Debug("Sprite Parsed: " + sprite);

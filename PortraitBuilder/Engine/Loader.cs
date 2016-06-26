@@ -132,14 +132,14 @@ namespace Engine {
 					logger.Info("Loading portraits from mod: " + mod.Name);
 					mod.PortraitData = portraitReader.Parse(mod.AbsolutePath);
 				} else {
-					logger.Error("Mod path "+ mod.AbsolutePath+ " does not exist");
+					logger.Error("Mod path " + mod.AbsolutePath + " does not exist");
 				}
 			}
 			return mods;
 		}
 
 		public void UpdateActiveAdditionalContent(List<Content> contents) {
-			foreach(Content content in activeContents) {
+			foreach (Content content in activeContents) {
 				if (!contents.Contains(content)) {
 					//Unload sprites
 					content.Unload();

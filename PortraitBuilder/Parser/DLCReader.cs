@@ -72,7 +72,7 @@ namespace PortraitBuilder.Parser {
 
 			foreach (FileInfo dlcFile in dlcFiles) {
 				DLC dlc = Parse(dlcFile.FullName);
-				if(dlc != null) {
+				if (dlc != null) {
 					// Note: path will be overriden when extracting the archive
 					dlc.AbsolutePath = folder + Path.DirectorySeparatorChar + dlc.Archive.Replace("dlc/", "");
 					dlcs.Add(dlc);

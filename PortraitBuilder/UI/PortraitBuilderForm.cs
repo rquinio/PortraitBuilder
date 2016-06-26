@@ -97,7 +97,7 @@ namespace PortraitBuilder.UI {
 		private void loadBorders() {
 			string borderSprite = loader.LoadBorders();
 
-			if(borderSprite != null) {
+			if (borderSprite != null) {
 				Bitmap charFrame = DevIL.DevIL.LoadBitmap(borderSprite);
 
 				for (int i = 0; i < 6; i++) {
@@ -142,7 +142,7 @@ namespace PortraitBuilder.UI {
 			container.Controls.Add(checkbox);
 			usableContents.Add(checkbox, content);
 		}
-		
+
 		private string readGameDir() {
 			Stream stream = new FileStream("gamedir", FileMode.Open);
 			BinaryReader reader = new BinaryReader(stream);
@@ -161,8 +161,7 @@ namespace PortraitBuilder.UI {
 			try {
 				PortraitType portraitType = getSelectedPortraitType();
 				portraitImage = portraitRenderer.DrawPortrait(portraitType, portrait, loader.GetActiveContents(), loader.GetActivePortraitData().Sprites);
-			}
-			catch (Exception e) {
+			} catch (Exception e) {
 				logger.Error("Error encountered rendering portrait:" + e.ToString());
 				return;
 			}
@@ -175,9 +174,9 @@ namespace PortraitBuilder.UI {
 
 		private string getCharacteristicsString(List<ComboBox> characteristics) {
 			StringBuilder sb = new StringBuilder();
-			foreach(ComboBox cb in characteristics) {
+			foreach (ComboBox cb in characteristics) {
 				char letter = '0';
-				if(cb != null) {
+				if (cb != null) {
 					letter = GetLetter(cb);
 				}
 				sb.Append(letter);
@@ -259,14 +258,13 @@ namespace PortraitBuilder.UI {
 		private void fillComboBox(ComboBox cb, Characteristic characteristic) {
 			cb.Items.Clear();
 			PortraitType portraitType = getSelectedPortraitType();
-			if(portraitType != null) {
+			if (portraitType != null) {
 				int frameCount = loader.GetActivePortraitData().GetFrameCount(portraitType, characteristic);
 				if (frameCount > 0) {
 					logger.Debug(string.Format("Item count for {0} {1} : {2}", portraitType, characteristic, frameCount));
 					cb.Enabled = true;
 					fillComboBox(cb, frameCount);
-				}
-				else {
+				} else {
 					logger.Warn(string.Format("Could not find frame count for {0} and {1}, disabling dropdown.", portraitType, characteristic));
 					cb.Enabled = false;
 				}
@@ -276,7 +274,7 @@ namespace PortraitBuilder.UI {
 		private PortraitType getSelectedPortraitType() {
 			PortraitType selectedPortraitType = null;
 			object selectedItem = cbPortraitTypes.SelectedItem;
-			if(selectedItem != null) {
+			if (selectedItem != null) {
 				return loader.GetActivePortraitData().PortraitTypes["PORTRAIT_" + selectedItem.ToString()];
 			}
 			return selectedPortraitType;
@@ -446,7 +444,7 @@ namespace PortraitBuilder.UI {
 		}
 
 		private void onClickReload(object sender, EventArgs e) {
-			foreach (Content content in usableContents.Values){
+			foreach (Content content in usableContents.Values) {
 				content.Dispose();
 			}
 			usableContents.Clear();

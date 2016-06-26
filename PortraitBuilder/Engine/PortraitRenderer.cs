@@ -49,13 +49,11 @@ namespace Engine {
 
 						DrawTile(portraitType, portrait.GetDNA(), g, sprite, layer, tileIndex);
 
-					}
-					else {
+					} else {
 						throw new FileNotFoundException("Sprite not found:" + layer);
 					}
 
-				}
-				catch (Exception e) {
+				} catch (Exception e) {
 					logger.Error("Could not render layer " + layer + ", caused by:\n" + e.ToString());
 				}
 			}
@@ -77,7 +75,7 @@ namespace Engine {
 			string containerPath = null;
 
 			// Loop on reverse order - last occurence wins if asset is overriden !
-			for (int i = activeContents.Count-1; i >= 0; i--) {
+			for (int i = activeContents.Count - 1; i >= 0; i--) {
 				Content content = activeContents[i];
 				string contentPath = content.AbsolutePath;
 				if (File.Exists(contentPath + Path.DirectorySeparatorChar + filePath)) {
@@ -87,7 +85,7 @@ namespace Engine {
 			}
 
 			if (containerPath == null) {
-					throw new FileNotFoundException(string.Format("Unable to find file: {0} under active content {1}", filePath, activeContents));
+				throw new FileNotFoundException(string.Format("Unable to find file: {0} under active content {1}", filePath, activeContents));
 			}
 
 			logger.Debug("Loading sprite from: " + containerPath);
@@ -100,13 +98,11 @@ namespace Engine {
 				int hairIndex = Portrait.GetTileIndexFromLetter(dna[portraitType.HairColourIndex], portraitType.HairColours.Count);
 				tile = DrawHair(sprite.Tiles[tileIndex], portraitType.HairColours[hairIndex]);
 
-			}
-			else if (layer.IsEye) {
+			} else if (layer.IsEye) {
 				int eyeIndex = Portrait.GetTileIndexFromLetter(dna[portraitType.EyeColourIndex], portraitType.EyeColours.Count);
 				tile = DrawEye(sprite.Tiles[tileIndex], portraitType.EyeColours[eyeIndex]);
 
-			}
-			else {
+			} else {
 				tile = sprite.Tiles[tileIndex];
 			}
 
@@ -121,8 +117,7 @@ namespace Engine {
 			BitmapData odata = output.LockBits(new Rectangle(0, 0, 152, 152), ImageLockMode.ReadOnly, output.PixelFormat);
 			int pixelSize = 4;
 
-			unsafe
-			{
+			unsafe {
 				for (int y = 0; y < 152; y++) {
 					byte* brow = (byte*)bdata.Scan0 + (y * bdata.Stride);
 					byte* orow = (byte*)odata.Scan0 + (y * odata.Stride);
@@ -159,8 +154,7 @@ namespace Engine {
 			BitmapData odata = output.LockBits(new Rectangle(0, 0, 152, 152), ImageLockMode.ReadOnly, output.PixelFormat);
 			int pixelSize = 4;
 
-			unsafe
-			{
+			unsafe {
 				for (int y = 0; y < 152; y++) {
 					byte* brow = (byte*)bdata.Scan0 + (y * bdata.Stride);
 					byte* orow = (byte*)odata.Scan0 + (y * odata.Stride);

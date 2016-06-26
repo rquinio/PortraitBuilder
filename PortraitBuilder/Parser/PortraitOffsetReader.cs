@@ -54,7 +54,7 @@ namespace PortraitBuilder.Parser {
 						logger.Warn(string.Format("Duplicate offsets for {0}: {1} and {2} (ignored)", layerName, offsets[layerName], offset));
 					}
 				} else {
-				offsets.Add(layerName, offset);
+					offsets.Add(layerName, offset);
 				}
 			} else {
 				logger.Error(string.Format("Syntax error in file {0} on line: {1} ", filename, line));

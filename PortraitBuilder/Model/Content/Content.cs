@@ -43,7 +43,7 @@ namespace PortraitBuilder.Model.Content {
 		}
 
 		public void Unload() {
-			if(PortraitData != null) {
+			if (PortraitData != null) {
 				PortraitData.Unload();
 			}
 		}
