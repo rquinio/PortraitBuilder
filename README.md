@@ -1,14 +1,12 @@
-# CK2 PortraitBuilder
+# CK2 PortraitBuilder [![Build Status](https://travis-ci.org/rquinio/PortraitBuilder.svg)](https://travis-ci.org/rquinio/PortraitBuilder)
+
+PortraitBuilder is a Winforms application to help CK2 modders creating custom characters, by previewing their appearance, which can then be used in character history of mods, or to customize a character in a saved game.
 
 This project is a fork of [Measter's 1.x PortraitBuilder](https://github.com/Measter/PortraitBuilder).
 
 See the dedicated [CK2 forum thread](https://forum.paradoxplaza.com/forum/index.php?threads/utility-portrait-builder-v2.941117/), after registering your CK2 game.
 
-## Description
-
-This tool allows to create custom characters, by previewing their appearance, which can then be used in character history of mods, or to customize a character in a saved game.
-
-Features:
+## Features
 
 - Reading portraits from vanilla, DLCs zip archives and mod folders
 - Saving current portrait as png image
