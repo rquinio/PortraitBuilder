@@ -24,7 +24,6 @@ namespace PortraitBuilder.UI {
 		private static readonly ILog logger = LogManager.GetLogger(typeof(PortraitBuilderForm).Name);
 
 		private Image previewImage = new Bitmap(176, 176);
-		private List<Bitmap> borders = new List<Bitmap>();
 
 		private bool started = false;
 		public static Random rand = new Random();
@@ -81,33 +80,19 @@ namespace PortraitBuilder.UI {
 		}
 
 		private void load(bool clean) {
+			logger.Info("----------------------------");
+			logger.Info("(Re-)loading data");
+
 			loader.LoadVanilla();
 			loadDLCs(clean);
 			loadMods();
 
 			loadPortraits();
-			loadBorders();
 
 			fillCharacteristicComboBoxes();
 			randomizeCharacteristics(true);
 
 			drawPortrait();
-		}
-
-		private void loadBorders() {
-			string borderSprite = loader.LoadBorders();
-
-			if (borderSprite != null) {
-				Bitmap charFrame = DevIL.DevIL.LoadBitmap(borderSprite);
-
-				for (int i = 0; i < 6; i++) {
-					Bitmap border = new Bitmap(176, 176);
-					Graphics g = Graphics.FromImage(border);
-					g.DrawImage(charFrame, 0, 0, new Rectangle(i * 176, 0, 176, 176), GraphicsUnit.Pixel);
-					g.Dispose();
-					borders.Add(border);
-				}
-			}
 		}
 
 		private void loadMods() {
@@ -150,24 +135,20 @@ namespace PortraitBuilder.UI {
 		}
 
 		private void drawPortrait() {
-			logger.Debug(" --Drawing portrait.");
-
 			Graphics g = Graphics.FromImage(previewImage);
 
-			logger.Debug("   --Clearing preview.");
+			logger.Debug("Clearing preview.");
 			g.Clear(Color.Empty);
-			Bitmap portraitImage;
-			logger.Debug("   --Rendering portrait.");
+			
 			try {
 				PortraitType portraitType = getSelectedPortraitType();
-				portraitImage = portraitRenderer.DrawPortrait(portraitType, portrait, loader.GetActiveContents(), loader.GetActivePortraitData().Sprites);
+				logger.Debug("Rendering portrait " + portraitType);
+				Bitmap portraitImage = portraitRenderer.DrawPortrait(portraitType, portrait, loader.GetActiveContents(), loader.GetActivePortraitData().Sprites);
+				g.DrawImage(portraitImage, 0, 0);
 			} catch (Exception e) {
-				logger.Error("Error encountered rendering portrait:" + e.ToString());
+				logger.Error("Error encountered rendering portrait", e);
 				return;
 			}
-			g.DrawImage(portraitImage, 0, 0);
-			logger.Debug("   --Drawing border.");
-			g.DrawImage(borders[cbRank.SelectedIndex], 0, 0);
 
 			pbPortrait.Image = previewImage;
 		}
@@ -210,6 +191,7 @@ namespace PortraitBuilder.UI {
 		private void randomizeCharacteristics(bool doRank) {
 			logger.Debug("Randomizing UI");
 			if (doRank) {
+				randomizeComboBox(cbGovernment);
 				randomizeComboBox(cbRank);
 			}
 
@@ -378,6 +360,12 @@ namespace PortraitBuilder.UI {
 		}
 
 		private void onChangeRank(object sender, EventArgs e) {
+			portrait.SetRank(cbRank.SelectedIndex);
+			drawPortrait();
+		}
+
+		private void onChangeGovernment(object sender, EventArgs e) {
+			portrait.SetGovernment(cbGovernment.SelectedIndex);
 			drawPortrait();
 		}
 

@@ -22,21 +22,20 @@ namespace PortraitBuilder.Model.Portrait {
 		/// <summary>
 		/// Loads the tiles in the sprite. Sets IsLoaded to true.
 		/// </summary>
-		/// <param name="dir">Directory to load image from.</param>
-		public void Load(string dir) {
+		/// <param name="filePath">Path to the image.</param>
+		public void Load(string filePath) {
 			Bitmap texture;
 
 			Unload();
 
-			string path = dir + Path.DirectorySeparatorChar + TextureFilePath;
-			if (File.Exists(path)) {
-				texture = DevIL.DevIL.LoadBitmap(path);
+			if (File.Exists(filePath)) {
+				texture = DevIL.DevIL.LoadBitmap(filePath);
 			} else {
-				throw new FileLoadException("Unable to find texture file.", path);
+				throw new FileLoadException("Unable to find texture file", filePath);
 			}
 
 			if(texture == null) {
-				throw new FileLoadException("Texture file is empty.", path);
+				throw new FileLoadException("Texture file is empty.", filePath);
 			}
 
 			Size size = new Size(texture.Width / FrameCount, texture.Height);

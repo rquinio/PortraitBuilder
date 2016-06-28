@@ -28,6 +28,8 @@ namespace PortraitBuilder.UI {
 		private void InitializeComponent() {
 			System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(PortraitBuilderForm));
 			this.groupBox1 = new System.Windows.Forms.GroupBox();
+			this.label24 = new System.Windows.Forms.Label();
+			this.cbGovernment = new System.Windows.Forms.ComboBox();
 			this.label22 = new System.Windows.Forms.Label();
 			this.btnSave = new System.Windows.Forms.Button();
 			this.btnCopy = new System.Windows.Forms.Button();
@@ -105,6 +107,8 @@ namespace PortraitBuilder.UI {
 			// 
 			// groupBox1
 			// 
+			this.groupBox1.Controls.Add(this.label24);
+			this.groupBox1.Controls.Add(this.cbGovernment);
 			this.groupBox1.Controls.Add(this.label22);
 			this.groupBox1.Controls.Add(this.btnSave);
 			this.groupBox1.Controls.Add(this.btnCopy);
@@ -118,6 +122,32 @@ namespace PortraitBuilder.UI {
 			this.groupBox1.TabIndex = 1;
 			this.groupBox1.TabStop = false;
 			this.groupBox1.Text = "Output";
+			// 
+			// label24
+			// 
+			this.label24.AutoSize = true;
+			this.label24.Location = new System.Drawing.Point(9, 22);
+			this.label24.Name = "label24";
+			this.label24.Size = new System.Drawing.Size(33, 13);
+			this.label24.TabIndex = 26;
+			this.label24.Text = "Govt:";
+			// 
+			// cbGovernment
+			// 
+			this.cbGovernment.FormattingEnabled = true;
+			this.cbGovernment.Items.AddRange(new object[] {
+            "Feudal",
+            "Iqta",
+            "Theocracy",
+            "Republic",
+            "Merchant Republic",
+            "Tribal",
+            "Nomadic"});
+			this.cbGovernment.Location = new System.Drawing.Point(45, 19);
+			this.cbGovernment.Name = "cbGovernment";
+			this.cbGovernment.Size = new System.Drawing.Size(136, 21);
+			this.cbGovernment.TabIndex = 25;
+			this.cbGovernment.SelectedIndexChanged += new System.EventHandler(this.onChangeGovernment);
 			// 
 			// label22
 			// 
@@ -150,7 +180,7 @@ namespace PortraitBuilder.UI {
 			// 
 			// tbDNA
 			// 
-			this.tbDNA.Location = new System.Drawing.Point(6, 250);
+			this.tbDNA.Location = new System.Drawing.Point(6, 266);
 			this.tbDNA.Multiline = true;
 			this.tbDNA.Name = "tbDNA";
 			this.tbDNA.ReadOnly = true;
@@ -161,7 +191,7 @@ namespace PortraitBuilder.UI {
 			// 
 			// pbPortrait
 			// 
-			this.pbPortrait.Location = new System.Drawing.Point(6, 68);
+			this.pbPortrait.Location = new System.Drawing.Point(7, 81);
 			this.pbPortrait.Name = "pbPortrait";
 			this.pbPortrait.Size = new System.Drawing.Size(176, 176);
 			this.pbPortrait.TabIndex = 0;
@@ -177,16 +207,16 @@ namespace PortraitBuilder.UI {
             "Duke",
             "King",
             "Emperor"});
-			this.cbRank.Location = new System.Drawing.Point(45, 19);
+			this.cbRank.Location = new System.Drawing.Point(45, 46);
 			this.cbRank.Name = "cbRank";
-			this.cbRank.Size = new System.Drawing.Size(137, 21);
+			this.cbRank.Size = new System.Drawing.Size(136, 21);
 			this.cbRank.TabIndex = 21;
 			this.cbRank.SelectedIndexChanged += new System.EventHandler(this.onChangeRank);
 			// 
 			// label20
 			// 
 			this.label20.AutoSize = true;
-			this.label20.Location = new System.Drawing.Point(6, 22);
+			this.label20.Location = new System.Drawing.Point(6, 49);
 			this.label20.Name = "label20";
 			this.label20.Size = new System.Drawing.Size(36, 13);
 			this.label20.TabIndex = 2;
@@ -854,6 +884,8 @@ namespace PortraitBuilder.UI {
 		private System.Windows.Forms.Button btnReload;
 		private System.Windows.Forms.Label label23;
 		private System.Windows.Forms.ComboBox cbPlayer;
+		private System.Windows.Forms.Label label24;
+		private System.Windows.Forms.ComboBox cbGovernment;
 	}
 }
 

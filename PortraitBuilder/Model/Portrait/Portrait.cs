@@ -19,6 +19,18 @@ namespace PortraitBuilder.Model.Portrait {
 
 		private string properties = "aa0aaaaaaaab";
 
+		/// <summary>
+		/// Index of rank in border sprite
+		/// </summary>
+		private int rank = 0;
+
+		/// <summary>
+		/// Index of government in PortraitRenderer#governmentSpriteSuffix
+		/// 
+		/// It is hardcoded to vanilla governments only.
+		/// </summary>
+		private int government = 0;
+
 		public void import(string dna, string properties) {
 			if (dna.Length < 10 || properties.Length < 11) {
 				throw new ArgumentException(string.Format("DNA {0} or Property {1} strings are too short.", dna, properties));
@@ -34,6 +46,22 @@ namespace PortraitBuilder.Model.Portrait {
 
 		public string GetProperties() {
 			return properties;
+		}
+
+		public int GetRank() {
+			return rank;
+		}
+
+		public void SetRank(int rank) {
+			this.rank = rank;
+		}
+
+		public int GetGovernment() {
+			return government;
+		}
+
+		public void SetGovernment(int government) {
+			this.government = government;
 		}
 
 		public char GetLetter(Characteristic characteristic) {

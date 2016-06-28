@@ -176,17 +176,5 @@ namespace PortraitBuilder.Engine {
 				}
 			}
 		}
-
-		// Note: only loads from vanilla
-		public string LoadBorders() {
-			logger.Debug("Setting up borders.");
-			string borderSprite = user.GameDir + @"\gfx\interface\charframe_150.dds";
-
-			if (!File.Exists(borderSprite)) {
-				logger.Error("Borders file \\gfx\\interface\\charframe_150.dds not found.");
-				return null;
-			}
-			return borderSprite;
-		}
 	}
 }

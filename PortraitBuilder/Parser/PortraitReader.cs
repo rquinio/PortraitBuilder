@@ -86,7 +86,7 @@ namespace PortraitBuilder.Parser {
 			}
 
 			if (isEmpty) {
-				logger.Error("File is empty: " + filename);
+				logger.Warn("File is empty: " + filename);
 				return;
 			}
 

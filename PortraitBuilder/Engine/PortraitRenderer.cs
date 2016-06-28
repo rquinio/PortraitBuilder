@@ -19,6 +19,8 @@ namespace PortraitBuilder.Engine {
 
 		private static readonly ILog logger = LogManager.GetLogger(typeof(PortraitRenderer).Name);
 
+		private static String[] governmentSpriteSuffix = new String[] { "", "_iqta", "_theocracy", "_republic" , "_merchantrepublic", "_tribal", "_nomadic"};
+
 		/// <summary>
 		/// Draws a character portrait.
 		/// </summary>
@@ -54,8 +56,24 @@ namespace PortraitBuilder.Engine {
 					}
 
 				} catch (Exception e) {
-					logger.Error("Could not render layer " + layer + ", caused by:\n" + e.ToString());
+					logger.Error("Could not render layer " + layer, e);
 				}
+			}
+
+			logger.Debug("Drawing border.");
+			try {
+				string governmentSpriteName = "GFX_charframe_150" + governmentSpriteSuffix[portrait.GetGovernment()];
+				if (sprites.ContainsKey(governmentSpriteName)) {
+					Sprite sprite = sprites[governmentSpriteName];
+
+					//Check if loaded; if not, then load
+					if (!sprite.IsLoaded) {
+						LoadSprite(sprite, activeContents);
+					}
+					g.DrawImage(sprite.Tiles[portrait.GetRank()], 0, 0);
+				}
+			} catch(Exception e) {
+				logger.Error("Could not render borders ", e);
 			}
 
 			g.Dispose();
@@ -72,24 +90,32 @@ namespace PortraitBuilder.Engine {
 		private void LoadSprite(Sprite sprite, List<Content> activeContents) {
 			string filePath = sprite.TextureFilePath;
 
-			string containerPath = null;
+			// Also try alternative extension (.tga <=> .dds)
+			string extension = filePath.Substring(filePath.Length - 4);
+			string alternative = extension == ".dds" ? ".tga" : ".dds";
+			string alternativeFilePath = filePath.Replace(extension, alternative);
+
+			string path = null;
 
 			// Loop on reverse order - last occurence wins if asset is overriden !
 			for (int i = activeContents.Count - 1; i >= 0; i--) {
 				Content content = activeContents[i];
-				string contentPath = content.AbsolutePath;
-				if (File.Exists(contentPath + Path.DirectorySeparatorChar + filePath)) {
-					containerPath = contentPath;
+				path = content.AbsolutePath + Path.DirectorySeparatorChar + filePath;
+
+				if (!File.Exists(path)) {
+					path = content.AbsolutePath + Path.DirectorySeparatorChar + alternativeFilePath;
+				}
+				if (File.Exists(path)) {
 					break;
 				}
 			}
 
-			if (containerPath == null) {
+			if (path != null) {
+				logger.Debug("Loading sprite from: " + path);
+				sprite.Load(path);
+			} else {
 				throw new FileNotFoundException(string.Format("Unable to find file: {0} under active content {1}", filePath, activeContents));
 			}
-
-			logger.Debug("Loading sprite from: " + containerPath);
-			sprite.Load(containerPath);
 		}
 
 		private void DrawTile(PortraitType portraitType, string dna, Graphics g, Sprite sprite, Layer layer, int tileIndex) {
