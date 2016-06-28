@@ -322,7 +322,7 @@ namespace PortraitBuilder.Parser {
 						sprite.NoRefCount = value.ValueText == "yes";
 					break;
 				case "numberOption":
-					if (id.ValueText == "noOfFrames")
+					if (id.ValueText == "noOfFrames" || id.ValueText == "noOfframes")
 						sprite.FrameCount = Int32.Parse(value.ValueText);
 					break;
 				}

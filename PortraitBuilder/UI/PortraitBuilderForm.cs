@@ -40,7 +40,9 @@ namespace PortraitBuilder.UI {
 		private Dictionary<CheckBox, Content> usableContents = new Dictionary<CheckBox, Content>();
 
 		/// <summary>
-		/// The portrait being previewed
+		/// The portrait being previewed. 
+		/// 
+		/// This is the primary Model object, whose state is modified by UI inputs, and used to display the output.
 		/// </summary>
 		private Portrait portrait = new Portrait();
 
@@ -87,8 +89,7 @@ namespace PortraitBuilder.UI {
 			loadDLCs(clean);
 			loadMods();
 
-			loadPortraits();
-
+			loadPortraitTypes();
 			fillCharacteristicComboBoxes();
 			randomizeCharacteristics(true);
 
@@ -134,6 +135,9 @@ namespace PortraitBuilder.UI {
 			return reader.ReadString() + @"\";
 		}
 
+		/// <summary>
+		/// Entry point for re-drawing based on updated portrait.
+		/// </summary>
 		private void drawPortrait() {
 			Graphics g = Graphics.FromImage(previewImage);
 
@@ -141,9 +145,7 @@ namespace PortraitBuilder.UI {
 			g.Clear(Color.Empty);
 			
 			try {
-				PortraitType portraitType = getSelectedPortraitType();
-				logger.Debug("Rendering portrait " + portraitType);
-				Bitmap portraitImage = portraitRenderer.DrawPortrait(portraitType, portrait, loader.GetActiveContents(), loader.GetActivePortraitData().Sprites);
+				Bitmap portraitImage = portraitRenderer.DrawPortrait(portrait, loader.GetActiveContents(), loader.GetActivePortraitData().Sprites);
 				g.DrawImage(portraitImage, 0, 0);
 			} catch (Exception e) {
 				logger.Error("Error encountered rendering portrait", e);
@@ -217,7 +219,8 @@ namespace PortraitBuilder.UI {
 			resetComboBox(cbBlinded);
 			resetComboBox(cbPlayer);
 
-			updatePortraitDataFromInputs();
+			updatePortrait(getCharacteristicsString(dnaComboBoxes), getCharacteristicsString(propertiesComboBoxes));
+
 		}
 
 		private void randomizeComboBox(ComboBox cb) {
@@ -239,7 +242,7 @@ namespace PortraitBuilder.UI {
 
 		private void fillComboBox(ComboBox cb, Characteristic characteristic) {
 			cb.Items.Clear();
-			PortraitType portraitType = getSelectedPortraitType();
+			PortraitType portraitType = portrait.GetPortraitType();
 			if (portraitType != null) {
 				int frameCount = loader.GetActivePortraitData().GetFrameCount(portraitType, characteristic);
 				if (frameCount > 0) {
@@ -263,30 +266,20 @@ namespace PortraitBuilder.UI {
 		}
 
 		private void fillCharacteristicComboBoxes() {
-			fillComboBox(cbBackground, Characteristic.BACKGROUND);
-			fillComboBox(cbScars, Characteristic.SCARS);
-			fillComboBox(cbRedDots, Characteristic.RED_DOTS);
-			fillComboBox(cbBoils, Characteristic.BOILS);
-			fillComboBox(cbPrisoner, Characteristic.IMPRISONED);
-			fillComboBox(cbBlinded, Characteristic.BLINDED);
-			fillComboBox(cbPlayer, Characteristic.PLAYER);
-
-			fillComboBox(cbClothes, Characteristic.CLOTHES);
-			fillComboBox(cbHeadgear, Characteristic.HEADGEAR);
-			fillComboBox(cbHair, Characteristic.HAIR);
-			fillComboBox(cbBeard, Characteristic.BEARD);
-			fillComboBox(cbNeck, Characteristic.NECK);
-			fillComboBox(cbCheeks, Characteristic.CHEEKS);
-			fillComboBox(cbChin, Characteristic.CHIN);
-			fillComboBox(cbMouth, Characteristic.MOUTH);
-			fillComboBox(cbNose, Characteristic.NOSE);
-			fillComboBox(cbEyes, Characteristic.EYES);
-			fillComboBox(cbEars, Characteristic.EARS);
-			fillComboBox(cbHairColour, Characteristic.HAIR_COLOR);
-			fillComboBox(cbEyeColour, Characteristic.EYE_COLOR);
+			fillCharacteristicComboBoxes(dnaComboBoxes, Characteristic.DNA);
+			fillCharacteristicComboBoxes(propertiesComboBoxes, Characteristic.PROPERTIES);
 		}
 
-		private void loadPortraits() {
+		private void fillCharacteristicComboBoxes(List<ComboBox> cbs, Characteristic[] characteristics) {
+			for (int i = 0; i < characteristics.Length; i++) {
+				ComboBox cb = cbs[i];
+				if (cb != null) {
+					fillComboBox(cb, characteristics[i]);
+				}
+			}
+		}
+
+		private void loadPortraitTypes() {
 			object previouslySelectedPortrait = null;
 			if (cbPortraitTypes.SelectedItem != null) {
 				previouslySelectedPortrait = cbPortraitTypes.Items[cbPortraitTypes.SelectedIndex];
@@ -311,6 +304,7 @@ namespace PortraitBuilder.UI {
 			if (cbPortraitTypes.SelectedIndex == -1) {
 				cbPortraitTypes.SelectedIndex = 0;
 			}
+			portrait.SetPortraitType(getSelectedPortraitType());
 		}
 
 		private void updateActiveAdditionalContent() {
@@ -331,7 +325,7 @@ namespace PortraitBuilder.UI {
 			return selectedContent;
 		}
 
-		private void updateInputsFromPortraitData(Portrait portrait) {
+		private void updateSelectedCharacteristicValues(Portrait portrait) {
 			for (int i = 0; i < dnaComboBoxes.Count; i++) {
 				if (dnaComboBoxes[i] != null) {
 					dnaComboBoxes[i].SelectedIndex = Portrait.GetIndex(portrait.GetDNA()[i], dnaComboBoxes[i].Items.Count);
@@ -344,9 +338,9 @@ namespace PortraitBuilder.UI {
 				}
 			}
 		}
-
-		private void updatePortraitDataFromInputs() {
-			portrait.import(getCharacteristicsString(dnaComboBoxes), getCharacteristicsString(propertiesComboBoxes));
+		
+		private void updatePortrait(string dna, string properties) {
+			portrait.import(dna, properties);
 			outputDNA();
 		}
 
@@ -354,7 +348,7 @@ namespace PortraitBuilder.UI {
 
 		private void onChangeCharacteristic(object sender, EventArgs e) {
 			if (started) {
-				updatePortraitDataFromInputs();
+				updatePortrait(getCharacteristicsString(dnaComboBoxes), getCharacteristicsString(propertiesComboBoxes));
 				drawPortrait();
 			}
 		}
@@ -387,9 +381,10 @@ namespace PortraitBuilder.UI {
 			if (dialog.ShowDialog(this) == DialogResult.OK) {
 				started = false;
 
-				portrait = dialog.portrait;
-				outputDNA();
-				updateInputsFromPortraitData(portrait);
+				updatePortrait(dialog.portrait.GetDNA(), dialog.portrait.GetProperties());
+
+				// Reflect on dropdown
+				updateSelectedCharacteristicValues(portrait);
 
 				started = true;
 
@@ -411,8 +406,9 @@ namespace PortraitBuilder.UI {
 		private void onCheckContent(object sender, EventArgs e) {
 			started = false;
 			updateActiveAdditionalContent();
-			loadPortraits();
+			loadPortraitTypes();
 			fillCharacteristicComboBoxes();
+			// TODO No refresh of DNA/Properties needed (if ComboBox has less options ?)
 			started = true;
 
 			drawPortrait();
@@ -421,9 +417,10 @@ namespace PortraitBuilder.UI {
 		private void onChangePortraitType(object sender, EventArgs e) {
 			if (started) {
 				started = false;
-				fillCharacteristicComboBoxes();
 
-				updateInputsFromPortraitData(portrait);
+				portrait.SetPortraitType(getSelectedPortraitType());
+				fillCharacteristicComboBoxes();
+				updateSelectedCharacteristicValues(portrait);
 
 				started = true;
 

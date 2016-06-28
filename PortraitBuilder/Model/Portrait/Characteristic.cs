@@ -33,7 +33,7 @@ namespace PortraitBuilder.Model.Portrait {
 
 		public override string ToString() {
 			char typeCode = (type == Type.DNA) ? 'd' : 'p';
-			return string.Format("{0} ({1})", name, typeCode + index);
+			return string.Format("{0} ({1}{2})", name, typeCode, index);
 		}
 
 		public static Characteristic BACKGROUND = new Characteristic("background", 0, Type.Property);

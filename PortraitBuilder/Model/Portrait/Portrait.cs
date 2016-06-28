@@ -8,6 +8,8 @@ namespace PortraitBuilder.Model.Portrait {
 
 	/// <summary>
 	/// Input data (dna and properties) used to display a portrait.
+	/// 
+	/// TODO Rename this to Character !
 	/// </summary>
 	public class Portrait {
 
@@ -18,6 +20,8 @@ namespace PortraitBuilder.Model.Portrait {
 		private string dna = "aaaaa0aaaa0";
 
 		private string properties = "aa0aaaaaaaab";
+
+		private PortraitType portraitType;
 
 		/// <summary>
 		/// Index of rank in border sprite
@@ -30,6 +34,19 @@ namespace PortraitBuilder.Model.Portrait {
 		/// It is hardcoded to vanilla governments only.
 		/// </summary>
 		private int government = 0;
+
+		private Sex sex = Sex.MALE;
+
+		private string ethnicity;
+
+		private int age;
+
+		private string date;
+
+		public enum Sex {
+			MALE,
+			FEMALE
+		}
 
 		public void import(string dna, string properties) {
 			if (dna.Length < 10 || properties.Length < 11) {
@@ -64,9 +81,38 @@ namespace PortraitBuilder.Model.Portrait {
 			this.government = government;
 		}
 
+		public bool IsReligious() {
+			return government == 2;
+		}
+
+		public bool IsMerchant() {
+			return government == 4;
+		}
+
+		public Sex GetSex() {
+			return sex;
+		}
+
+		public void SetPortraitType(PortraitType portraitType) {
+			this.portraitType = portraitType;
+			if (portraitType.Name.Contains("male")) {
+				this.sex = Sex.MALE;
+			} else if (portraitType.Name.Contains("female")) {
+				this.sex = Sex.FEMALE;
+			}
+		}
+
+		public PortraitType GetPortraitType() {
+			return portraitType;
+		}
+
 		public char GetLetter(Characteristic characteristic) {
 			char letter;
-			if (characteristic.type == Characteristic.Type.DNA) {
+			if(characteristic == Characteristic.HAIR_COLOR) {
+				letter = GetDNA()[portraitType.HairColourIndex];
+			} else if(characteristic == Characteristic.EYE_COLOR) {
+				letter = GetDNA()[portraitType.EyeColourIndex];
+			} else if (characteristic.type == Characteristic.Type.DNA) {
 				letter = GetDNA()[characteristic.index];
 			}
 			else {

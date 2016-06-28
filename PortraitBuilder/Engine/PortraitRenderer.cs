@@ -28,38 +28,76 @@ namespace PortraitBuilder.Engine {
 		/// <param name="portrait">Portrait input to draw.</param>
 		/// <param name="activeContents">Content to load sprites from</param>
 		/// <returns>Frameless portrait drawn with the given parameters.</returns>
-		public Bitmap DrawPortrait(PortraitType portraitType, Portrait portrait, List<Content> activeContents, Dictionary<string, Sprite> sprites) {
+		public Bitmap DrawPortrait(Portrait portrait, List<Content> activeContents, Dictionary<string, Sprite> sprites) {
 			logger.Info(string.Format("Drawing Portrait {0}", portrait));
 
 			Bitmap portraitImage = new Bitmap(176, 176);
 			Graphics g = Graphics.FromImage(portraitImage);
 
-			foreach (Layer layer in portraitType.Layers) {
-				logger.Debug("Drawing Layer : " + layer);
-
-				try {
-					if (sprites.ContainsKey(layer.Name)) {
-						Sprite sprite = sprites[layer.Name];
-
-						//Check if loaded; if not, then load
-						if (!sprite.IsLoaded) {
-							LoadSprite(sprite, activeContents);
-						}
-
-						//Get DNA/Properties letter, then the index of the tile to draw
-						int tileIndex = GetTileIndex(portrait, sprite.FrameCount, layer);
-
-						DrawTile(portraitType, portrait.GetDNA(), g, sprite, layer, tileIndex);
-
-					} else {
-						throw new FileNotFoundException("Sprite not found:" + layer);
-					}
-
-				} catch (Exception e) {
-					logger.Error("Could not render layer " + layer, e);
-				}
+			foreach (Layer layer in portrait.GetPortraitType().Layers) {
+				DrawLayer(layer, g, portrait, activeContents, sprites);
 			}
 
+			DrawBorder(portrait, g, activeContents, sprites);
+
+			g.Dispose();
+			return portraitImage;
+		}
+
+		private void DrawLayer(Layer layer, Graphics g, Portrait portrait, List<Content> activeContents, Dictionary<string, Sprite> sprites) {
+			logger.Debug("Drawing Layer : " + layer);
+
+			string spriteName = GetOverriddenSpriteName(portrait, layer);
+
+			// Backup for merchants, which are part of "The Republic" DLC !
+			if (!sprites.ContainsKey(spriteName)) {
+				spriteName = layer.Name;
+			}
+
+			try {
+				if (sprites.ContainsKey(spriteName)) {
+					Sprite sprite = sprites[spriteName];
+
+					//Check if loaded; if not, then load
+					if (!sprite.IsLoaded) {
+						LoadSprite(sprite, activeContents);
+					}
+
+					//Get DNA/Properties letter, then the index of the tile to draw
+					int tileIndex = GetTileIndex(portrait, sprite.FrameCount, layer);
+
+					DrawTile(portrait, g, sprite, layer, tileIndex);
+				}
+				else {
+					throw new FileNotFoundException("Sprite not found:" + layer);
+				}
+			}
+			catch (Exception e) {
+				logger.Error("Could not render layer " + layer, e);
+			}
+		}
+
+		/// <summary>
+		/// Override sprite for religious/merchant
+		/// 
+		/// This is quite messy - not sure what hardcoded vanilla logic exactly is - could be based on culture index ?!
+		/// </summary>
+		/// <param name="portrait"></param>
+		/// <param name="layer"></param>
+		/// <returns></returns>
+		private string GetOverriddenSpriteName(Portrait portrait, Layer layer) {
+			string spriteName = layer.Name;
+			if ((portrait.IsReligious() || portrait.IsMerchant()) && (layer.Characteristic == Characteristic.CLOTHES || layer.Characteristic == Characteristic.HEADGEAR)) {
+				string sex = portrait.GetSex() == Portrait.Sex.MALE ? "male" : "female";
+				string layerSuffix = spriteName.Contains("behind") ? "_behind" : ""; // Handles clothes_infront and headgear_mid
+				string government = portrait.IsReligious() ? "religious" : "merchant";
+				string layerType = layer.Characteristic == Characteristic.CLOTHES ? "clothes" : "headgear";
+				spriteName = string.Format("GFX_{0}_{1}_{2}{3}", government, sex, layerType, layerSuffix);
+			}
+			return spriteName;
+		}
+
+		private void DrawBorder(Portrait portrait, Graphics g, List<Content> activeContents,  Dictionary<string, Sprite> sprites) {
 			logger.Debug("Drawing border.");
 			try {
 				string governmentSpriteName = "GFX_charframe_150" + governmentSpriteSuffix[portrait.GetGovernment()];
@@ -72,12 +110,10 @@ namespace PortraitBuilder.Engine {
 					}
 					g.DrawImage(sprite.Tiles[portrait.GetRank()], 0, 0);
 				}
-			} catch(Exception e) {
+			}
+			catch (Exception e) {
 				logger.Error("Could not render borders ", e);
 			}
-
-			g.Dispose();
-			return portraitImage;
 		}
 
 		private int GetTileIndex(Portrait portrait, int frameCount, Layer layer) {
@@ -118,15 +154,17 @@ namespace PortraitBuilder.Engine {
 			}
 		}
 
-		private void DrawTile(PortraitType portraitType, string dna, Graphics g, Sprite sprite, Layer layer, int tileIndex) {
+		private void DrawTile(Portrait portrait, Graphics g, Sprite sprite, Layer layer, int tileIndex) {
 			Bitmap tile;
 			if (layer.IsHair) {
-				int hairIndex = Portrait.GetTileIndexFromLetter(dna[portraitType.HairColourIndex], portraitType.HairColours.Count);
-				tile = DrawHair(sprite.Tiles[tileIndex], portraitType.HairColours[hairIndex]);
+				List<Hair> hairCoulours = portrait.GetPortraitType().HairColours;
+				int hairIndex = Portrait.GetTileIndexFromLetter(portrait.GetLetter(Characteristic.HAIR_COLOR), hairCoulours.Count);
+				tile = DrawHair(sprite.Tiles[tileIndex], hairCoulours[hairIndex]);
 
 			} else if (layer.IsEye) {
-				int eyeIndex = Portrait.GetTileIndexFromLetter(dna[portraitType.EyeColourIndex], portraitType.EyeColours.Count);
-				tile = DrawEye(sprite.Tiles[tileIndex], portraitType.EyeColours[eyeIndex]);
+				List<Colour> eyeCoulours = portrait.GetPortraitType().EyeColours;
+				int eyeIndex = Portrait.GetTileIndexFromLetter(portrait.GetLetter(Characteristic.EYE_COLOR), eyeCoulours.Count);
+				tile = DrawEye(sprite.Tiles[tileIndex], eyeCoulours[eyeIndex]);
 
 			} else {
 				tile = sprite.Tiles[tileIndex];
