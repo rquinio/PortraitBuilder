@@ -11,7 +11,7 @@ using PortraitBuilder.Parser;
 using PortraitBuilder.Model.Content;
 using PortraitBuilder.Model.Portrait;
 
-namespace Engine {
+namespace PortraitBuilder.Engine {
 
 	/// <summary>
 	/// Loads content based on hierachical override: vanilla -> DLC -> mod -> dependent mod

@@ -10,7 +10,7 @@ using log4net;
 using PortraitBuilder.Model.Portrait;
 using PortraitBuilder.Model.Content;
 
-namespace Engine {
+namespace PortraitBuilder.Engine {
 
 	/// <summary>
 	/// Handles the rendering of portraits
