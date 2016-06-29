@@ -65,9 +65,6 @@
     <Reference Include="System.Drawing" />
     <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xml" />
-    <Reference Include="DevIL.NET2">
-      <HintPath>..\libs\DevIL.NET2.dll</HintPath>
-    </Reference>
     <Reference Include="Hime.Redist">
       <HintPath>..\libs\Hime.Redist.dll</HintPath>
     </Reference>
@@ -76,6 +73,15 @@
     </Reference>
     <Reference Include="ICSharpCode.SharpZipLib">
       <HintPath>..\packages\SharpZipLib.0.86.0\lib\20\ICSharpCode.SharpZipLib.dll</HintPath>
+    </Reference>
+    <Reference Include="CSharpImageLibrary, Version=3.1.6.0, Culture=neutral, PublicKeyToken=null">
+      <HintPath>..\packages\CSharpImageLibrary.3.1.6.0\lib\net45\CSharpImageLibrary.exe</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.IO.RecyclableMemoryStream, Version=1.1.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35">
+      <HintPath>..\packages\Microsoft.IO.RecyclableMemoryStream.1.1.0.0\lib\net45\Microsoft.IO.RecyclableMemoryStream.dll</HintPath>
+    </Reference>
+    <Reference Include="UsefulThings, Version=1.5.6.0, Culture=neutral, PublicKeyToken=null">
+      <HintPath>..\packages\UsefulCSharpThings.1.5.6.0\lib\net45\UsefulThings.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>

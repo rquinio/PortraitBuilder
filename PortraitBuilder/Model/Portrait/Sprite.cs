@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using System.Drawing;
 using System.IO;
+using CSharpImageLibrary.General;
 
 namespace PortraitBuilder.Model.Portrait {
 	public class Sprite {
@@ -29,7 +30,7 @@ namespace PortraitBuilder.Model.Portrait {
 			Unload();
 
 			if (File.Exists(filePath)) {
-				texture = DevIL.DevIL.LoadBitmap(filePath);
+				texture = new ImageEngineImage(filePath).GetGDIBitmap(false, false);
 			} else {
 				throw new FileLoadException("Unable to find texture file", filePath);
 			}
