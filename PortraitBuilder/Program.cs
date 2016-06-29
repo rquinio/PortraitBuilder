@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Threading;
 using System.Windows.Forms;
 using log4net;
 using log4net.Core;
@@ -20,8 +21,19 @@ namespace PortraitBuilder {
 		/// </summary>
 		[STAThread]
 		static void Main(string[] args) {
+			logger.Info("Starting application");
+
 			Application.EnableVisualStyles();
 			Application.SetCompatibleTextRenderingDefault(false);
+
+			// Add handler for UI thread exceptions and force all WinForms errors to go through handler
+			Application.ThreadException += new ThreadExceptionEventHandler(onUIThreadException);
+			Application.SetUnhandledExceptionMode(UnhandledExceptionMode.CatchException);
+
+			// This handler is for catching non-UI thread exceptions
+			AppDomain.CurrentDomain.UnhandledException += new UnhandledExceptionEventHandler(onUnhandledException);
+
+			Application.ApplicationExit += new EventHandler(onExitApplication);
 
 			if (!Directory.Exists("dlc/"))
 				Directory.CreateDirectory("dlc/");
@@ -75,6 +87,29 @@ namespace PortraitBuilder {
 			catch (Exception e) {
 				logger.Fatal("Fatal error." + e);
 			}
+		}
+
+		private static void onUnhandledException(Object sender, UnhandledExceptionEventArgs e) {
+			try {
+				Exception exception = (Exception)e.ExceptionObject;
+				logger.Fatal("Unhandled exception", exception);
+				MessageBox.Show("Unhadled domain exception:\n\n" + exception.Message);
+			} finally {
+				Application.Exit();
+			}
+		}
+
+		private static void onUIThreadException(object sender, ThreadExceptionEventArgs t) {
+			try {
+				logger.Fatal("Unhandled UI thread exception", t.Exception);
+				MessageBox.Show("Unhandled UI exception:\n\n" + t.Exception.Message);
+			} finally {
+				Application.Exit();
+			}
+		}
+
+		private static void onExitApplication(object sender, EventArgs e) {
+			logger.Info("Closing application");
 		}
 	}
 }
