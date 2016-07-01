@@ -7,7 +7,7 @@ using PortraitBuilder.Model.Content;
 namespace PortraitBuilder.Parser {
 	public class ModReader {
 
-		private static readonly ILog logger = LogManager.GetLogger(typeof(Mod).Name);
+		private static readonly ILog logger = LogManager.GetLogger(typeof(ModReader).Name);
 
 		public Mod Parse(string filename) {
 			if (!File.Exists(filename)) {
@@ -53,7 +53,6 @@ namespace PortraitBuilder.Parser {
 		/// Loads all files in the given folder.
 		/// </summary>
 		/// <param name="folder">Path to the folder containing the files to load.</param>
-		/// <param name="dirType">Specifies whether path is CKII install or My Docs.</param>
 		public List<Mod> ParseFolder(string folder) {
 			List<Mod> mods = new List<Mod>();
 

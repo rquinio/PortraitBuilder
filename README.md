@@ -28,6 +28,6 @@ Dependencies:
 - [SharpZipLib](http://www.icsharpcode.net/opensource/sharpziplib/) to unzip DLCs
 - [log4net](https://logging.apache.org/log4net/) to handle logging
 
-To re-generate the Lexer/Parser from the grammar, install Hime Parser Generator v0.5.0 (won't work with v1.0), and run the following:
+To re-generate the Lexer/Parser from the grammar, install [Hime standalone distribution](https://bitbucket.org/laurentw/hime/downloads/), and use the himecc command line utility:
 
 > himecc PortraitReader.gram -n PortraitBuilder.Parser

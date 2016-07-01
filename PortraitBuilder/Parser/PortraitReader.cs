@@ -6,6 +6,7 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using Hime.Redist.Parsers;
+using Hime.Redist;
 using log4net;
 using PortraitBuilder.Model.Portrait;
 
@@ -94,30 +95,30 @@ namespace PortraitBuilder.Parser {
 			PortraitReaderLexer lexer = new PortraitReaderLexer(fileContent);
 			PortraitReaderParser parser = new PortraitReaderParser(lexer);
 
-			SyntaxTreeNode root = parser.Analyse();
+			ParseResult result = parser.Parse();
 
-			if (root == null) {
-				logger.Error(String.Format("Lexical error in file {0}, line {1}", (new FileInfo(filename).Name), lexer.CurrentLine));
+			if (!result.IsSuccess) {
+				logger.Error(String.Format("Lexical error in file {0}, line {1}", (new FileInfo(filename).Name), string.Concat(result.Errors)));
 				return;
 			}
 
-			ParseTree(root, filename, data);
+			ParseTree(result.Root, filename, data);
 		}
 
-		private void ParseTree(SyntaxTreeNode root, string filename, PortraitData data) {
-			foreach (SyntaxTreeNode child in root.Children) {
+		private void ParseTree(ASTNode root, string filename, PortraitData data) {
+			foreach (ASTNode child in root.Children) {
 				ParsePortraits(child, filename, data);
 			}
 		}
 
-		private void ParsePortraits(SyntaxTreeNode node, string filename, PortraitData data) {
-			IEnumerable<SyntaxTreeNode> children = node.Children.Where(child => child.Symbol.Name == "groupOption");
-			SymbolTokenText id;
+		private void ParsePortraits(ASTNode node, string filename, PortraitData data) {
+			IEnumerable<ASTNode> children = node.Children.Where(child => child.Symbol.Name == "groupOption");
+			String id;
 
-			foreach (SyntaxTreeNode child in children) {
-				id = child.Children[0].Symbol as SymbolTokenText;
+			foreach (ASTNode child in children) {
+				id = child.Children[0].Value;
 
-				if (id.ValueText == "spriteType") {
+				if (id == "spriteType") {
 					try {
 						Sprite sprite = ParseSpriteType(child, filename);
 						if (data.Sprites.ContainsKey(sprite.Name)) {
@@ -128,7 +129,7 @@ namespace PortraitBuilder.Parser {
 					} catch (Exception e) {
 						logger.Error(string.Format("Could not parse spriteType in file {0}", filename), e);
 					}
-				} else if (id.ValueText == "portraitType") {
+				} else if (id == "portraitType") {
 					try {
 						PortraitType portraitType = ParsePortraitType(child, filename);
 						if (data.PortraitTypes.ContainsKey(portraitType.Name)) {
@@ -144,34 +145,34 @@ namespace PortraitBuilder.Parser {
 			}
 		}
 
-		private PortraitType ParsePortraitType(SyntaxTreeNode node, string filename) {
+		private PortraitType ParsePortraitType(ASTNode node, string filename) {
 			PortraitType portraitType = new PortraitType();
 			portraitType.Filename = filename;
 
-			List<SyntaxTreeNode> children = node.Children.Where(child => child.Symbol.Name == "Option").ToList();
-			SymbolTokenText id, value;
-			SyntaxTreeNode token;
-			foreach (SyntaxTreeNode child in children) {
+			List<ASTNode> children = node.Children.Where(child => child.Symbol.Name == "Option").ToList();
+			string id, value;
+			ASTNode token;
+			foreach (ASTNode child in children) {
 				token = child.Children[0];
 
 				if (token.Children.Count > 1 == false)
 					continue;
 
-				id = token.Children[0].Symbol as SymbolTokenText;
-				value = token.Children[1].Symbol as SymbolTokenText;
+				id = token.Children[0].Value;
+				value = token.Children[1].Value;
 
 				switch (token.Symbol.Name) {
 				case "stringOption":
-					if (id.ValueText == "name")
-						portraitType.Name = value.ValueText.Replace("\"", "");
-					if (id.ValueText == "effectFile")
-						portraitType.EffectFile = value.ValueText.Replace("\"", "").Replace(@"\\", @"\");
+					if (id == "name")
+						portraitType.Name = value.Replace("\"", "");
+					if (id == "effectFile")
+						portraitType.EffectFile = value.Replace("\"", "").Replace(@"\\", @"\");
 					break;
 				case "numberOption":
-					if (id.ValueText == "hair_color_index")
-						portraitType.HairColourIndex = Int32.Parse(value.ValueText);
-					if (id.ValueText == "eye_color_index")
-						portraitType.EyeColourIndex = Int32.Parse(value.ValueText);
+					if (id == "hair_color_index")
+						portraitType.HairColourIndex = Int32.Parse(value);
+					if (id == "eye_color_index")
+						portraitType.EyeColourIndex = Int32.Parse(value);
 					break;
 				}
 			}
@@ -185,18 +186,18 @@ namespace PortraitBuilder.Parser {
 
 			children = node.Children.Where(c => c.Symbol.Name == "cultureGroup").ToList();
 			if (children.Count > 0) {
-				foreach (SyntaxTreeNode child in children[0].Children)
-					portraitType.Culture.Add(Int32.Parse(((SymbolTokenText)child.Symbol).ValueText));
+				foreach (ASTNode child in children[0].Children)
+					portraitType.Culture.Add(Int32.Parse(child.Value));
 			}
 
 			children = node.Children.Where(c => c.Symbol.Name == "groupOption").ToList();
 
-			foreach (SyntaxTreeNode child in children) {
-				id = child.Children[0].Symbol as SymbolTokenText;
+			foreach (ASTNode child in children) {
+				id = child.Children[0].Value;
 
-				if (id.ValueText == "hair_color") {
+				if (id == "hair_color") {
 					portraitType.HairColours.AddRange(ParseHairColours(child));
-				} else if (id.ValueText == "eye_color") {
+				} else if (id == "eye_color") {
 					portraitType.EyeColours.AddRange(ParseEyeColours(child));
 				}
 			}
@@ -204,19 +205,19 @@ namespace PortraitBuilder.Parser {
 			return portraitType;
 		}
 
-		private List<Colour> ParseEyeColours(SyntaxTreeNode node) {
+		private List<Colour> ParseEyeColours(ASTNode node) {
 			List<Colour> colours = new List<Colour>();
-			IEnumerable<SyntaxTreeNode> children = node.Children.Where(child => child.Symbol.Name == "colourGroup");
+			IEnumerable<ASTNode> children = node.Children.Where(child => child.Symbol.Name == "colourGroup");
 
-			foreach (SyntaxTreeNode child in children) {
+			foreach (ASTNode child in children) {
 				colours.Add(ParseColour(child));
 			}
 			return colours;
 		}
 
-		private List<Hair> ParseHairColours(SyntaxTreeNode node) {
+		private List<Hair> ParseHairColours(ASTNode node) {
 			List<Hair> hairs = new List<Hair>();
-			List<SyntaxTreeNode> children = node.Children.Where(child => child.Symbol.Name == "colourGroup").ToList();
+			List<ASTNode> children = node.Children.Where(child => child.Symbol.Name == "colourGroup").ToList();
 
 			for (int i = 0; i < children.Count; i += 3) {
 				logger.Debug(" --Parsing Hair colours");
@@ -237,30 +238,27 @@ namespace PortraitBuilder.Parser {
 			return hairs;
 		}
 
-		private Colour ParseColour(SyntaxTreeNode child) {
+		private Colour ParseColour(ASTNode child) {
 			Colour colour = new Colour();
 
-			SymbolTokenText value = child.Children[0].Symbol as SymbolTokenText;
-			colour.Red = byte.Parse(value.ValueText);
-			value = child.Children[1].Symbol as SymbolTokenText;
-			colour.Green = byte.Parse(value.ValueText);
-			value = child.Children[2].Symbol as SymbolTokenText;
-			colour.Blue = byte.Parse(value.ValueText);
+			colour.Red = byte.Parse(child.Children[0].Value);
+			colour.Green = byte.Parse(child.Children[1].Value);
+			colour.Blue = byte.Parse(child.Children[2].Value);
 
 			logger.Debug(" --Colour Parsed: " + colour);
 			return colour;
 		}
 
-		private List<Layer> ParseLayers(SyntaxTreeNode node, string filename) {
+		private List<Layer> ParseLayers(ASTNode node, string filename) {
 			List<Layer> layers = new List<Layer>();
-			foreach (SyntaxTreeNode child in node.Children) {
+			foreach (ASTNode child in node.Children) {
 				layers.Add(ParseLayer(child, filename));
 			}
 			return layers;
 		}
 
-		private Layer ParseLayer(SyntaxTreeNode node, string filename) {
-			string[] layerParts = ((SymbolTokenText)node.Symbol).ValueText.Replace("\"", "").Split(':');
+		private Layer ParseLayer(ASTNode node, string filename) {
+			string[] layerParts = node.Value.Replace("\"", "").Split(':');
 
 			Layer layer = new Layer();
 			layer.Filename = filename;
@@ -294,36 +292,36 @@ namespace PortraitBuilder.Parser {
 			return layer;
 		}
 
-		private Sprite ParseSpriteType(SyntaxTreeNode node, string filename) {
+		private Sprite ParseSpriteType(ASTNode node, string filename) {
 			Sprite sprite = new Sprite();
 			sprite.Filename = filename;
 
-			IEnumerable<SyntaxTreeNode> children = node.Children.Where(child => child.Symbol.Name == "Option");
-			SymbolTokenText id, value;
-			SyntaxTreeNode token;
-			foreach (SyntaxTreeNode child in children) {
+			IEnumerable<ASTNode> children = node.Children.Where(child => child.Symbol.Name == "Option");
+			string id, value;
+			ASTNode token;
+			foreach (ASTNode child in children) {
 				token = child.Children[0];
 
 				if (token.Children.Count > 1 == false)
 					continue;
 
-				id = token.Children[0].Symbol as SymbolTokenText;
-				value = token.Children[1].Symbol as SymbolTokenText;
+				id = token.Children[0].Value;
+				value = token.Children[1].Value;
 
 				switch (token.Symbol.Name) {
 				case "stringOption":
-					if (id.ValueText == "name")
-						sprite.Name = value.ValueText.Replace("\"", "");
-					if (id.ValueText == "texturefile")
-						sprite.TextureFilePath = value.ValueText.Replace("\"", "").Replace(@"\\", @"\");
+					if (id == "name")
+						sprite.Name = value.Replace("\"", "");
+					if (id == "texturefile")
+						sprite.TextureFilePath = value.Replace("\"", "").Replace(@"\\", @"\");
 					break;
 				case "boolOption":
-					if (id.ValueText == "norefcount")
-						sprite.NoRefCount = value.ValueText == "yes";
+					if (id == "norefcount")
+						sprite.NoRefCount = value == "yes";
 					break;
 				case "numberOption":
-					if (id.ValueText == "noOfFrames" || id.ValueText == "noOfframes")
-						sprite.FrameCount = Int32.Parse(value.ValueText);
+					if (id == "noOfFrames" || id == "noOfframes")
+						sprite.FrameCount = Int32.Parse(value);
 					break;
 				}
 			}
