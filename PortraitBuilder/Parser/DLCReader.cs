@@ -10,7 +10,31 @@ namespace PortraitBuilder.Parser {
 
 		private static readonly ILog logger = LogManager.GetLogger(typeof(DLC).Name);
 
-		public DLC Parse(string filename) {
+		public List<DLC> ParseFolder(string folder) {
+			List<DLC> dlcs = new List<DLC>();
+
+			DirectoryInfo dir = new DirectoryInfo(folder);
+			if (dir.Exists) {
+				FileInfo[] dlcFiles = dir.GetFiles("*.dlc");
+				if (dlcFiles.Length == 0) {
+					logger.Error(string.Format("No DLC files found in folder: {0}", dir.FullName));
+				}
+
+				foreach (FileInfo dlcFile in dlcFiles) {
+					DLC dlc = Parse(dlcFile.FullName);
+					if (dlc != null && dlc.Archive != null) {
+						// Note: path will be overriden when extracting the archive
+						dlc.AbsolutePath = folder + dlc.Archive.Replace("dlc/", "");
+						dlcs.Add(dlc);
+					}
+				}
+			} else {
+				logger.Error(string.Format("Folder not found: {0}", dir.FullName));
+			}
+			return dlcs;
+		}
+
+		private DLC Parse(string filename) {
 			if (!File.Exists(filename)) {
 				logger.Error(string.Format("File not found: {0}", filename));
 				return null;
@@ -55,31 +79,6 @@ namespace PortraitBuilder.Parser {
 			return dlc;
 		}
 
-		public List<DLC> ParseFolder(string folder) {
-			List<DLC> dlcs = new List<DLC>();
-
-			DirectoryInfo dir = new DirectoryInfo(folder);
-			if (!dir.Exists) {
-				logger.Error(string.Format("Folder not found: {0}", dir.FullName));
-				return dlcs;
-			}
-
-			FileInfo[] dlcFiles = dir.GetFiles("*.dlc");
-			if (dlcFiles.Length == 0) {
-				logger.Error(string.Format("No DLC files found in folder: {0}", dir.FullName));
-				return dlcs;
-			}
-
-			foreach (FileInfo dlcFile in dlcFiles) {
-				DLC dlc = Parse(dlcFile.FullName);
-				if (dlc != null) {
-					// Note: path will be overriden when extracting the archive
-					dlc.AbsolutePath = folder + Path.DirectorySeparatorChar + dlc.Archive.Replace("dlc/", "");
-					dlcs.Add(dlc);
-				}
-			}
-
-			return dlcs;
-		}
+		
 	}
 }

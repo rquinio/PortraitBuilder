@@ -89,8 +89,9 @@ namespace PortraitBuilder.Engine {
 		}
 
 		public List<DLC> LoadDLCs() {
-			logger.Info("Loading DLCs from " + user.GameDir + @"dlc\");
-			List<DLC> dlcs = dlcReader.ParseFolder(user.GameDir + @"\dlc");
+			string dlcFolder = user.GameDir + "dlc" + Path.DirectorySeparatorChar;
+			logger.Info("Loading DLCs from " + dlcFolder);
+			List<DLC> dlcs = dlcReader.ParseFolder(dlcFolder);
 
 			UnzipDLCs(dlcs);
 
@@ -109,7 +110,7 @@ namespace PortraitBuilder.Engine {
 			FastZip fastZip = new FastZip();
 			foreach (DLC dlc in dlcs) {
 				string dlcCode = dlc.DLCFile.Replace(".dlc", "");
-				string newDlcAbsolutePath = user.DlcDir + dlcCode + @"\";
+				string newDlcAbsolutePath = user.DlcDir + dlcCode + Path.DirectorySeparatorChar;
 				if (!Directory.Exists(newDlcAbsolutePath)) {
 					logger.Info(string.Format("Extracting {0} to {1}", dlc.Name, newDlcAbsolutePath));
 					// Filter only portraits files, to gain speed/space
@@ -124,8 +125,9 @@ namespace PortraitBuilder.Engine {
 		}
 
 		public List<Mod> LoadMods() {
-			logger.Info("Loading mods from " + user.MyDocsDir + @"\mod\");
-			List<Mod> mods = modReader.ParseFolder(user.MyDocsDir + @"\mod\");
+			string modFolder = user.MyDocsDir + "mod" + Path.DirectorySeparatorChar;
+			logger.Info("Loading mods from " + modFolder);
+			List<Mod> mods = modReader.ParseFolder(modFolder);
 
 			foreach (Mod mod in mods) {
 				if (Directory.Exists(mod.AbsolutePath)) {

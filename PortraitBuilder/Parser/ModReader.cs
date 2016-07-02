@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Text;
 using log4net;
@@ -9,7 +10,40 @@ namespace PortraitBuilder.Parser {
 
 		private static readonly ILog logger = LogManager.GetLogger(typeof(ModReader).Name);
 
-		public Mod Parse(string filename) {
+		/// <summary>
+		/// Loads all files in the given folder.
+		/// </summary>
+		/// <param name="folder">Path to the folder containing the files to load.</param>
+		public List<Mod> ParseFolder(string folder) {
+			List<Mod> mods = new List<Mod>();
+
+			DirectoryInfo dir = new DirectoryInfo(folder);
+			if (dir.Exists) {
+				FileInfo[] modFiles = dir.GetFiles("*.mod");
+
+				if (modFiles.Length == 0) {
+					logger.Warn(string.Format("No mods found in folder: {0}", dir.FullName));
+				}
+
+				foreach (FileInfo modFile in modFiles) {
+					try {
+						Mod mod = Parse(modFile.FullName);
+						if (mod != null && mod.Path != null) {
+							mod.AbsolutePath = folder + Path.DirectorySeparatorChar + mod.Path.Replace("mod/", "");
+							mods.Add(mod);
+						}
+					} catch (Exception e) {
+						logger.Error("Could not parse .mod file: " + modFile, e);
+					}
+				}
+			} else {
+				logger.Error(string.Format("Folder not found: {0}", dir.FullName));
+			}
+
+			return mods;
+		}
+
+		private Mod Parse(string filename) {
 			if (!File.Exists(filename)) {
 				logger.Error(string.Format("File not found: {0}", filename));
 				return null;
@@ -47,37 +81,6 @@ namespace PortraitBuilder.Parser {
 				}
 			}
 			return mod;
-		}
-
-		/// <summary>
-		/// Loads all files in the given folder.
-		/// </summary>
-		/// <param name="folder">Path to the folder containing the files to load.</param>
-		public List<Mod> ParseFolder(string folder) {
-			List<Mod> mods = new List<Mod>();
-
-			DirectoryInfo dir = new DirectoryInfo(folder);
-
-			if (!dir.Exists) {
-				logger.Error(string.Format("Folder not found: {0}", dir.FullName));
-				return mods;
-			}
-
-			FileInfo[] modFiles = dir.GetFiles("*.mod");
-
-			if (modFiles.Length == 0) {
-				logger.Warn(string.Format("No mods found in folder: {0}", dir.FullName));
-				return mods;
-			}
-
-			foreach (FileInfo modFile in modFiles) {
-				Mod mod = Parse(modFile.FullName);
-				if (mod != null) {
-					mod.AbsolutePath = folder + @"\" + mod.Path.Replace("mod/","");
-					mods.Add(mod);
-				}
-			}
-			return mods;
 		}
 	}
 }

@@ -73,8 +73,8 @@ namespace PortraitBuilder.UI {
 
 			User user = new User();
 			user.GameDir = readGameDir();
-			user.MyDocsDir = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments) + @"\Paradox Interactive\Crusader Kings II\";
-			user.DlcDir = Environment.CurrentDirectory + @"\dlc\";
+			user.MyDocsDir = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), "Paradox Interactive", "Crusader Kings II") + Path.DirectorySeparatorChar;
+			user.DlcDir = Path.Combine(Environment.CurrentDirectory, "dlc") + Path.DirectorySeparatorChar;
 			logger.Info("Configuration: " + user);
 			logger.Info("----------------------------");
 
@@ -132,7 +132,7 @@ namespace PortraitBuilder.UI {
 		private string readGameDir() {
 			Stream stream = new FileStream("gamedir", FileMode.Open);
 			BinaryReader reader = new BinaryReader(stream);
-			return reader.ReadString() + @"\";
+			return reader.ReadString() + Path.DirectorySeparatorChar;
 		}
 
 		/// <summary>
