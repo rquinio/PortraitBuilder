@@ -1,5 +1,23 @@
 By Romulien:
 
+Version 2.2.0 - 2016-07-03
+
+ UI:
+ - Add government dropdown
+ - Add some tooltips to UI controls
+
+ Engine:
+ - Implement override logic for religious and merchant special sprites
+ - Add file watchers to mod content, in order to auto-refresh in case of changes
+ - Add some safeties to .mod file parsing
+ - Add unhandled exceptions handlers in application
+
+ Code re-factoring:
+ - Upgrade dependencies and use NuGet to retrieve them
+ - Switch DDS lib from DevIL to CSharpImageLibrary
+ - Generate .pdb to always have line numbers for exceptions
+ - Use Costura.Fody to embed dependencies in assembly
+
 Version 2.1.0 - 2016-06-25
 
  UI:
