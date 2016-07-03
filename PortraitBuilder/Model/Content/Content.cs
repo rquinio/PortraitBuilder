@@ -26,6 +26,11 @@ namespace PortraitBuilder.Model.Content {
 
 		public PortraitData PortraitData;
 
+		/// <summary>
+		/// Watcher on content data changes
+		/// </summary>
+		public FileSystemWatcher Watcher;
+
 		public override string ToString() {
 			return Name;
 		}

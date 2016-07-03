@@ -40,11 +40,6 @@ namespace PortraitBuilder.UI {
 		private Dictionary<CheckBox, Content> usableContents = new Dictionary<CheckBox, Content>();
 
 		/// <summary>
-		/// List of mod change watchers
-		/// </summary>
-		private Dictionary<CheckBox, FileSystemWatcher> watchers = new Dictionary<CheckBox, FileSystemWatcher>();
-
-		/// <summary>
 		/// The portrait being previewed. 
 		/// 
 		/// This is the primary Model object, whose state is modified by UI inputs, and used to display the output.
@@ -100,7 +95,7 @@ namespace PortraitBuilder.UI {
 
 			// Set up the ToolTip text for form controls.
 			toolTip.SetToolTip(this.btnToogleAll, "Check or uncheck checkboxes in active tab");
-			toolTip.SetToolTip(this.btnReload, "Reload all data from folders for active tab");
+			toolTip.SetToolTip(this.btnReload, "Reload all data from folders");
 			toolTip.SetToolTip(this.btnImport, "Import DNA and Properties strings");
 			toolTip.SetToolTip(this.btnRandom, "Use random values for dna/properties, except for p6-p11");
 			toolTip.SetToolTip(this.btnSave, "Save portrait as a .png image");
@@ -160,7 +155,7 @@ namespace PortraitBuilder.UI {
 
 			if (content is Mod) {
 				toolTip.SetToolTip(checkbox, "Toggle activation and file watching of this mod");
-				watchers.Add(checkbox, createModFilesWatcher(content));
+				content.Watcher = createModFilesWatcher(content);
 			} else {
 				toolTip.SetToolTip(checkbox, "Toggle activation of this DLC");
 			}
@@ -408,9 +403,10 @@ namespace PortraitBuilder.UI {
 
 		private Content getAssociatedContent(FileSystemWatcher watcher) {
 			Content content = null;
-			foreach (KeyValuePair<CheckBox, FileSystemWatcher> pair in watchers) {
-				if (pair.Value == watcher) {
-					content = usableContents[pair.Key];
+
+			foreach (KeyValuePair<CheckBox, Content> pair in usableContents) {
+				if (pair.Value.Watcher == watcher) {
+					content = pair.Value;
 					break;
 				}
 			}
@@ -428,7 +424,7 @@ namespace PortraitBuilder.UI {
 			foreach(CheckBox cb in cbs){
 				Mod content = usableContents[cb] as Mod;
 				if (content != null) {
-					watchers[cb].EnableRaisingEvents = cb.Checked;
+					content.Watcher.EnableRaisingEvents = cb.Checked;
 				}
 			}
 

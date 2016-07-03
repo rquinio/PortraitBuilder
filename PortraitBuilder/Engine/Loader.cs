@@ -140,6 +140,17 @@ namespace PortraitBuilder.Engine {
 			return mods;
 		}
 
+		public void ActivateContent(Content content) {
+			// TODO load order
+			activeContents.Add(content);
+			RefreshContent(content);
+		}
+
+		public void DeactivateContent(Content content) {
+			activeContents.Remove(content);
+			content.Unload();
+		}
+
 		public void UpdateActiveAdditionalContent(List<Content> contents) {
 			foreach (Content content in activeContents) {
 				if (!contents.Contains(content)) {
