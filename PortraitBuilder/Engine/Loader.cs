@@ -153,6 +153,14 @@ namespace PortraitBuilder.Engine {
 			activeContents.AddRange(contents);
 		}
 
+		public void RefreshContent(Content content) {
+			logger.Info("Refreshing content: " + content.Name);
+			content.Unload();
+			content.PortraitData = portraitReader.Parse(content.AbsolutePath);
+
+			LoadPortraits();
+		}
+
 		private void MergePortraitData() {
 			activePortraitData = new PortraitData();
 

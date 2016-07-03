@@ -40,6 +40,11 @@ namespace PortraitBuilder.UI {
 		private Dictionary<CheckBox, Content> usableContents = new Dictionary<CheckBox, Content>();
 
 		/// <summary>
+		/// List of mod change watchers
+		/// </summary>
+		private Dictionary<CheckBox, FileSystemWatcher> watchers = new Dictionary<CheckBox, FileSystemWatcher>();
+
+		/// <summary>
 		/// The portrait being previewed. 
 		/// 
 		/// This is the primary Model object, whose state is modified by UI inputs, and used to display the output.
@@ -127,6 +132,10 @@ namespace PortraitBuilder.UI {
 
 			container.Controls.Add(checkbox);
 			usableContents.Add(checkbox, content);
+
+			if (content is Mod) {
+				watchers.Add(checkbox, createModFilesWatcher(content));
+			}
 		}
 
 		private string readGameDir() {
@@ -344,7 +353,63 @@ namespace PortraitBuilder.UI {
 			outputDNA();
 		}
 
+		private FileSystemWatcher createModFilesWatcher(Content content) {
+			FileSystemWatcher watcher = new FileSystemWatcher();
+			
+			watcher.Path = content.AbsolutePath;
+			watcher.IncludeSubdirectories = true;
+
+			// Do the filtering in event handlers, as watchers do not support Filter such as "*.gfx|*.txt|*.dds"
+			watcher.Filter = "*.*";
+
+			watcher.NotifyFilter = NotifyFilters.LastWrite;
+
+			// Have the callbacks execute in Main thread
+			watcher.SynchronizingObject = this;
+			watcher.Changed += new FileSystemEventHandler(onContentFileChanged);
+			watcher.Created += new FileSystemEventHandler(onContentFileChanged);
+			watcher.Deleted += new FileSystemEventHandler(onContentFileChanged);
+			watcher.Renamed += new RenamedEventHandler(onContentFileRenamed);
+
+			watcher.Error += new ErrorEventHandler(onWatcherError);
+
+			// Begin watching.
+			watcher.EnableRaisingEvents = true;
+			return watcher;
+		}
+
+		private Content getAssociatedContent(FileSystemWatcher watcher) {
+			Content content = null;
+			foreach (KeyValuePair<CheckBox, FileSystemWatcher> pair in watchers) {
+				if (pair.Value == watcher) {
+					content = usableContents[pair.Key];
+					break;
+				}
+			}
+			return content;
+		}
+
+		private void updateSelectedContent(List<CheckBox> cbs) {
+			started = false;
+			updateActiveAdditionalContent();
+			loadPortraitTypes();
+			fillCharacteristicComboBoxes();
+			// TODO No refresh of DNA/Properties needed (if ComboBox has less options ?)
+			started = true;
+
+			foreach(CheckBox cb in cbs){
+				Mod content = usableContents[cb] as Mod;
+				if (content != null) {
+					watchers[cb].EnableRaisingEvents = cb.Checked;
+				}
+			}
+
+			drawPortrait();
+		}
+
+		///////////////////
 		// Event handlers
+		///////////////////
 
 		private void onChangeCharacteristic(object sender, EventArgs e) {
 			if (started) {
@@ -404,14 +469,10 @@ namespace PortraitBuilder.UI {
 		/// Called each time an event a CheckBox is ticked/unticked
 		/// </summary>
 		private void onCheckContent(object sender, EventArgs e) {
-			started = false;
-			updateActiveAdditionalContent();
-			loadPortraitTypes();
-			fillCharacteristicComboBoxes();
-			// TODO No refresh of DNA/Properties needed (if ComboBox has less options ?)
-			started = true;
-
-			drawPortrait();
+			CheckBox cb = (CheckBox)sender;
+			List<CheckBox> cbs = new List<CheckBox>();
+			cbs.Add(cb);
+			updateSelectedContent(cbs);
 		}
 
 		private void onChangePortraitType(object sender, EventArgs e) {
@@ -438,14 +499,49 @@ namespace PortraitBuilder.UI {
 
 		private void onClickToogleAll(object sender, EventArgs e) {
 			TabPage tabPage = tabContent.SelectedTab;
+			List<CheckBox> cbs = new List<CheckBox>();
 			foreach (CheckBox checkbox in tabPage.Controls[0].Controls) {
 				// Remove handler so it doesn't trigger
 				checkbox.CheckedChanged -= onCheckContent;
 				checkbox.Checked = nextToogleIsSelectAll;
 				checkbox.CheckedChanged += onCheckContent;
+				cbs.Add(checkbox);
 			}
 			nextToogleIsSelectAll = !nextToogleIsSelectAll;
-			onCheckContent(sender, e);
+			updateSelectedContent(cbs);
+		}
+
+		private void onContentFileChanged(object sender, FileSystemEventArgs e) {
+			FileSystemWatcher watcher = sender as FileSystemWatcher;
+			onContentChange(watcher, e.FullPath);
+		}
+
+		private void onContentFileRenamed(object sender, RenamedEventArgs e) {
+			FileSystemWatcher watcher = sender as FileSystemWatcher;
+			onContentChange(watcher, e.OldFullPath);
+		}
+
+		private void onContentChange(FileSystemWatcher watcher, string path) {
+			// Workaround same change firing multiple events
+			watcher.EnableRaisingEvents = false;
+
+			Content content = getAssociatedContent(watcher);
+
+			if (content != null) {
+				logger.Info(string.Format("Content change for {0} in content {1}", path, content));
+				loader.RefreshContent(content);
+				loadPortraitTypes();
+				fillCharacteristicComboBoxes();
+				drawPortrait();
+			} else {
+				logger.Error(string.Format("No content matched for watcher on file {0}", path));
+			}
+
+			watcher.EnableRaisingEvents = true;
+		}
+
+		private void onWatcherError(object sender, ErrorEventArgs e){
+			logger.Error("FileSystemWatcher unable to continue", e.GetException());
 		}
 	}
 }
