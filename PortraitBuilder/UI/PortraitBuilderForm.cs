@@ -61,20 +61,24 @@ namespace PortraitBuilder.UI {
 		/// </summary>
 		private List<ComboBox> propertiesComboBoxes = new List<ComboBox>();
 
+		private ToolTip toolTip = new ToolTip();
+
 		public PortraitBuilderForm() {
 			InitializeComponent();
 			dnaComboBoxes.AddRange(new ComboBox[] { cbNeck, cbChin, cbMouth, cbNose, cbCheeks, null, cbEyes, cbEars, cbHairColour, cbEyeColour, null });
 			propertiesComboBoxes.AddRange(new ComboBox[] { cbBackground, cbHair, null, cbClothes, cbBeard, cbHeadgear, cbPrisoner, cbScars, cbRedDots, cbBoils, cbBlinded, cbPlayer });
 
-			initialize();
+			initializeForm();
 			load(false);
 			started = true;
 		}
 
-		private void initialize() {
+		private void initializeForm() {
 			logger.Info("Portrait Builder Version " + Application.ProductVersion);
 			// Add the version to title
 			this.Text += " " + Application.ProductVersion;
+
+			initializeTooltip();
 
 			User user = new User();
 			user.GameDir = readGameDir();
@@ -84,6 +88,27 @@ namespace PortraitBuilder.UI {
 			logger.Info("----------------------------");
 
 			loader = new Loader(user);
+		}
+
+		private void initializeTooltip() {
+			// Set up the delays for the ToolTip.
+			toolTip.AutoPopDelay = 5000;
+			toolTip.InitialDelay = 1000;
+			toolTip.ReshowDelay = 500;
+			// Force the ToolTip text to be displayed whether or not the form is active.
+			toolTip.ShowAlways = true;
+
+			// Set up the ToolTip text for form controls.
+			toolTip.SetToolTip(this.btnToogleAll, "Check or uncheck checkboxes in active tab");
+			toolTip.SetToolTip(this.btnReload, "Reload all data from folders for active tab");
+			toolTip.SetToolTip(this.btnImport, "Import DNA and Properties strings");
+			toolTip.SetToolTip(this.btnRandom, "Use random values for dna/properties, except for p6-p11");
+			toolTip.SetToolTip(this.btnSave, "Save portrait as a .png image");
+			toolTip.SetToolTip(this.btnCopy, "Copy DNA & Properties to use for character history");
+
+			toolTip.SetToolTip(this.cbPortraitTypes, "Select portraitType to render");
+			toolTip.SetToolTip(this.cbRank, "Select rank to use for rendering portrait border");
+			toolTip.SetToolTip(this.cbGovernment, "Select government to use for rendering. Theocracy and Merchant Republic use special sprites for headgear and clothing.");
 		}
 
 		private void load(bool clean) {
@@ -134,7 +159,10 @@ namespace PortraitBuilder.UI {
 			usableContents.Add(checkbox, content);
 
 			if (content is Mod) {
+				toolTip.SetToolTip(checkbox, "Toggle activation and file watching of this mod");
 				watchers.Add(checkbox, createModFilesWatcher(content));
+			} else {
+				toolTip.SetToolTip(checkbox, "Toggle activation of this DLC");
 			}
 		}
 
