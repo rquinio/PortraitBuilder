@@ -19,7 +19,7 @@ namespace PortraitBuilder.Model.Portrait {
 
 		private string dna = "aaaaa0aaaa0";
 
-		private string properties = "aa0aaaaaaaab";
+		private string properties = "aa0aaaaaaaa000";
 
 		private PortraitType portraitType;
 
@@ -114,8 +114,7 @@ namespace PortraitBuilder.Model.Portrait {
 				letter = GetDNA()[portraitType.EyeColourIndex];
 			} else if (characteristic.type == Characteristic.Type.DNA) {
 				letter = GetDNA()[characteristic.index];
-			}
-			else {
+			} else {
 				letter = GetProperties()[characteristic.index]; ;
 			}
 			return letter;

@@ -60,8 +60,8 @@ namespace PortraitBuilder.UI {
 
 		public PortraitBuilderForm() {
 			InitializeComponent();
-			dnaComboBoxes.AddRange(new ComboBox[] { cbNeck, cbChin, cbMouth, cbNose, cbCheeks, null, cbEyes, cbEars, cbHairColour, cbEyeColour, null });
-			propertiesComboBoxes.AddRange(new ComboBox[] { cbBackground, cbHair, null, cbClothes, cbBeard, cbHeadgear, cbPrisoner, cbScars, cbRedDots, cbBoils, cbBlinded, cbPlayer });
+			dnaComboBoxes.AddRange(new ComboBox[] { cbNeck, cbChin, cbMouth, cbNose, cbCheeks, cbd5, cbEyes, cbEars, cbHairColour, cbEyeColour, cbd10 });
+			propertiesComboBoxes.AddRange(new ComboBox[] { cbBackground, cbHair, cbHead, cbClothes, cbBeard, cbHeadgear, cbPrisoner, cbScars, cbRedDots, cbBoils, cbBlinded, cbPlayer, cbMask, cbEyePatch });
 
 			initializeForm();
 			load(false);
@@ -250,6 +250,8 @@ namespace PortraitBuilder.UI {
 			resetComboBox(cbPrisoner);
 			resetComboBox(cbBlinded);
 			resetComboBox(cbPlayer);
+			resetComboBox(cbMask);
+			resetComboBox(cbEyePatch);
 
 			updatePortrait(getCharacteristicsString(dnaComboBoxes), getCharacteristicsString(propertiesComboBoxes));
 
@@ -281,6 +283,9 @@ namespace PortraitBuilder.UI {
 					logger.Debug(string.Format("Item count for {0} {1} : {2}", portraitType, characteristic, frameCount));
 					cb.Enabled = true;
 					fillComboBox(cb, frameCount);
+					if (frameCount == 1) {
+						cb.Enabled = false; // Disable if only 1 frame, as there's no selection to do, for instance head (p2)
+					}
 				} else {
 					logger.Warn(string.Format("Could not find frame count for {0} and {1}, disabling dropdown.", portraitType, characteristic));
 					cb.Enabled = false;

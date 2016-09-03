@@ -31,9 +31,9 @@ namespace PortraitBuilder.UI {
 			TextBox tb = (TextBox)sender;
 
 			if (tb == tbDNA) {
-				isDNAValid = Validate(tb, 11);
+				isDNAValid = Validate(tb, Characteristic.DNA.Length);
 			} else if (tb == tbProperties) {
-				isPropertiesValid = Validate(tb, 12);
+				isPropertiesValid = Validate(tb, Characteristic.PROPERTIES.Length);
 			}
 
 			if (isDNAValid && isPropertiesValid) {

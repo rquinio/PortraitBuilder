@@ -48,6 +48,8 @@ namespace PortraitBuilder.Model.Portrait {
 		public static Characteristic BOILS = new Characteristic("boils", 9, Type.Property);
 		public static Characteristic BLINDED = new Characteristic("blinded", 10, Type.Property);
 		public static Characteristic PLAYER = new Characteristic("player", 11, Type.Property);
+		public static Characteristic MASK = new Characteristic("mask", 12, Type.Property);
+		public static Characteristic EYEPATCH = new Characteristic("eyepatch", 13, Type.Property);
 
 		public static Characteristic NECK = new Characteristic("neck", 0, Type.DNA);
 		public static Characteristic CHIN = new Characteristic("chin", 1, Type.DNA);
@@ -62,6 +64,6 @@ namespace PortraitBuilder.Model.Portrait {
 		public static Characteristic D10 = new Characteristic("d10", 10, Type.DNA);
 
 		public static Characteristic[] DNA = new Characteristic[] { NECK, CHIN, MOUTH, NOSE, CHEEKS, D5, EYES, EARS, HAIR_COLOR, EYE_COLOR, D10 };
-		public static Characteristic[] PROPERTIES = new Characteristic[] { BACKGROUND, HAIR, HEAD, CLOTHES, BEARD, HEADGEAR, IMPRISONED, SCARS, RED_DOTS, BOILS, BLINDED, PLAYER };
+		public static Characteristic[] PROPERTIES = new Characteristic[] { BACKGROUND, HAIR, HEAD, CLOTHES, BEARD, HEADGEAR, IMPRISONED, SCARS, RED_DOTS, BOILS, BLINDED, PLAYER, MASK, EYEPATCH };
 	}
 }

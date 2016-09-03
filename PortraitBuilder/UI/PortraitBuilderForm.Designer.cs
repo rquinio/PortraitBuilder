@@ -39,6 +39,8 @@ namespace PortraitBuilder.UI {
 			this.label20 = new System.Windows.Forms.Label();
 			this.tabControl1 = new System.Windows.Forms.TabControl();
 			this.tabPage1 = new System.Windows.Forms.TabPage();
+			this.label28 = new System.Windows.Forms.Label();
+			this.cbd10 = new System.Windows.Forms.ComboBox();
 			this.label15 = new System.Windows.Forms.Label();
 			this.cbEyeColour = new System.Windows.Forms.ComboBox();
 			this.label11 = new System.Windows.Forms.Label();
@@ -58,6 +60,12 @@ namespace PortraitBuilder.UI {
 			this.cbNeck = new System.Windows.Forms.ComboBox();
 			this.label1 = new System.Windows.Forms.Label();
 			this.tabPage2 = new System.Windows.Forms.TabPage();
+			this.label27 = new System.Windows.Forms.Label();
+			this.label26 = new System.Windows.Forms.Label();
+			this.cbEyePatch = new System.Windows.Forms.ComboBox();
+			this.cbMask = new System.Windows.Forms.ComboBox();
+			this.label25 = new System.Windows.Forms.Label();
+			this.cbHead = new System.Windows.Forms.ComboBox();
 			this.label23 = new System.Windows.Forms.Label();
 			this.cbPlayer = new System.Windows.Forms.ComboBox();
 			this.label19 = new System.Windows.Forms.Label();
@@ -93,6 +101,8 @@ namespace PortraitBuilder.UI {
 			this.groupBox3 = new System.Windows.Forms.GroupBox();
 			this.btnToogleAll = new System.Windows.Forms.Button();
 			this.btnReload = new System.Windows.Forms.Button();
+			this.cbd5 = new System.Windows.Forms.ComboBox();
+			this.label29 = new System.Windows.Forms.Label();
 			this.groupBox1.SuspendLayout();
 			((System.ComponentModel.ISupportInitialize)(this.pbPortrait)).BeginInit();
 			this.tabControl1.SuspendLayout();
@@ -118,7 +128,7 @@ namespace PortraitBuilder.UI {
 			this.groupBox1.Controls.Add(this.label20);
 			this.groupBox1.Location = new System.Drawing.Point(473, 10);
 			this.groupBox1.Name = "groupBox1";
-			this.groupBox1.Size = new System.Drawing.Size(188, 402);
+			this.groupBox1.Size = new System.Drawing.Size(188, 494);
 			this.groupBox1.TabIndex = 1;
 			this.groupBox1.TabStop = false;
 			this.groupBox1.Text = "Output";
@@ -152,7 +162,7 @@ namespace PortraitBuilder.UI {
 			// label22
 			// 
 			this.label22.AutoSize = true;
-			this.label22.Location = new System.Drawing.Point(2, 325);
+			this.label22.Location = new System.Drawing.Point(4, 413);
 			this.label22.Name = "label22";
 			this.label22.Size = new System.Drawing.Size(181, 26);
 			this.label22.TabIndex = 24;
@@ -160,7 +170,7 @@ namespace PortraitBuilder.UI {
 			// 
 			// btnSave
 			// 
-			this.btnSave.Location = new System.Drawing.Point(6, 375);
+			this.btnSave.Location = new System.Drawing.Point(5, 465);
 			this.btnSave.Name = "btnSave";
 			this.btnSave.Size = new System.Drawing.Size(75, 23);
 			this.btnSave.TabIndex = 22;
@@ -170,7 +180,7 @@ namespace PortraitBuilder.UI {
 			// 
 			// btnCopy
 			// 
-			this.btnCopy.Location = new System.Drawing.Point(107, 375);
+			this.btnCopy.Location = new System.Drawing.Point(108, 462);
 			this.btnCopy.Name = "btnCopy";
 			this.btnCopy.Size = new System.Drawing.Size(75, 23);
 			this.btnCopy.TabIndex = 23;
@@ -180,18 +190,18 @@ namespace PortraitBuilder.UI {
 			// 
 			// tbDNA
 			// 
-			this.tbDNA.Location = new System.Drawing.Point(6, 266);
+			this.tbDNA.Location = new System.Drawing.Point(7, 313);
 			this.tbDNA.Multiline = true;
 			this.tbDNA.Name = "tbDNA";
 			this.tbDNA.ReadOnly = true;
-			this.tbDNA.Size = new System.Drawing.Size(176, 34);
+			this.tbDNA.Size = new System.Drawing.Size(176, 51);
 			this.tbDNA.TabIndex = 23;
 			this.tbDNA.TabStop = false;
 			this.tbDNA.Text = "dna\r\nproperties";
 			// 
 			// pbPortrait
 			// 
-			this.pbPortrait.Location = new System.Drawing.Point(7, 81);
+			this.pbPortrait.Location = new System.Drawing.Point(9, 107);
 			this.pbPortrait.Name = "pbPortrait";
 			this.pbPortrait.Size = new System.Drawing.Size(176, 176);
 			this.pbPortrait.TabIndex = 0;
@@ -229,12 +239,16 @@ namespace PortraitBuilder.UI {
 			this.tabControl1.Location = new System.Drawing.Point(6, 46);
 			this.tabControl1.Name = "tabControl1";
 			this.tabControl1.SelectedIndex = 0;
-			this.tabControl1.Size = new System.Drawing.Size(211, 327);
+			this.tabControl1.Size = new System.Drawing.Size(211, 412);
 			this.tabControl1.SizeMode = System.Windows.Forms.TabSizeMode.Fixed;
 			this.tabControl1.TabIndex = 3;
 			// 
 			// tabPage1
 			// 
+			this.tabPage1.Controls.Add(this.label29);
+			this.tabPage1.Controls.Add(this.cbd5);
+			this.tabPage1.Controls.Add(this.label28);
+			this.tabPage1.Controls.Add(this.cbd10);
 			this.tabPage1.Controls.Add(this.label15);
 			this.tabPage1.Controls.Add(this.cbEyeColour);
 			this.tabPage1.Controls.Add(this.label11);
@@ -256,15 +270,33 @@ namespace PortraitBuilder.UI {
 			this.tabPage1.Location = new System.Drawing.Point(4, 22);
 			this.tabPage1.Name = "tabPage1";
 			this.tabPage1.Padding = new System.Windows.Forms.Padding(3);
-			this.tabPage1.Size = new System.Drawing.Size(203, 301);
+			this.tabPage1.Size = new System.Drawing.Size(203, 386);
 			this.tabPage1.TabIndex = 0;
 			this.tabPage1.Text = "DNA";
 			this.tabPage1.UseVisualStyleBackColor = true;
 			// 
+			// label28
+			// 
+			this.label28.AutoSize = true;
+			this.label28.Location = new System.Drawing.Point(27, 278);
+			this.label28.Name = "label28";
+			this.label28.Size = new System.Drawing.Size(74, 13);
+			this.label28.TabIndex = 17;
+			this.label28.Text = "Unused (d10):";
+			// 
+			// cbd10
+			// 
+			this.cbd10.FormattingEnabled = true;
+			this.cbd10.Location = new System.Drawing.Point(107, 275);
+			this.cbd10.Name = "cbd10";
+			this.cbd10.Size = new System.Drawing.Size(90, 21);
+			this.cbd10.TabIndex = 10;
+			this.cbd10.SelectedIndexChanged += new System.EventHandler(this.onChangeCharacteristic);
+			// 
 			// label15
 			// 
 			this.label15.AutoSize = true;
-			this.label15.Location = new System.Drawing.Point(19, 225);
+			this.label15.Location = new System.Drawing.Point(20, 251);
 			this.label15.Name = "label15";
 			this.label15.Size = new System.Drawing.Size(82, 13);
 			this.label15.TabIndex = 15;
@@ -273,7 +305,7 @@ namespace PortraitBuilder.UI {
 			// cbEyeColour
 			// 
 			this.cbEyeColour.FormattingEnabled = true;
-			this.cbEyeColour.Location = new System.Drawing.Point(107, 222);
+			this.cbEyeColour.Location = new System.Drawing.Point(107, 248);
 			this.cbEyeColour.Name = "cbEyeColour";
 			this.cbEyeColour.Size = new System.Drawing.Size(90, 21);
 			this.cbEyeColour.TabIndex = 9;
@@ -282,7 +314,7 @@ namespace PortraitBuilder.UI {
 			// label11
 			// 
 			this.label11.AutoSize = true;
-			this.label11.Location = new System.Drawing.Point(18, 198);
+			this.label11.Location = new System.Drawing.Point(18, 224);
 			this.label11.Name = "label11";
 			this.label11.Size = new System.Drawing.Size(83, 13);
 			this.label11.TabIndex = 16;
@@ -291,7 +323,7 @@ namespace PortraitBuilder.UI {
 			// cbHairColour
 			// 
 			this.cbHairColour.FormattingEnabled = true;
-			this.cbHairColour.Location = new System.Drawing.Point(107, 195);
+			this.cbHairColour.Location = new System.Drawing.Point(107, 221);
 			this.cbHairColour.Name = "cbHairColour";
 			this.cbHairColour.Size = new System.Drawing.Size(90, 21);
 			this.cbHairColour.TabIndex = 8;
@@ -336,7 +368,7 @@ namespace PortraitBuilder.UI {
 			// cbEars
 			// 
 			this.cbEars.FormattingEnabled = true;
-			this.cbEars.Location = new System.Drawing.Point(107, 168);
+			this.cbEars.Location = new System.Drawing.Point(107, 194);
 			this.cbEars.Name = "cbEars";
 			this.cbEars.Size = new System.Drawing.Size(90, 21);
 			this.cbEars.TabIndex = 10;
@@ -354,7 +386,7 @@ namespace PortraitBuilder.UI {
 			// label7
 			// 
 			this.label7.AutoSize = true;
-			this.label7.Location = new System.Drawing.Point(49, 171);
+			this.label7.Location = new System.Drawing.Point(49, 197);
 			this.label7.Name = "label7";
 			this.label7.Size = new System.Drawing.Size(52, 13);
 			this.label7.TabIndex = 0;
@@ -372,7 +404,7 @@ namespace PortraitBuilder.UI {
 			// cbEyes
 			// 
 			this.cbEyes.FormattingEnabled = true;
-			this.cbEyes.Location = new System.Drawing.Point(107, 141);
+			this.cbEyes.Location = new System.Drawing.Point(107, 167);
 			this.cbEyes.Name = "cbEyes";
 			this.cbEyes.Size = new System.Drawing.Size(90, 21);
 			this.cbEyes.TabIndex = 9;
@@ -381,7 +413,7 @@ namespace PortraitBuilder.UI {
 			// label6
 			// 
 			this.label6.AutoSize = true;
-			this.label6.Location = new System.Drawing.Point(47, 144);
+			this.label6.Location = new System.Drawing.Point(47, 170);
 			this.label6.Name = "label6";
 			this.label6.Size = new System.Drawing.Size(54, 13);
 			this.label6.TabIndex = 0;
@@ -425,6 +457,12 @@ namespace PortraitBuilder.UI {
 			// 
 			// tabPage2
 			// 
+			this.tabPage2.Controls.Add(this.label27);
+			this.tabPage2.Controls.Add(this.label26);
+			this.tabPage2.Controls.Add(this.cbEyePatch);
+			this.tabPage2.Controls.Add(this.cbMask);
+			this.tabPage2.Controls.Add(this.label25);
+			this.tabPage2.Controls.Add(this.cbHead);
 			this.tabPage2.Controls.Add(this.label23);
 			this.tabPage2.Controls.Add(this.cbPlayer);
 			this.tabPage2.Controls.Add(this.label19);
@@ -450,15 +488,69 @@ namespace PortraitBuilder.UI {
 			this.tabPage2.Location = new System.Drawing.Point(4, 22);
 			this.tabPage2.Name = "tabPage2";
 			this.tabPage2.Padding = new System.Windows.Forms.Padding(3);
-			this.tabPage2.Size = new System.Drawing.Size(203, 301);
+			this.tabPage2.Size = new System.Drawing.Size(203, 386);
 			this.tabPage2.TabIndex = 1;
 			this.tabPage2.Text = "Properties*";
 			this.tabPage2.UseVisualStyleBackColor = true;
 			// 
+			// label27
+			// 
+			this.label27.AutoSize = true;
+			this.label27.Location = new System.Drawing.Point(19, 362);
+			this.label27.Name = "label27";
+			this.label27.Size = new System.Drawing.Size(82, 13);
+			this.label27.TabIndex = 30;
+			this.label27.Text = "Eyepatch (p13):";
+			// 
+			// label26
+			// 
+			this.label26.AutoSize = true;
+			this.label26.Location = new System.Drawing.Point(38, 335);
+			this.label26.Name = "label26";
+			this.label26.Size = new System.Drawing.Size(63, 13);
+			this.label26.TabIndex = 29;
+			this.label26.Text = "Mask (p12):";
+			// 
+			// cbEyePatch
+			// 
+			this.cbEyePatch.FormattingEnabled = true;
+			this.cbEyePatch.Location = new System.Drawing.Point(107, 359);
+			this.cbEyePatch.Name = "cbEyePatch";
+			this.cbEyePatch.Size = new System.Drawing.Size(90, 21);
+			this.cbEyePatch.TabIndex = 28;
+			this.cbEyePatch.SelectedIndexChanged += new System.EventHandler(this.onChangeCharacteristic);
+			// 
+			// cbMask
+			// 
+			this.cbMask.FormattingEnabled = true;
+			this.cbMask.Location = new System.Drawing.Point(107, 332);
+			this.cbMask.Name = "cbMask";
+			this.cbMask.Size = new System.Drawing.Size(90, 21);
+			this.cbMask.TabIndex = 27;
+			this.cbMask.SelectedIndexChanged += new System.EventHandler(this.onChangeCharacteristic);
+			// 
+			// label25
+			// 
+			this.label25.AutoSize = true;
+			this.label25.Location = new System.Drawing.Point(44, 63);
+			this.label25.Name = "label25";
+			this.label25.Size = new System.Drawing.Size(57, 13);
+			this.label25.TabIndex = 26;
+			this.label25.Text = "Head (p2):";
+			// 
+			// cbHead
+			// 
+			this.cbHead.FormattingEnabled = true;
+			this.cbHead.Location = new System.Drawing.Point(107, 60);
+			this.cbHead.Name = "cbHead";
+			this.cbHead.Size = new System.Drawing.Size(90, 21);
+			this.cbHead.TabIndex = 25;
+			this.cbHead.SelectedIndexChanged += new System.EventHandler(this.onChangeCharacteristic);
+			// 
 			// label23
 			// 
 			this.label23.AutoSize = true;
-			this.label23.Location = new System.Drawing.Point(35, 279);
+			this.label23.Location = new System.Drawing.Point(35, 308);
 			this.label23.Name = "label23";
 			this.label23.Size = new System.Drawing.Size(66, 13);
 			this.label23.TabIndex = 10;
@@ -467,7 +559,7 @@ namespace PortraitBuilder.UI {
 			// cbPlayer
 			// 
 			this.cbPlayer.FormattingEnabled = true;
-			this.cbPlayer.Location = new System.Drawing.Point(107, 276);
+			this.cbPlayer.Location = new System.Drawing.Point(107, 305);
 			this.cbPlayer.Name = "cbPlayer";
 			this.cbPlayer.Size = new System.Drawing.Size(90, 21);
 			this.cbPlayer.TabIndex = 9;
@@ -476,7 +568,7 @@ namespace PortraitBuilder.UI {
 			// label19
 			// 
 			this.label19.AutoSize = true;
-			this.label19.Location = new System.Drawing.Point(29, 252);
+			this.label19.Location = new System.Drawing.Point(29, 281);
 			this.label19.Name = "label19";
 			this.label19.Size = new System.Drawing.Size(72, 13);
 			this.label19.TabIndex = 2;
@@ -485,7 +577,7 @@ namespace PortraitBuilder.UI {
 			// cbBlinded
 			// 
 			this.cbBlinded.FormattingEnabled = true;
-			this.cbBlinded.Location = new System.Drawing.Point(107, 249);
+			this.cbBlinded.Location = new System.Drawing.Point(107, 278);
 			this.cbBlinded.Name = "cbBlinded";
 			this.cbBlinded.Size = new System.Drawing.Size(90, 21);
 			this.cbBlinded.TabIndex = 8;
@@ -494,7 +586,7 @@ namespace PortraitBuilder.UI {
 			// label13
 			// 
 			this.label13.AutoSize = true;
-			this.label13.Location = new System.Drawing.Point(48, 225);
+			this.label13.Location = new System.Drawing.Point(48, 254);
 			this.label13.Name = "label13";
 			this.label13.Size = new System.Drawing.Size(53, 13);
 			this.label13.TabIndex = 3;
@@ -503,7 +595,7 @@ namespace PortraitBuilder.UI {
 			// cbBoils
 			// 
 			this.cbBoils.FormattingEnabled = true;
-			this.cbBoils.Location = new System.Drawing.Point(107, 222);
+			this.cbBoils.Location = new System.Drawing.Point(107, 251);
 			this.cbBoils.Name = "cbBoils";
 			this.cbBoils.Size = new System.Drawing.Size(90, 21);
 			this.cbBoils.TabIndex = 6;
@@ -512,7 +604,7 @@ namespace PortraitBuilder.UI {
 			// label9
 			// 
 			this.label9.AutoSize = true;
-			this.label9.Location = new System.Drawing.Point(25, 198);
+			this.label9.Location = new System.Drawing.Point(25, 227);
 			this.label9.Name = "label9";
 			this.label9.Size = new System.Drawing.Size(76, 13);
 			this.label9.TabIndex = 7;
@@ -521,7 +613,7 @@ namespace PortraitBuilder.UI {
 			// cbRedDots
 			// 
 			this.cbRedDots.FormattingEnabled = true;
-			this.cbRedDots.Location = new System.Drawing.Point(107, 195);
+			this.cbRedDots.Location = new System.Drawing.Point(107, 224);
 			this.cbRedDots.Name = "cbRedDots";
 			this.cbRedDots.Size = new System.Drawing.Size(90, 21);
 			this.cbRedDots.TabIndex = 7;
@@ -530,7 +622,7 @@ namespace PortraitBuilder.UI {
 			// label16
 			// 
 			this.label16.AutoSize = true;
-			this.label16.Location = new System.Drawing.Point(43, 171);
+			this.label16.Location = new System.Drawing.Point(43, 200);
 			this.label16.Name = "label16";
 			this.label16.Size = new System.Drawing.Size(58, 13);
 			this.label16.TabIndex = 4;
@@ -539,7 +631,7 @@ namespace PortraitBuilder.UI {
 			// cbScars
 			// 
 			this.cbScars.FormattingEnabled = true;
-			this.cbScars.Location = new System.Drawing.Point(107, 168);
+			this.cbScars.Location = new System.Drawing.Point(107, 197);
 			this.cbScars.Name = "cbScars";
 			this.cbScars.Size = new System.Drawing.Size(90, 21);
 			this.cbScars.TabIndex = 5;
@@ -548,7 +640,7 @@ namespace PortraitBuilder.UI {
 			// label17
 			// 
 			this.label17.AutoSize = true;
-			this.label17.Location = new System.Drawing.Point(32, 144);
+			this.label17.Location = new System.Drawing.Point(32, 173);
 			this.label17.Name = "label17";
 			this.label17.Size = new System.Drawing.Size(69, 13);
 			this.label17.TabIndex = 2;
@@ -566,7 +658,7 @@ namespace PortraitBuilder.UI {
 			// cbPrisoner
 			// 
 			this.cbPrisoner.FormattingEnabled = true;
-			this.cbPrisoner.Location = new System.Drawing.Point(107, 141);
+			this.cbPrisoner.Location = new System.Drawing.Point(107, 170);
 			this.cbPrisoner.Name = "cbPrisoner";
 			this.cbPrisoner.Size = new System.Drawing.Size(90, 21);
 			this.cbPrisoner.TabIndex = 8;
@@ -584,7 +676,7 @@ namespace PortraitBuilder.UI {
 			// cbClothes
 			// 
 			this.cbClothes.FormattingEnabled = true;
-			this.cbClothes.Location = new System.Drawing.Point(107, 60);
+			this.cbClothes.Location = new System.Drawing.Point(107, 87);
 			this.cbClothes.Name = "cbClothes";
 			this.cbClothes.Size = new System.Drawing.Size(90, 21);
 			this.cbClothes.TabIndex = 7;
@@ -593,7 +685,7 @@ namespace PortraitBuilder.UI {
 			// label8
 			// 
 			this.label8.AutoSize = true;
-			this.label8.Location = new System.Drawing.Point(35, 63);
+			this.label8.Location = new System.Drawing.Point(35, 92);
 			this.label8.Name = "label8";
 			this.label8.Size = new System.Drawing.Size(66, 13);
 			this.label8.TabIndex = 7;
@@ -602,7 +694,7 @@ namespace PortraitBuilder.UI {
 			// cbHeadgear
 			// 
 			this.cbHeadgear.FormattingEnabled = true;
-			this.cbHeadgear.Location = new System.Drawing.Point(107, 114);
+			this.cbHeadgear.Location = new System.Drawing.Point(107, 143);
 			this.cbHeadgear.Name = "cbHeadgear";
 			this.cbHeadgear.Size = new System.Drawing.Size(90, 21);
 			this.cbHeadgear.TabIndex = 6;
@@ -611,7 +703,7 @@ namespace PortraitBuilder.UI {
 			// label10
 			// 
 			this.label10.AutoSize = true;
-			this.label10.Location = new System.Drawing.Point(23, 117);
+			this.label10.Location = new System.Drawing.Point(23, 146);
 			this.label10.Name = "label10";
 			this.label10.Size = new System.Drawing.Size(78, 13);
 			this.label10.TabIndex = 3;
@@ -620,7 +712,7 @@ namespace PortraitBuilder.UI {
 			// cbBeard
 			// 
 			this.cbBeard.FormattingEnabled = true;
-			this.cbBeard.Location = new System.Drawing.Point(107, 87);
+			this.cbBeard.Location = new System.Drawing.Point(107, 116);
 			this.cbBeard.Name = "cbBeard";
 			this.cbBeard.Size = new System.Drawing.Size(90, 21);
 			this.cbBeard.TabIndex = 5;
@@ -629,7 +721,7 @@ namespace PortraitBuilder.UI {
 			// label12
 			// 
 			this.label12.AutoSize = true;
-			this.label12.Location = new System.Drawing.Point(42, 90);
+			this.label12.Location = new System.Drawing.Point(42, 119);
 			this.label12.Name = "label12";
 			this.label12.Size = new System.Drawing.Size(59, 13);
 			this.label12.TabIndex = 4;
@@ -662,7 +754,7 @@ namespace PortraitBuilder.UI {
 			this.groupBox2.Controls.Add(this.tabControl1);
 			this.groupBox2.Location = new System.Drawing.Point(245, 10);
 			this.groupBox2.Name = "groupBox2";
-			this.groupBox2.Size = new System.Drawing.Size(224, 402);
+			this.groupBox2.Size = new System.Drawing.Size(224, 494);
 			this.groupBox2.TabIndex = 1;
 			this.groupBox2.TabStop = false;
 			this.groupBox2.Text = "Input";
@@ -678,7 +770,7 @@ namespace PortraitBuilder.UI {
 			// 
 			// btnRandom
 			// 
-			this.btnRandom.Location = new System.Drawing.Point(142, 375);
+			this.btnRandom.Location = new System.Drawing.Point(138, 464);
 			this.btnRandom.Name = "btnRandom";
 			this.btnRandom.Size = new System.Drawing.Size(75, 23);
 			this.btnRandom.TabIndex = 11;
@@ -688,7 +780,7 @@ namespace PortraitBuilder.UI {
 			// 
 			// btnImport
 			// 
-			this.btnImport.Location = new System.Drawing.Point(6, 374);
+			this.btnImport.Location = new System.Drawing.Point(6, 464);
 			this.btnImport.Name = "btnImport";
 			this.btnImport.Size = new System.Drawing.Size(75, 23);
 			this.btnImport.TabIndex = 11;
@@ -712,7 +804,7 @@ namespace PortraitBuilder.UI {
 			this.tabContent.Location = new System.Drawing.Point(6, 17);
 			this.tabContent.Name = "tabContent";
 			this.tabContent.SelectedIndex = 0;
-			this.tabContent.Size = new System.Drawing.Size(224, 356);
+			this.tabContent.Size = new System.Drawing.Size(224, 441);
 			this.tabContent.SizeMode = System.Windows.Forms.TabSizeMode.Fixed;
 			this.tabContent.TabIndex = 4;
 			// 
@@ -723,7 +815,7 @@ namespace PortraitBuilder.UI {
 			this.tabDLCs.Location = new System.Drawing.Point(4, 22);
 			this.tabDLCs.Name = "tabDLCs";
 			this.tabDLCs.Padding = new System.Windows.Forms.Padding(3);
-			this.tabDLCs.Size = new System.Drawing.Size(216, 330);
+			this.tabDLCs.Size = new System.Drawing.Size(216, 415);
 			this.tabDLCs.TabIndex = 1;
 			this.tabDLCs.Text = "DLCs";
 			this.tabDLCs.UseVisualStyleBackColor = true;
@@ -733,7 +825,7 @@ namespace PortraitBuilder.UI {
 			this.panelDLCs.AutoScroll = true;
 			this.panelDLCs.Location = new System.Drawing.Point(4, 3);
 			this.panelDLCs.Name = "panelDLCs";
-			this.panelDLCs.Size = new System.Drawing.Size(207, 324);
+			this.panelDLCs.Size = new System.Drawing.Size(207, 406);
 			this.panelDLCs.TabIndex = 0;
 			// 
 			// tabMods
@@ -742,7 +834,7 @@ namespace PortraitBuilder.UI {
 			this.tabMods.Controls.Add(this.panelMods);
 			this.tabMods.Location = new System.Drawing.Point(4, 22);
 			this.tabMods.Name = "tabMods";
-			this.tabMods.Size = new System.Drawing.Size(216, 330);
+			this.tabMods.Size = new System.Drawing.Size(216, 415);
 			this.tabMods.TabIndex = 2;
 			this.tabMods.Text = "Mods";
 			this.tabMods.UseVisualStyleBackColor = true;
@@ -752,7 +844,7 @@ namespace PortraitBuilder.UI {
 			this.panelMods.AutoScroll = true;
 			this.panelMods.Location = new System.Drawing.Point(5, 3);
 			this.panelMods.Name = "panelMods";
-			this.panelMods.Size = new System.Drawing.Size(208, 323);
+			this.panelMods.Size = new System.Drawing.Size(208, 409);
 			this.panelMods.TabIndex = 1;
 			// 
 			// groupBox3
@@ -762,14 +854,14 @@ namespace PortraitBuilder.UI {
 			this.groupBox3.Controls.Add(this.tabContent);
 			this.groupBox3.Location = new System.Drawing.Point(4, 10);
 			this.groupBox3.Name = "groupBox3";
-			this.groupBox3.Size = new System.Drawing.Size(237, 402);
+			this.groupBox3.Size = new System.Drawing.Size(237, 494);
 			this.groupBox3.TabIndex = 5;
 			this.groupBox3.TabStop = false;
 			this.groupBox3.Text = "Content";
 			// 
 			// btnToogleAll
 			// 
-			this.btnToogleAll.Location = new System.Drawing.Point(6, 375);
+			this.btnToogleAll.Location = new System.Drawing.Point(6, 464);
 			this.btnToogleAll.Name = "btnToogleAll";
 			this.btnToogleAll.Size = new System.Drawing.Size(75, 23);
 			this.btnToogleAll.TabIndex = 6;
@@ -779,7 +871,7 @@ namespace PortraitBuilder.UI {
 			// 
 			// btnReload
 			// 
-			this.btnReload.Location = new System.Drawing.Point(155, 374);
+			this.btnReload.Location = new System.Drawing.Point(155, 464);
 			this.btnReload.Name = "btnReload";
 			this.btnReload.Size = new System.Drawing.Size(75, 23);
 			this.btnReload.TabIndex = 5;
@@ -787,11 +879,29 @@ namespace PortraitBuilder.UI {
 			this.btnReload.UseVisualStyleBackColor = true;
 			this.btnReload.Click += new System.EventHandler(this.onClickReload);
 			// 
+			// cbd5
+			// 
+			this.cbd5.FormattingEnabled = true;
+			this.cbd5.Location = new System.Drawing.Point(107, 141);
+			this.cbd5.Name = "cbd5";
+			this.cbd5.Size = new System.Drawing.Size(90, 21);
+			this.cbd5.TabIndex = 18;
+			this.cbd5.SelectedIndexChanged += new System.EventHandler(this.onChangeCharacteristic);
+			// 
+			// label29
+			// 
+			this.label29.AutoSize = true;
+			this.label29.Location = new System.Drawing.Point(34, 144);
+			this.label29.Name = "label29";
+			this.label29.Size = new System.Drawing.Size(68, 13);
+			this.label29.TabIndex = 19;
+			this.label29.Text = "Unused (d5):";
+			// 
 			// PortraitBuilderForm
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-			this.ClientSize = new System.Drawing.Size(666, 415);
+			this.ClientSize = new System.Drawing.Size(667, 507);
 			this.Controls.Add(this.groupBox3);
 			this.Controls.Add(this.groupBox2);
 			this.Controls.Add(this.groupBox1);
@@ -886,6 +996,16 @@ namespace PortraitBuilder.UI {
 		private System.Windows.Forms.ComboBox cbPlayer;
 		private System.Windows.Forms.Label label24;
 		private System.Windows.Forms.ComboBox cbGovernment;
+		private System.Windows.Forms.ComboBox cbHead;
+		private System.Windows.Forms.Label label25;
+		private System.Windows.Forms.Label label27;
+		private System.Windows.Forms.Label label26;
+		private System.Windows.Forms.ComboBox cbEyePatch;
+		private System.Windows.Forms.ComboBox cbMask;
+		private System.Windows.Forms.Label label28;
+		private System.Windows.Forms.ComboBox cbd10;
+		private System.Windows.Forms.Label label29;
+		private System.Windows.Forms.ComboBox cbd5;
 	}
 }
 
