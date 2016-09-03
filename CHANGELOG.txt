@@ -1,5 +1,13 @@
 By Romulien:
 
+Version 2.3.0 - 2016-09-03
+
+- Support for mask (p12) and eyepatch (p13) new characteristics
+- Add dropdowns for head (p2), d5 and d10 characteristics, in case used by mods
+- Disable dropdown if sprite has only 1 frame (e.g. p2)
+- Remove randomization when dna/properties 'letter' is 0 , and use index 0 instead
+- 'letter' 0 is now used in output dna/properties strings with index 0, instead of (max - 1)
+
 Version 2.2.0 - 2016-07-03
 
  UI:
