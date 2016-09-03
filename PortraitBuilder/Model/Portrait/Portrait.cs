@@ -129,6 +129,8 @@ namespace PortraitBuilder.Model.Portrait {
 
 		/// <summary>
 		/// Converts a letter to an index
+		/// 
+		/// In case "letter" is 0, the index is 0
 		/// </summary>
 		/// <param name="letter"></param>
 		/// <param name="total"></param>
@@ -147,34 +149,23 @@ namespace PortraitBuilder.Model.Portrait {
 			return index;
 		}
 
+		/// <summary>
+		/// Converts an index to a letter
+		/// 
+		/// In case index is 0, the "letter" is 0, rather than Letters[(total - 1)%26]
+		/// This is to match how vanilla deals with characteristics in character history
+		/// 
+		/// Note: in some cases total maximulm 27 (blgrabs mod)
+		/// </summary>
 		public static char GetLetter(int index, int total) {
 			char letter;
 
-			if (index == 0)
-				// TODO Handle the case were total = 27 (blgrabs)
-				letter = Letters[(total - 1)%26];
-			else if (index == -1)
+			if (index == -1 || index == 0){
 				letter = '0';
-			else
+			} else {
 				letter = Letters[index - 1];
-
+			}
 			return letter;
-		}
-
-		/// <summary>
-		/// Converts a letter to an index.
-		/// In case letter is 0, uses a random index
-		/// </summary>
-		/// <param name="letter"></param>
-		/// <param name="total"></param>
-		/// <returns></returns>
-		public static int GetTileIndexFromLetter(char letter, int total) {
-			if (letter == '0') {
-				return rand.Next(total);
-			}
-			else {
-				return GetIndex(letter, total);
-			}
 		}
 	}
 }

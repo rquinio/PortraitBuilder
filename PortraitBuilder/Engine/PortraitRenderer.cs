@@ -118,7 +118,7 @@ namespace PortraitBuilder.Engine {
 
 		private int GetTileIndex(Portrait portrait, int frameCount, Layer layer) {
 			char letter = portrait.GetLetter(layer.Characteristic);
-			int tileIndex = Portrait.GetTileIndexFromLetter(letter, frameCount);
+			int tileIndex = Portrait.GetIndex(letter, frameCount);
 			logger.Debug(string.Format("Layer letter: {0}, Tile Index: {1}", letter, tileIndex));
 			return tileIndex;
 		}
@@ -158,12 +158,12 @@ namespace PortraitBuilder.Engine {
 			Bitmap tile;
 			if (layer.IsHair) {
 				List<Hair> hairCoulours = portrait.GetPortraitType().HairColours;
-				int hairIndex = Portrait.GetTileIndexFromLetter(portrait.GetLetter(Characteristic.HAIR_COLOR), hairCoulours.Count);
+				int hairIndex = Portrait.GetIndex(portrait.GetLetter(Characteristic.HAIR_COLOR), hairCoulours.Count);
 				tile = DrawHair(sprite.Tiles[tileIndex], hairCoulours[hairIndex]);
 
 			} else if (layer.IsEye) {
 				List<Colour> eyeCoulours = portrait.GetPortraitType().EyeColours;
-				int eyeIndex = Portrait.GetTileIndexFromLetter(portrait.GetLetter(Characteristic.EYE_COLOR), eyeCoulours.Count);
+				int eyeIndex = Portrait.GetIndex(portrait.GetLetter(Characteristic.EYE_COLOR), eyeCoulours.Count);
 				tile = DrawEye(sprite.Tiles[tileIndex], eyeCoulours[eyeIndex]);
 
 			} else {
