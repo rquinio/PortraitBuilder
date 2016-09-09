@@ -9,12 +9,12 @@
   <tr>
     <td style="text-align:center">AppVeyor</td>
     <td>.NET 4.5</td>
-    <td style="text-align:center">[![Build status](https://ci.appveyor.com/api/projects/status/ssardstb8qkm35sy/branch/master?svg=true)]</td>
+    <td style="text-align:center"><a href="https://ci.appveyor.com/project/rquinio/portraitbuilder/branch/master"><img src="https://ci.appveyor.com/api/projects/status/ssardstb8qkm35sy/branch/master?svg=true" alt="AppVeyor build status" /></a></td>
   </tr>
   <tr>
     <td style="text-align:center">Travis</td>
     <td>Mono 4.4</td>
-    <td style="text-align:center">[![Build Status](https://travis-ci.org/rquinio/PortraitBuilder.svg)](https://travis-ci.org/rquinio/PortraitBuilder)</td>
+    <td style="text-align:center"><a href="https://travis-ci.org/rquinio/PortraitBuilder"><img src="https://travis-ci.org/rquinio/PortraitBuilder.svg?branch=master" alt="Travis build status" /></a></td>
   </tr>
 </table>
 
