@@ -1,4 +1,22 @@
-# CK2 PortraitBuilder [![Build Status](https://travis-ci.org/rquinio/PortraitBuilder.svg)](https://travis-ci.org/rquinio/PortraitBuilder)
+# CK2 PortraitBuilder
+
+<table>
+  <tr>
+    <th style="text-align:center">Build Server</th>
+    <th>Framework</th>
+    <th style="text-align:center">Status</th>
+  </tr>
+  <tr>
+    <td style="text-align:center">AppVeyor</td>
+    <td>.NET 4.5</td>
+    <td style="text-align:center">[![Build status](https://ci.appveyor.com/api/projects/status/ssardstb8qkm35sy/branch/master?svg=true)]</td>
+  </tr>
+  <tr>
+    <td style="text-align:center">Travis</td>
+    <td>Mono 4.4</td>
+    <td style="text-align:center">[![Build Status](https://travis-ci.org/rquinio/PortraitBuilder.svg)](https://travis-ci.org/rquinio/PortraitBuilder)</td>
+  </tr>
+</table>
 
 PortraitBuilder is a Winforms application to help CK2 modders creating custom characters, by previewing their appearance, which can then be used in character history of mods, or to customize a character in a saved game.
 
