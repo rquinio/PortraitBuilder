@@ -65,5 +65,22 @@ namespace PortraitBuilder.Model.Portrait {
 
 		public static Characteristic[] DNA = new Characteristic[] { NECK, CHIN, MOUTH, NOSE, CHEEKS, D5, EYES, EARS, HAIR_COLOR, EYE_COLOR, D10 };
 		public static Characteristic[] PROPERTIES = new Characteristic[] { BACKGROUND, HAIR, HEAD, CLOTHES, BEARD, HEADGEAR, IMPRISONED, SCARS, RED_DOTS, BOILS, BLINDED, PLAYER, MASK, EYEPATCH };
+	
+
+		public static Characteristic getProperty(int index){
+			try {
+				return PROPERTIES[index];
+			} catch (IndexOutOfRangeException) {
+				throw new IndexOutOfRangeException("Characteristic p" + index+" does not exist.");
+			}
+		}
+
+		public static Characteristic getDna(int index) {
+			try { 
+				return DNA[index];
+			} catch (IndexOutOfRangeException) {
+				throw new IndexOutOfRangeException("Characteristic d" + index + " does not exist.");
+			}
+		}
 	}
 }

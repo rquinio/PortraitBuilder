@@ -42,7 +42,7 @@ See the dedicated [CK2 forum thread](https://forum.paradoxplaza.com/forum/index.
 Dependencies:
 
 - [CSharpImageLibrary](https://github.com/KFreon/CSharpImageLibrary) to read .dds images
-- [Hime Parser Generator](http://himeparser.codeplex.com/) to perform a basic parsing of CK2 files.
+- [Hime Parser Generator](https://bitbucket.org/laurentw/hime/) to perform a basic parsing of CK2 files.
 - [SharpZipLib](http://www.icsharpcode.net/opensource/sharpziplib/) to unzip DLCs
 - [log4net](https://logging.apache.org/log4net/) to handle logging
 

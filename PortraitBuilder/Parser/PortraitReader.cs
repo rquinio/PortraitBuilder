@@ -170,9 +170,9 @@ namespace PortraitBuilder.Parser {
 					break;
 				case "numberOption":
 					if (id == "hair_color_index")
-						portraitType.HairColourIndex = Int32.Parse(value);
+						portraitType.HairColourIndex = parseInt(value);
 					if (id == "eye_color_index")
-						portraitType.EyeColourIndex = Int32.Parse(value);
+						portraitType.EyeColourIndex = parseInt(value);
 					break;
 				}
 			}
@@ -187,7 +187,7 @@ namespace PortraitBuilder.Parser {
 			children = node.Children.Where(c => c.Symbol.Name == "cultureGroup").ToList();
 			if (children.Count > 0) {
 				foreach (ASTNode child in children[0].Children)
-					portraitType.Culture.Add(Int32.Parse(child.Value));
+					portraitType.Culture.Add(parseInt(child.Value));
 			}
 
 			children = node.Children.Where(c => c.Symbol.Name == "groupOption").ToList();
@@ -241,9 +241,9 @@ namespace PortraitBuilder.Parser {
 		private Colour ParseColour(ASTNode child) {
 			Colour colour = new Colour();
 
-			colour.Red = byte.Parse(child.Children[0].Value);
-			colour.Green = byte.Parse(child.Children[1].Value);
-			colour.Blue = byte.Parse(child.Children[2].Value);
+			colour.Red = parseByte(child.Children[0].Value);
+			colour.Green = parseByte(child.Children[1].Value);
+			colour.Blue = parseByte(child.Children[2].Value);
 
 			logger.Debug(" --Colour Parsed: " + colour);
 			return colour;
@@ -252,30 +252,28 @@ namespace PortraitBuilder.Parser {
 		private List<Layer> ParseLayers(ASTNode node, string filename) {
 			List<Layer> layers = new List<Layer>();
 			foreach (ASTNode child in node.Children) {
-				layers.Add(ParseLayer(child, filename));
+				try {
+					layers.Add(ParseLayer(child, filename));
+				} catch (Exception e) {
+					logger.Error(string.Format("Could not parse layer {0} in file {1}", child.Value, filename), e);
+				}
 			}
 			return layers;
 		}
 
 		private Layer ParseLayer(ASTNode node, string filename) {
-			string[] layerParts = node.Value.Replace("\"", "").Split(':');
+			string[] layerParts =  node.Value.Replace("\"", "").Split(':');
 
 			Layer layer = new Layer();
 			layer.Filename = filename;
-
 			layer.Name = layerParts[0];
 
-			int index = int.Parse(layerParts[1].Substring(1));
-			if (layerParts[1][0] == 'd') {
-				layer.Characteristic = Characteristic.DNA[index];
-			} else if (layerParts[1][0] == 'p') {
-				layer.Characteristic = Characteristic.PROPERTIES[index];
-			} else {
-				logger.Error(string.Format("Unkown type {0}, for layer {1} in file {2}", layerParts[1], layer, filename));
-			}
-
-			for (int i = 2; i < layerParts.Length; i++) {
-				if (layerParts[i] == "h" || layerParts[2] == "x") {
+			for (int i = 1; i < layerParts.Length; i++) {
+				if (layerParts[i].StartsWith("d")){
+					layer.Characteristic = Characteristic.getDna(parseInt(layerParts[i].Substring(1)));
+				} else if(layerParts[i].StartsWith("p")){
+					layer.Characteristic = Characteristic.getProperty(parseInt(layerParts[i].Substring(1)));
+				} else if (layerParts[i] == "h" || layerParts[2] == "x") {
 					layer.IsHair = true;
 				} else if (layerParts[i] == "e") {
 					layer.IsEye = true;
@@ -283,8 +281,16 @@ namespace PortraitBuilder.Parser {
 					layer.DontRefreshIfValid = true;
 				} else if (layerParts[i].StartsWith("o")) {
 					string[] offsets = layerParts[i].Substring(1).Split('x');
-					layer.Offset = new Point(int.Parse(offsets[0]), int.Parse(offsets[1]));
+					layer.Offset = new Point(parseInt(offsets[0]), parseInt(offsets[1]));
+				} else if (layerParts[i].StartsWith("c")) {
+					// Ignore
+				} else {
+					logger.Warn(string.Format("Unkown syntax \"{0}\", for layer {1} in file {2}", layerParts[i], layer, filename));
 				}
+			}
+
+			if (layer.Characteristic == null) {
+				logger.Error(string.Format("Missing characterstic for layer {0} in file {1}", layer, filename));
 			}
 
 			logger.Debug(" --Layer Parsed: " + layer);
@@ -321,13 +327,32 @@ namespace PortraitBuilder.Parser {
 					break;
 				case "numberOption":
 					if (id == "noOfFrames" || id == "noOfframes")
-						sprite.FrameCount = Int32.Parse(value);
+						sprite.FrameCount = parseInt(value);
 					break;
 				}
 			}
 			logger.Debug("Sprite Parsed: " + sprite);
 
 			return sprite;
+		}
+
+		/// <summary>
+		/// int.Parse does not put the parsed text in the FormatException !
+		/// </summary>
+		private int parseInt(string s) {
+			try {
+				return int.Parse(s);
+			} catch (FormatException e) {
+				throw new FormatException("The string " + s + " cannot be parsed as an int", e);
+			}
+		}
+
+		private byte parseByte(string s) {
+			try {
+				return byte.Parse(s);
+			} catch (OverflowException e) {
+				throw new OverflowException("The string " + s + " cannot be parsed as a byte", e);
+			}
 		}
 	}
 }
