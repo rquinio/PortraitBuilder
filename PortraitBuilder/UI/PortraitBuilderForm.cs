@@ -173,7 +173,7 @@ namespace PortraitBuilder.UI {
 
 		private void registerCharacteristic(Control container, Characteristic characteristic) {
 			ComboBox combobox = new ComboBox();
-			combobox.Width = 90; // Force overflow
+			combobox.Width = 90;
 			combobox.Padding = new Padding(0);
 			combobox.Margin = new Padding(0);
 			combobox.SelectedValueChanged += this.onChangeCharacteristic;
