@@ -42,6 +42,16 @@ namespace PortraitBuilder.Model.Portrait {
 		/// </summary>
 		public string Filename;
 
+		public List<Characteristic> getCustomCharacterstics() {
+			List<Characteristic> customCharacteristics = new List<Characteristic>();
+			foreach (Layer layer in this.Layers) {
+				if (layer.Characteristic.custom == true) {
+					customCharacteristics.Add(layer.Characteristic);
+				}
+			}
+			return customCharacteristics;
+		}
+
 		public override string ToString() {
 			return string.Format("Name: {0}, Layers: {1}, HairColours: {2}, EyeColours: {3}", Name, Layers.Count, HairColours.Count, EyeColours.Count);
 		}

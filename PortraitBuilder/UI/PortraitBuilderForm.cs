@@ -47,22 +47,32 @@ namespace PortraitBuilder.UI {
 		private Portrait portrait = new Portrait();
 
 		/// <summary>
-		/// CheckBox for dna, ordered by their dna index.
+		/// ComboBox for vanilla dna, ordered by their dna index.
 		/// </summary>
-		private List<ComboBox> dnaComboBoxes = new List<ComboBox>();
+		private Dictionary<Characteristic, ComboBox> dnaComboBoxes = new Dictionary<Characteristic, ComboBox>();
 
 		/// <summary>
-		/// CheckBox for properties, ordered by their properties index.
+		/// ComboBox for vanilla properties, ordered by their properties index.
 		/// </summary>
-		private List<ComboBox> propertiesComboBoxes = new List<ComboBox>();
+		private Dictionary<Characteristic, ComboBox> propertiesComboBoxes = new Dictionary<Characteristic, ComboBox>();
+
+		/// <summary>
+		/// ComboBox for custom mod properties, ordered by their properties index, and dynamically refreshed per portraitType.
+		/// </summary>
+		private Dictionary<Characteristic, ComboBox> customPropertiesComboBoxes = new Dictionary<Characteristic, ComboBox>();
 
 		private ToolTip toolTip = new ToolTip();
 
 		public PortraitBuilderForm() {
 			InitializeComponent();
-			dnaComboBoxes.AddRange(new ComboBox[] { cbNeck, cbChin, cbMouth, cbNose, cbCheeks, cbd5, cbEyes, cbEars, cbHairColour, cbEyeColour, cbd10 });
-			propertiesComboBoxes.AddRange(new ComboBox[] { cbBackground, cbHair, cbHead, cbClothes, cbBeard, cbHeadgear, cbPrisoner, cbScars, cbRedDots, cbBoils, cbBlinded, cbPlayer, cbMask, cbEyePatch });
 
+			foreach (Characteristic dna in Characteristic.DNA){
+				registerCharacteristic(panelDNA, dna);
+			}
+			foreach (Characteristic property in Characteristic.PROPERTIES) {
+				registerCharacteristic(panelProperties, property);
+			}
+			
 			initializeForm();
 			load(false);
 			started = true;
@@ -161,6 +171,38 @@ namespace PortraitBuilder.UI {
 			}
 		}
 
+		private void registerCharacteristic(Control container, Characteristic characteristic) {
+			ComboBox combobox = new ComboBox();
+			combobox.Width = 90; // Force overflow
+			combobox.Padding = new Padding(0);
+			combobox.Margin = new Padding(0);
+			combobox.SelectedValueChanged += this.onChangeCharacteristic;
+
+			Label label = new Label();
+			label.Text = characteristic.ToString() + ":";
+			label.Width = 90;
+			label.TextAlign = ContentAlignment.MiddleRight;
+			
+			container.Controls.Add(label);
+			container.Controls.Add(combobox);
+
+			if (characteristic.type == Characteristic.Type.DNA) {
+				dnaComboBoxes.Add(characteristic, combobox);
+			} else if (characteristic.custom) {
+				customPropertiesComboBoxes.Add(characteristic, combobox);
+			} else {
+				propertiesComboBoxes.Add(characteristic, combobox);
+			}
+		}
+
+		private void unregisterCustomProperties() {
+			for (int i = 0; i <= customPropertiesComboBoxes.Count*2 -1; i++) {
+				// Remove Label + ComboBox for each custom property
+				panelProperties.Controls.RemoveAt(panelProperties.Controls.Count -1);
+			}
+			customPropertiesComboBoxes.Clear();
+		}
+
 		private string readGameDir() {
 			Stream stream = new FileStream("gamedir", FileMode.Open);
 			BinaryReader reader = new BinaryReader(stream);
@@ -187,9 +229,9 @@ namespace PortraitBuilder.UI {
 			pbPortrait.Image = previewImage;
 		}
 
-		private string getCharacteristicsString(List<ComboBox> characteristics) {
+		private string getCharacteristicsString(Dictionary<Characteristic, ComboBox> characteristics) {
 			StringBuilder sb = new StringBuilder();
-			foreach (ComboBox cb in characteristics) {
+			foreach (ComboBox cb in characteristics.Values) {
 				char letter = '0';
 				if (cb != null) {
 					letter = GetLetter(cb);
@@ -229,32 +271,21 @@ namespace PortraitBuilder.UI {
 				randomizeComboBox(cbRank);
 			}
 
-			randomizeComboBox(cbBackground);
-			randomizeComboBox(cbClothes);
-			randomizeComboBox(cbHeadgear);
-			randomizeComboBox(cbHair);
-			randomizeComboBox(cbBeard);
-			randomizeComboBox(cbNeck);
-			randomizeComboBox(cbCheeks);
-			randomizeComboBox(cbChin);
-			randomizeComboBox(cbMouth);
-			randomizeComboBox(cbNose);
-			randomizeComboBox(cbEyes);
-			randomizeComboBox(cbEars);
-			randomizeComboBox(cbHairColour);
-			randomizeComboBox(cbEyeColour);
+			randomizeCharacteristics(dnaComboBoxes);
+			randomizeCharacteristics(propertiesComboBoxes);
+			randomizeCharacteristics(customPropertiesComboBoxes);
 
-			resetComboBox(cbScars);
-			resetComboBox(cbRedDots);
-			resetComboBox(cbBoils);
-			resetComboBox(cbPrisoner);
-			resetComboBox(cbBlinded);
-			resetComboBox(cbPlayer);
-			resetComboBox(cbMask);
-			resetComboBox(cbEyePatch);
+			updatePortrait(getCharacteristicsString(dnaComboBoxes), getCharacteristicsString(propertiesComboBoxes), getCharacteristicsString(customPropertiesComboBoxes));
+		}
 
-			updatePortrait(getCharacteristicsString(dnaComboBoxes), getCharacteristicsString(propertiesComboBoxes));
-
+		private void randomizeCharacteristics(Dictionary<Characteristic, ComboBox> cbs) {
+			foreach (KeyValuePair<Characteristic, ComboBox> pair in cbs) {
+				if (pair.Key.randomizable) {
+					randomizeComboBox(pair.Value);
+				} else {
+					resetComboBox(pair.Value);
+				}
+			}
 		}
 
 		private void randomizeComboBox(ComboBox cb) {
@@ -303,15 +334,16 @@ namespace PortraitBuilder.UI {
 		}
 
 		private void fillCharacteristicComboBoxes() {
-			fillCharacteristicComboBoxes(dnaComboBoxes, Characteristic.DNA);
-			fillCharacteristicComboBoxes(propertiesComboBoxes, Characteristic.PROPERTIES);
+			fillCharacteristicComboBoxes(dnaComboBoxes);
+			fillCharacteristicComboBoxes(propertiesComboBoxes);
+			fillCharacteristicComboBoxes(customPropertiesComboBoxes);
 		}
 
-		private void fillCharacteristicComboBoxes(List<ComboBox> cbs, Characteristic[] characteristics) {
-			for (int i = 0; i < characteristics.Length; i++) {
-				ComboBox cb = cbs[i];
+		private void fillCharacteristicComboBoxes(Dictionary<Characteristic, ComboBox> cbs) {
+			foreach (KeyValuePair<Characteristic, ComboBox> pair in cbs) {
+				ComboBox cb = pair.Value;
 				if (cb != null) {
-					fillComboBox(cb, characteristics[i]);
+					fillComboBox(cb, pair.Key);
 				}
 			}
 		}
@@ -363,21 +395,21 @@ namespace PortraitBuilder.UI {
 		}
 
 		private void updateSelectedCharacteristicValues(Portrait portrait) {
-			for (int i = 0; i < dnaComboBoxes.Count; i++) {
-				if (dnaComboBoxes[i] != null) {
-					dnaComboBoxes[i].SelectedIndex = Portrait.GetIndex(portrait.GetDNA()[i], dnaComboBoxes[i].Items.Count);
+			foreach (KeyValuePair<Characteristic, ComboBox> pair in dnaComboBoxes){
+				if (pair.Value != null) {
+					pair.Value.SelectedIndex = Portrait.GetIndex(portrait.GetDNA()[pair.Key.index], pair.Value.Items.Count);
 				}
 			}
 
-			for (int i = 0; i < propertiesComboBoxes.Count; i++) {
-				if (propertiesComboBoxes[i] != null) {
-					propertiesComboBoxes[i].SelectedIndex = Portrait.GetIndex(portrait.GetProperties()[i], propertiesComboBoxes[i].Items.Count);
+			foreach (KeyValuePair<Characteristic, ComboBox> pair in propertiesComboBoxes){
+				if (pair.Value != null) {
+					pair.Value.SelectedIndex = Portrait.GetIndex(portrait.GetProperties()[pair.Key.index], pair.Value.Items.Count);
 				}
 			}
 		}
 		
-		private void updatePortrait(string dna, string properties) {
-			portrait.import(dna, properties);
+		private void updatePortrait(string dna, string properties, string customProperties) {
+			portrait.import(dna, properties + customProperties);
 			outputDNA();
 		}
 
@@ -422,6 +454,11 @@ namespace PortraitBuilder.UI {
 			started = false;
 			updateActiveAdditionalContent();
 			loadPortraitTypes();
+
+			unregisterCustomProperties();
+			foreach (Characteristic characteristic in getSelectedPortraitType().getCustomCharacterstics()) {
+				registerCharacteristic(panelProperties, characteristic);
+			}
 			fillCharacteristicComboBoxes();
 			// TODO No refresh of DNA/Properties needed (if ComboBox has less options ?)
 			started = true;
@@ -442,7 +479,8 @@ namespace PortraitBuilder.UI {
 
 		private void onChangeCharacteristic(object sender, EventArgs e) {
 			if (started) {
-				updatePortrait(getCharacteristicsString(dnaComboBoxes), getCharacteristicsString(propertiesComboBoxes));
+				// Assumption: customPropertiesComboBoxes are contiguous !
+				updatePortrait(getCharacteristicsString(dnaComboBoxes), getCharacteristicsString(propertiesComboBoxes), getCharacteristicsString(customPropertiesComboBoxes));
 				drawPortrait();
 			}
 		}
@@ -475,7 +513,7 @@ namespace PortraitBuilder.UI {
 			if (dialog.ShowDialog(this) == DialogResult.OK) {
 				started = false;
 
-				updatePortrait(dialog.portrait.GetDNA(), dialog.portrait.GetProperties());
+				updatePortrait(dialog.portrait.GetDNA(), dialog.portrait.GetProperties(), "");
 
 				// Reflect on dropdown
 				updateSelectedCharacteristicValues(portrait);
@@ -495,7 +533,7 @@ namespace PortraitBuilder.UI {
 		}
 
 		/// <summary>
-		/// Called each time an event a CheckBox is ticked/unticked
+		/// Called each time a content CheckBox is ticked/unticked
 		/// </summary>
 		private void onCheckContent(object sender, EventArgs e) {
 			CheckBox cb = (CheckBox)sender;
@@ -508,7 +546,14 @@ namespace PortraitBuilder.UI {
 			if (started) {
 				started = false;
 
-				portrait.SetPortraitType(getSelectedPortraitType());
+				PortraitType selectedPortraitType = getSelectedPortraitType();
+				portrait.SetPortraitType(selectedPortraitType);
+
+				unregisterCustomProperties();
+				foreach (Characteristic characteristic in selectedPortraitType.getCustomCharacterstics()){
+					registerCharacteristic(panelProperties, characteristic);
+				}
+
 				fillCharacteristicComboBoxes();
 				updateSelectedCharacteristicValues(portrait);
 

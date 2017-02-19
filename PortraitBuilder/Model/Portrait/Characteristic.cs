@@ -11,10 +11,16 @@ namespace PortraitBuilder.Model.Portrait {
 	/// </summary>
 	public class Characteristic {
 
-		public Characteristic(string name, int index, Type type) {
+		public Characteristic(string name, int index, Type type, bool randomizable) {
 			this.name = name;
 			this.index = index;
 			this.type = type;
+			this.randomizable = randomizable;
+		}
+
+		public Characteristic(string name, int index, Type type, bool randomizable, bool custom)
+			: this(name, index, type, randomizable) {
+			this.custom = custom;
 		}
 
 		private string name;
@@ -26,6 +32,16 @@ namespace PortraitBuilder.Model.Portrait {
 
 		public Type type;
 
+		/// <summary>
+		/// Whether the characteristic should be randomized when generating a random portrait.
+		/// </summary>
+		public bool randomizable;
+
+		/// <summary>
+		/// Whether the characteristic is a non-vanilla one.
+		/// </summary>
+		public bool custom = false;
+
 		public enum Type {
 			DNA,
 			Property
@@ -36,42 +52,43 @@ namespace PortraitBuilder.Model.Portrait {
 			return string.Format("{0} ({1}{2})", name, typeCode, index);
 		}
 
-		public static Characteristic BACKGROUND = new Characteristic("background", 0, Type.Property);
-		public static Characteristic HAIR = new Characteristic("hair", 1, Type.Property);
-		public static Characteristic HEAD = new Characteristic("head", 2, Type.Property);
-		public static Characteristic CLOTHES = new Characteristic("clothes", 3, Type.Property);
-		public static Characteristic BEARD = new Characteristic("beard", 4, Type.Property);
-		public static Characteristic HEADGEAR = new Characteristic("headgear", 5, Type.Property);
-		public static Characteristic IMPRISONED = new Characteristic("imprisoned", 6, Type.Property);
-		public static Characteristic SCARS = new Characteristic("scars", 7, Type.Property);
-		public static Characteristic RED_DOTS = new Characteristic("reddots", 8, Type.Property);
-		public static Characteristic BOILS = new Characteristic("boils", 9, Type.Property);
-		public static Characteristic BLINDED = new Characteristic("blinded", 10, Type.Property);
-		public static Characteristic PLAYER = new Characteristic("player", 11, Type.Property);
-		public static Characteristic MASK = new Characteristic("mask", 12, Type.Property);
-		public static Characteristic EYEPATCH = new Characteristic("eyepatch", 13, Type.Property);
+		public static Characteristic BACKGROUND = new Characteristic("Background", 0, Type.Property, true);
+		public static Characteristic HAIR = new Characteristic("Hair", 1, Type.Property, true);
+		public static Characteristic HEAD = new Characteristic("Head", 2, Type.Property, true);
+		public static Characteristic CLOTHES = new Characteristic("Clothes", 3, Type.Property, true);
+		public static Characteristic BEARD = new Characteristic("Beard", 4, Type.Property, true);
+		public static Characteristic HEADGEAR = new Characteristic("Headgear", 5, Type.Property, true);
+		public static Characteristic IMPRISONED = new Characteristic("Imprisoned", 6, Type.Property, false);
+		public static Characteristic SCARS = new Characteristic("Scars", 7, Type.Property, false);
+		public static Characteristic RED_DOTS = new Characteristic("Reddots", 8, Type.Property, false);
+		public static Characteristic BOILS = new Characteristic("Boils", 9, Type.Property, false);
+		public static Characteristic BLINDED = new Characteristic("Blinded", 10, Type.Property, false);
+		public static Characteristic PLAYER = new Characteristic("Player", 11, Type.Property, false);
+		public static Characteristic MASK = new Characteristic("Mask", 12, Type.Property, false);
+		public static Characteristic EYEPATCH = new Characteristic("Eyepatch", 13, Type.Property, false);
 
-		public static Characteristic NECK = new Characteristic("neck", 0, Type.DNA);
-		public static Characteristic CHIN = new Characteristic("chin", 1, Type.DNA);
-		public static Characteristic MOUTH = new Characteristic("mouth", 2, Type.DNA);
-		public static Characteristic NOSE = new Characteristic("nose", 3, Type.DNA);
-		public static Characteristic CHEEKS = new Characteristic("cheeks", 4, Type.DNA);
-		public static Characteristic D5 = new Characteristic("d5", 5, Type.DNA);
-		public static Characteristic EYES = new Characteristic("eyes", 6, Type.DNA);
-		public static Characteristic EARS = new Characteristic("ears", 7, Type.DNA);
-		public static Characteristic HAIR_COLOR = new Characteristic("haircolor", 8, Type.DNA);
-		public static Characteristic EYE_COLOR = new Characteristic("eyecolor", 9, Type.DNA);
-		public static Characteristic D10 = new Characteristic("d10", 10, Type.DNA);
+		public static Characteristic NECK = new Characteristic("Neck", 0, Type.DNA, true);
+		public static Characteristic CHIN = new Characteristic("Chin", 1, Type.DNA, true);
+		public static Characteristic MOUTH = new Characteristic("Mouth", 2, Type.DNA, true);
+		public static Characteristic NOSE = new Characteristic("Nose", 3, Type.DNA, true);
+		public static Characteristic CHEEKS = new Characteristic("Cheeks", 4, Type.DNA, true);
+		public static Characteristic D5 = new Characteristic("Unused", 5, Type.DNA, true);
+		public static Characteristic EYES = new Characteristic("Eyes", 6, Type.DNA, true);
+		public static Characteristic EARS = new Characteristic("Ears", 7, Type.DNA, true);
+		public static Characteristic HAIR_COLOR = new Characteristic("Haircolor", 8, Type.DNA, true);
+		public static Characteristic EYE_COLOR = new Characteristic("Eyecolor", 9, Type.DNA, true);
+		public static Characteristic D10 = new Characteristic("Unused", 10, Type.DNA, true);
 
 		public static Characteristic[] DNA = new Characteristic[] { NECK, CHIN, MOUTH, NOSE, CHEEKS, D5, EYES, EARS, HAIR_COLOR, EYE_COLOR, D10 };
 		public static Characteristic[] PROPERTIES = new Characteristic[] { BACKGROUND, HAIR, HEAD, CLOTHES, BEARD, HEADGEAR, IMPRISONED, SCARS, RED_DOTS, BOILS, BLINDED, PLAYER, MASK, EYEPATCH };
 	
 
 		public static Characteristic getProperty(int index){
-			try {
+			if (index < PROPERTIES.Length) {
 				return PROPERTIES[index];
-			} catch (IndexOutOfRangeException) {
-				throw new IndexOutOfRangeException("Characteristic p" + index+" does not exist.");
+			} else {
+				// As defines are not parsed, always consider custom properties as valid.
+				return new Characteristic("Custom", index, Type.Property, false, true);
 			}
 		}
 
