@@ -7,6 +7,7 @@ Version 2.4.0 - 2017-04-07
 - Improve error reporting when parsing portraits.gfx when parsing string into integer or byte
 - Allow non-ordered flags in propertyType layers
 - Fix randomization that was never using the last frame
+- Solve some eye-related rendering issues caused by attempting to read pixels outside of the width/height of the source image
 
 Version 2.3.0 - 2016-09-03
 

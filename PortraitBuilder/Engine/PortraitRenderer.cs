@@ -174,19 +174,20 @@ namespace PortraitBuilder.Engine {
 		}
 
 		private Bitmap DrawEye(Bitmap source, Colour eyeColour) {
-			Bitmap output = new Bitmap(152, 152);
-			Colour colour1 = new Colour(), colour2 = new Colour();
+			Bitmap output = new Bitmap(source.Width, source.Height);
+			Colour colour1 = new Colour();
+			Colour colour2 = new Colour();
 
-			BitmapData bdata = source.LockBits(new Rectangle(0, 0, 152, 152), ImageLockMode.ReadOnly, source.PixelFormat);
-			BitmapData odata = output.LockBits(new Rectangle(0, 0, 152, 152), ImageLockMode.ReadOnly, output.PixelFormat);
+			BitmapData bdata = source.LockBits(new Rectangle(0, 0, source.Width, source.Height), ImageLockMode.ReadOnly, source.PixelFormat);
+			BitmapData odata = output.LockBits(new Rectangle(0, 0, source.Width, source.Height), ImageLockMode.ReadOnly, output.PixelFormat);
 			int pixelSize = 4;
 
 			unsafe {
-				for (int y = 0; y < 152; y++) {
+				for (int y = 0; y < source.Height; y++) {
 					byte* brow = (byte*)bdata.Scan0 + (y * bdata.Stride);
 					byte* orow = (byte*)odata.Scan0 + (y * odata.Stride);
 
-					for (int x = 0; x < 152; x++) {
+					for (int x = 0; x < source.Width; x++) {
 						colour1.Red = brow[x * pixelSize + 2];
 						colour1.Alpha = brow[x * pixelSize + 3];
 
@@ -211,24 +212,24 @@ namespace PortraitBuilder.Engine {
 		}
 
 		private Bitmap DrawHair(Bitmap source, Hair hairColor) {
-			Bitmap output = new Bitmap(152, 152);
-			Colour colour1 = new Colour(), colour2;
+			Bitmap output = new Bitmap(source.Width, source.Height);
+			Colour colour1 = new Colour();
 
-			BitmapData bdata = source.LockBits(new Rectangle(0, 0, 152, 152), ImageLockMode.ReadOnly, source.PixelFormat);
-			BitmapData odata = output.LockBits(new Rectangle(0, 0, 152, 152), ImageLockMode.ReadOnly, output.PixelFormat);
+			BitmapData bdata = source.LockBits(new Rectangle(0, 0, source.Width, source.Height), ImageLockMode.ReadOnly, source.PixelFormat);
+			BitmapData odata = output.LockBits(new Rectangle(0, 0, source.Width, source.Height), ImageLockMode.ReadOnly, output.PixelFormat);
 			int pixelSize = 4;
 
 			unsafe {
-				for (int y = 0; y < 152; y++) {
+				for (int y = 0; y < source.Height; y++) {
 					byte* brow = (byte*)bdata.Scan0 + (y * bdata.Stride);
 					byte* orow = (byte*)odata.Scan0 + (y * odata.Stride);
 
-					for (int x = 0; x < 152; x++) {
+					for (int x = 0; x < source.Width; x++) {
 						colour1.Green = brow[x * pixelSize + 1];
 						colour1.Alpha = brow[x * pixelSize + 3];
 
 						if (colour1.Alpha > 0) {
-							colour2 = Colour.Lerp(hairColor.Dark, hairColor.Base, Colour.Clamp(colour1.Green * 2));
+							Colour colour2 = Colour.Lerp(hairColor.Dark, hairColor.Base, Colour.Clamp(colour1.Green * 2));
 							colour2 = Colour.Lerp(colour2, hairColor.Highlight, Colour.Clamp((colour1.Green - 128) * 2));
 
 							orow[x * pixelSize] = colour2.Blue;
