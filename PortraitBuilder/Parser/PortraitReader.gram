@@ -9,8 +9,13 @@ grammar PortraitReader
 		FLOAT -> INT? '.' INT 'f'?;
 		DATE -> INT '.' INT '.' INT;
 		NUMBER -> INT|FLOAT;
-				
+			
+		EQUAL -> '==';	
 		ASSIGN -> '=';
+		SUPERIOR_OR_EQUAL -> '>=';
+		SUPERIOR -> '>';
+		INFERIOR_OR_EQUAL -> '<=';
+		INFERIOR -> '<';
 		OPEN -> '{';
 		CLOSE -> '}';
 		
@@ -31,6 +36,7 @@ grammar PortraitReader
 		SEPARATOR -> (WHITE_SPACE | COMMENT)+;
 	}
 	rules{
+		operator -> (EQUAL! | SUPERIOR_OR_EQUAL! | SUPERIOR! | INFERIOR_OR_EQUAL! | INFERIOR!);
 		idOption -> IDENTIFIER ASSIGN! IDENTIFIER;
 		boolOption -> IDENTIFIER ASSIGN! BOOL;
 		stringOption -> IDENTIFIER ASSIGN! STRING;
@@ -39,8 +45,10 @@ grammar PortraitReader
 		colourGroup -> OPEN! NUMBER NUMBER NUMBER CLOSE!;
 		layerGroup -> IDENTIFIER! ASSIGN! OPEN! STRING+ CLOSE!;
 		cultureGroup -> IDENTIFIER! ASSIGN! OPEN! NUMBER+ CLOSE!;
+		conditionOption -> IDENTIFIER! operator (STRING | NUMBER | IDENTIFIER);
+		indexGroup -> NUMBER ASSIGN! OPEN! Option* CLOSE!;
 		
-		Option -> (idOption | boolOption | stringOption | numberOption | groupOption^ | colourGroup^ | layerGroup^ | cultureGroup^ );
+		Option -> (idOption | boolOption | stringOption | numberOption | groupOption^ | colourGroup^ | layerGroup^ | cultureGroup^ | indexGroup^ | conditionOption );
 		
 		Sprite -> IDENTIFIER ASSIGN! OPEN! Option+ CLOSE!;
 		

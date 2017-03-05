@@ -111,7 +111,8 @@ namespace PortraitBuilder.UI {
 			toolTip.SetToolTip(this.btnSave, "Save portrait as a .png image");
 			toolTip.SetToolTip(this.btnCopy, "Copy DNA & Properties to use for character history");
 
-			toolTip.SetToolTip(this.cbPortraitTypes, "Select portraitType to render");
+			toolTip.SetToolTip(this.cbPortraitTypes, "Select portraitType to render as base");
+			toolTip.SetToolTip(this.cbCulturePortraitTypes, "Select portraitType to render for clothing override");
 			toolTip.SetToolTip(this.cbRank, "Select rank to use for rendering portrait border");
 			toolTip.SetToolTip(this.cbGovernment, "Select government to use for rendering. Theocracy and Merchant Republic use special sprites for headgear and clothing.");
 		}
@@ -327,8 +328,13 @@ namespace PortraitBuilder.UI {
 		private PortraitType getSelectedPortraitType() {
 			PortraitType selectedPortraitType = null;
 			object selectedItem = cbPortraitTypes.SelectedItem;
+			object selectedItem2 = cbCulturePortraitTypes.SelectedItem;
 			if (selectedItem != null) {
-				return loader.GetActivePortraitData().PortraitTypes["PORTRAIT_" + selectedItem.ToString()];
+				if (selectedItem2 != null && !selectedItem2.ToString().Equals("")) {
+					return loader.GetPortraitType("PORTRAIT_" + selectedItem.ToString(), "PORTRAIT_" + selectedItem2.ToString());
+				} else {
+					return loader.GetPortraitType("PORTRAIT_" + selectedItem.ToString());
+				}
 			}
 			return selectedPortraitType;
 		}
@@ -349,11 +355,17 @@ namespace PortraitBuilder.UI {
 		}
 
 		private void loadPortraitTypes() {
-			object previouslySelectedPortrait = null;
+			object previouslySelectedBasePortrait = null;
+			object previouslySelectedOverridePortrait = null;
+
 			if (cbPortraitTypes.SelectedItem != null) {
-				previouslySelectedPortrait = cbPortraitTypes.Items[cbPortraitTypes.SelectedIndex];
+				previouslySelectedBasePortrait = cbPortraitTypes.Items[cbPortraitTypes.SelectedIndex];
+			}
+			if (cbCulturePortraitTypes.SelectedItem != null) {
+				previouslySelectedOverridePortrait = cbCulturePortraitTypes.Items[cbCulturePortraitTypes.SelectedIndex];
 			}
 			cbPortraitTypes.Items.Clear();
+			cbCulturePortraitTypes.Items.Clear();
 
 			loader.LoadPortraits();
 
@@ -362,16 +374,27 @@ namespace PortraitBuilder.UI {
 				return;
 			}
 
+			cbCulturePortraitTypes.Items.Add(""); // Empty = no override
 			foreach (KeyValuePair<string, PortraitType> pair in loader.GetActivePortraitData().PortraitTypes) {
 				PortraitType portraitType = pair.Value;
-				cbPortraitTypes.Items.Add(portraitType.Name.Replace("PORTRAIT_", ""));
+				String portraitName = portraitType.Name.Replace("PORTRAIT_", "");
+				if (portraitType.IsBasePortraitType()) {
+					cbPortraitTypes.Items.Add(portraitName);
+				}
+				cbCulturePortraitTypes.Items.Add(portraitName);
 			}
 
-			if (previouslySelectedPortrait != null) {
-				cbPortraitTypes.SelectedIndex = cbPortraitTypes.Items.IndexOf(previouslySelectedPortrait);
+			if (previouslySelectedBasePortrait != null) {
+				cbPortraitTypes.SelectedIndex = cbPortraitTypes.Items.IndexOf(previouslySelectedBasePortrait);
+			}
+			if (previouslySelectedOverridePortrait != null) {
+				cbCulturePortraitTypes.SelectedIndex = cbCulturePortraitTypes.Items.IndexOf(previouslySelectedOverridePortrait);
 			}
 			if (cbPortraitTypes.SelectedIndex == -1) {
 				cbPortraitTypes.SelectedIndex = 0;
+			}
+			if (cbCulturePortraitTypes.SelectedIndex == -1) {
+				cbCulturePortraitTypes.SelectedIndex = 0;
 			}
 			portrait.SetPortraitType(getSelectedPortraitType());
 		}

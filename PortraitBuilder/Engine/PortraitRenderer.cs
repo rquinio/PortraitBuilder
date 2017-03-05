@@ -69,7 +69,7 @@ namespace PortraitBuilder.Engine {
 					DrawTile(portrait, g, sprite, layer, tileIndex);
 				}
 				else {
-					throw new FileNotFoundException("Sprite not found:" + layer);
+					throw new FileNotFoundException("Sprite not found:" + spriteName);
 				}
 			}
 			catch (Exception e) {

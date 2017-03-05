@@ -20,6 +20,8 @@ namespace PortraitBuilder.Engine {
 
 		private static readonly ILog logger = LogManager.GetLogger(typeof(Loader).Name);
 
+		private PortraitTypeMerger portraitTypeMerger = new PortraitTypeMerger();
+
 		/// <summary>
 		/// User configuration: game path, etc.
 		/// </summary>
@@ -61,6 +63,14 @@ namespace PortraitBuilder.Engine {
 
 		public PortraitData GetActivePortraitData() {
 			return activePortraitData;
+		}
+
+		public PortraitType GetPortraitType(string basePortraitType) {
+			return GetActivePortraitData().PortraitTypes[basePortraitType];
+		}
+
+		public PortraitType GetPortraitType(string basePortraitType, string clothingPortraitType) {
+			return portraitTypeMerger.merge(GetActivePortraitData().PortraitTypes[basePortraitType], GetActivePortraitData().PortraitTypes[clothingPortraitType]);
 		}
 
 		public List<Content> GetActiveContents() {

@@ -35,7 +35,7 @@ namespace PortraitBuilder.Model.Portrait {
 		/// <summary>
 		/// TODO How is this used in-game ?
 		/// </summary>
-		public List<int> Culture = new List<int>();
+		public List<int> HeadgearThatHidesHair = new List<int>();
 
 		/// <summary>
 		/// The file that the data was loaded from (E.g portraits.gfx)
@@ -54,6 +54,24 @@ namespace PortraitBuilder.Model.Portrait {
 
 		public override string ToString() {
 			return string.Format("Name: {0}, Layers: {1}, HairColours: {2}, EyeColours: {3}", Name, Layers.Count, HairColours.Count, EyeColours.Count);
+		}
+
+		/// <summary>
+		/// Whether this portraitType is a base portraitType. 
+		/// 
+		/// Base portraitTypes can also be used as override portraitTypes, with culture-indexed layers replacing the ones of another base.
+		/// </summary>
+		public bool IsBasePortraitType(){
+			return HairColours.Count > 0;
+		}
+
+		public Layer GetCultureLayer(int cultureIndex) {
+			foreach (Layer layer in this.Layers) {
+				if (layer.CultureIndex == cultureIndex) {
+					return layer;
+				}
+			}
+			return null;
 		}
 	}
 }

@@ -17,9 +17,23 @@ namespace PortraitBuilder.Model.Portrait {
 		/// <summary>
 		/// The characteristic associated to this layer.
 		/// 
-		/// It used to determine which variation will be used within the asset sprite
+		/// Used to determine which variation will be used within the asset sprite
 		/// </summary>
 		public Characteristic Characteristic;
+
+		/// <summary>
+		/// The culture index. 
+		/// 
+		/// Used to override clothing dynamically, based on another portraitType definition, for instance when a character changes its graphical culture via event.
+		/// 
+		/// 0 = clothes behind
+		/// 1 = headgear behind
+		/// 2 = clothes
+		/// 3 = headgear mid
+		/// 4 = clothes infront
+		/// 5 = headgear
+		/// </summary>
+		public int CultureIndex = -1;
 
 		/// <summary>
 		/// Whether this layer should apply hair coloration 

@@ -182,14 +182,17 @@ namespace PortraitBuilder.Parser {
 			logger.Debug(" --Hair Colour Index: " + portraitType.HairColourIndex);
 			logger.Debug(" --Eye Colour Index: " + portraitType.EyeColourIndex);
 
+			// layer = {}
 			portraitType.Layers.AddRange(ParseLayers(node.Children.Single(c => c.Symbol.Name == "layerGroup"), filename));
 
+			// headgear_that_hides_hair = {}
 			children = node.Children.Where(c => c.Symbol.Name == "cultureGroup").ToList();
 			if (children.Count > 0) {
 				foreach (ASTNode child in children[0].Children)
-					portraitType.Culture.Add(parseInt(child.Value));
+					portraitType.HeadgearThatHidesHair.Add(parseInt(child.Value));
 			}
 
+			// hair_color = {} / eye_color = {}
 			children = node.Children.Where(c => c.Symbol.Name == "groupOption").ToList();
 
 			foreach (ASTNode child in children) {
@@ -273,7 +276,7 @@ namespace PortraitBuilder.Parser {
 					layer.Characteristic = Characteristic.getDna(parseInt(layerParts[i].Substring(1)));
 				} else if(layerParts[i].StartsWith("p")){
 					layer.Characteristic = Characteristic.getProperty(parseInt(layerParts[i].Substring(1)));
-				} else if (layerParts[i] == "h" || layerParts[2] == "x") {
+				} else if (layerParts[i] == "h" || layerParts[i] == "x") {
 					layer.IsHair = true;
 				} else if (layerParts[i] == "e") {
 					layer.IsEye = true;
@@ -283,13 +286,13 @@ namespace PortraitBuilder.Parser {
 					string[] offsets = layerParts[i].Substring(1).Split('x');
 					layer.Offset = new Point(parseInt(offsets[0]), parseInt(offsets[1]));
 				} else if (layerParts[i].StartsWith("c")) {
-					// Ignore
+					layer.CultureIndex = parseInt(layerParts[i].Substring(1));
 				} else {
 					logger.Warn(string.Format("Unkown syntax \"{0}\", for layer {1} in file {2}", layerParts[i], layer, filename));
 				}
 			}
 
-			if (layer.Characteristic == null) {
+			if (layer.Characteristic == null && layer.CultureIndex == -1) {
 				logger.Error(string.Format("Missing characterstic for layer {0} in file {1}", layer, filename));
 			}
 
@@ -318,7 +321,7 @@ namespace PortraitBuilder.Parser {
 				case "stringOption":
 					if (id == "name")
 						sprite.Name = value.Replace("\"", "");
-					if (id == "texturefile")
+					if (id == "texturefile" || id == "textureFile")
 						sprite.TextureFilePath = value.Replace("\"", "").Replace(@"\\", @"\");
 					break;
 				case "boolOption":
