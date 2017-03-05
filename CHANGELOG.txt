@@ -6,6 +6,7 @@ Version 2.4.0 - 2017-04-07
 - Support for a variable number of properties, with dynamic creation of characteristic comboboxes in the UI
 - Improve error reporting when parsing portraits.gfx when parsing string into integer or byte
 - Allow non-ordered flags in propertyType layers
+- Fix randomization that was never using the last frame
 
 Version 2.3.0 - 2016-09-03
 

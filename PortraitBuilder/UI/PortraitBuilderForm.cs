@@ -291,7 +291,7 @@ namespace PortraitBuilder.UI {
 
 		private void randomizeComboBox(ComboBox cb) {
 			if (cb.Items.Count > 0) {
-				cb.SelectedIndex = rand.Next(cb.Items.Count - 1);
+				cb.SelectedIndex = rand.Next(cb.Items.Count);
 			}
 		}
 
