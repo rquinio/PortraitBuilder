@@ -1,8 +1,15 @@
 By Romulien:
 
+Version 2.4.0 - 2017-04-07
+
+- Support for clothing propertyType override, replacing sprites used by culture-indexed layers (c0->c5)
+- Support for a variable number of properties, with dynamic creation of characteristic comboboxes in the UI
+- Improve error reporting when parsing portraits.gfx when parsing string into integer or byte
+- Allow non-ordered flags in propertyType layers
+
 Version 2.3.0 - 2016-09-03
 
-- Support for mask (p12) and eyepatch (p13) new characteristics
+- Support mask (p12) and eyepatch (p13) new characteristics
 - Add dropdowns for head (p2), d5 and d10 characteristics, in case used by mods
 - Disable dropdown if sprite has only 1 frame (e.g. p2)
 - Remove randomization when dna/properties 'letter' is 0 , and use index 0 instead
