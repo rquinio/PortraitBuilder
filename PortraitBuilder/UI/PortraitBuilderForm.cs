@@ -87,7 +87,7 @@ namespace PortraitBuilder.UI {
 
 			User user = new User();
 			user.GameDir = readGameDir();
-			user.MyDocsDir = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), "Paradox Interactive", "Crusader Kings II") + Path.DirectorySeparatorChar;
+			user.ModDir = readModDir(user.GameDir);
 			user.DlcDir = Path.Combine(Environment.CurrentDirectory, "dlc") + Path.DirectorySeparatorChar;
 			logger.Info("Configuration: " + user);
 			logger.Info("----------------------------");
@@ -208,6 +208,23 @@ namespace PortraitBuilder.UI {
 			Stream stream = new FileStream("gamedir", FileMode.Open);
 			BinaryReader reader = new BinaryReader(stream);
 			return reader.ReadString() + Path.DirectorySeparatorChar;
+		}
+
+		/// <summary>
+		/// Read userdir.txt in Steam directory for the path to mod dir, or default to pre-defined location
+		/// </summary>
+		private string readModDir(string gameDir) {
+			string modDir = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), "Paradox Interactive", "Crusader Kings II") + Path.DirectorySeparatorChar;
+			string userdirFilePath = Path.Combine(gameDir, "userdir.txt");
+			if(File.Exists(userdirFilePath)){
+				logger.Info("Reading userdir.txt to determine the mod directory.");
+				Stream stream = new FileStream(userdirFilePath, FileMode.Open);
+				StreamReader reader = new StreamReader(stream, Encoding.Default);
+				modDir = reader.ReadLine() + Path.DirectorySeparatorChar;
+				logger.Info("Found userdir.txt with path: " + modDir);
+			}
+			modDir = Path.Combine(modDir, "mod");
+			return modDir;
 		}
 
 		/// <summary>

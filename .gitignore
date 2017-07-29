@@ -116,6 +116,7 @@ Backup*/
 UpgradeLog*.XML
 
 
+*.resources
 
 ############
 ## Windows

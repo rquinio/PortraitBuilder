@@ -173,6 +173,9 @@ namespace PortraitBuilder.Engine {
 			g.DrawImage(tile, 12 + layer.Offset.X, 12 + 152 - tile.Size.Height - layer.Offset.Y);
 		}
 
+		/// <summary>
+		/// Based on gfx\FX\portrait.lua EyePixelShader
+		/// </summary>
 		private Bitmap DrawEye(Bitmap source, Colour eyeColour) {
 			Bitmap output = new Bitmap(source.Width, source.Height);
 			Colour colour1 = new Colour();
@@ -195,11 +198,12 @@ namespace PortraitBuilder.Engine {
 							colour2.Red = (byte)(255 * ((eyeColour.Red / 255f) * (colour1.Red / 255f)));
 							colour2.Green = (byte)(255 * ((eyeColour.Green / 255f) * (colour1.Red / 255f)));
 							colour2.Blue = (byte)(255 * ((eyeColour.Blue / 255f) * (colour1.Red / 255f)));
+							colour2.Alpha = colour1.Alpha;
 
 							orow[x * pixelSize] = colour2.Blue;
 							orow[x * pixelSize + 1] = colour2.Green;
 							orow[x * pixelSize + 2] = colour2.Red;
-							orow[x * pixelSize + 3] = colour1.Alpha;
+							orow[x * pixelSize + 3] = colour2.Alpha;
 						}
 					}
 				}
@@ -211,7 +215,10 @@ namespace PortraitBuilder.Engine {
 			return output;
 		}
 
-		private Bitmap DrawHair(Bitmap source, Hair hairColor) {
+		/// <summary>
+		/// Based on gfx\FX\portrait.lua HairPixelShader
+		/// </summary>
+		private Bitmap DrawHair(Bitmap source, Hair hair) {
 			Bitmap output = new Bitmap(source.Width, source.Height);
 			Colour colour1 = new Colour();
 
@@ -229,13 +236,14 @@ namespace PortraitBuilder.Engine {
 						colour1.Alpha = brow[x * pixelSize + 3];
 
 						if (colour1.Alpha > 0) {
-							Colour colour2 = Colour.Lerp(hairColor.Dark, hairColor.Base, Colour.Clamp(colour1.Green * 2));
-							colour2 = Colour.Lerp(colour2, hairColor.Highlight, Colour.Clamp((colour1.Green - 128) * 2));
+							Colour colour2 = Colour.Lerp(hair.Dark, hair.Base, Colour.Clamp(colour1.Green * 2));
+							colour2 = Colour.Lerp(colour2, hair.Highlight, Colour.Clamp((colour1.Green - 128f) * 2));
+							colour2.Alpha = colour1.Alpha;
 
 							orow[x * pixelSize] = colour2.Blue;
 							orow[x * pixelSize + 1] = colour2.Green;
 							orow[x * pixelSize + 2] = colour2.Red;
-							orow[x * pixelSize + 3] = colour1.Alpha;
+							orow[x * pixelSize + 3] = colour2.Alpha;
 						}
 					}
 				}

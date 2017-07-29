@@ -16,9 +16,9 @@ namespace PortraitBuilder.Model {
 		public string GameDir;
 
 		/// <summary>
-		/// Path to the My Documents directory.
+		/// Path to the mod directory.
 		/// </summary>
-		public string MyDocsDir;
+		public string ModDir;
 
 		/// <summary>
 		/// Path to the temporary DLC directory, containing unzipped assets
@@ -26,7 +26,7 @@ namespace PortraitBuilder.Model {
 		public string DlcDir;
 
 		public override string ToString() {
-			return string.Format("CK2 directory {0}, Mod directory: {1}, DLC directory: {2}", GameDir, MyDocsDir, DlcDir);
+			return string.Format("CK2 directory {0}, Mod directory: {1}, DLC directory: {2}", GameDir, ModDir, DlcDir);
 		}
 	}
 }

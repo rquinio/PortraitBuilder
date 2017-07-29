@@ -135,18 +135,22 @@ namespace PortraitBuilder.Engine {
 		}
 
 		public List<Mod> LoadMods() {
-			string modFolder = user.MyDocsDir + "mod" + Path.DirectorySeparatorChar;
-			logger.Info("Loading mods from " + modFolder);
-			List<Mod> mods = modReader.ParseFolder(modFolder);
-
-			foreach (Mod mod in mods) {
-				if (Directory.Exists(mod.AbsolutePath)) {
-					logger.Info("Loading portraits from mod: " + mod.Name);
-					mod.PortraitData = portraitReader.Parse(mod.AbsolutePath);
-				} else {
-					logger.Error("Mod path " + mod.AbsolutePath + " does not exist");
+			List<Mod> mods = new List<Mod>();
+			if (Directory.Exists(user.ModDir)) {
+				logger.Info("Loading mods from " + user.ModDir);
+				mods = modReader.ParseFolder(user.ModDir);
+				foreach (Mod mod in mods) {
+					if (Directory.Exists(mod.AbsolutePath)) {
+						logger.Info("Loading portraits from mod: " + mod.Name);
+						mod.PortraitData = portraitReader.Parse(mod.AbsolutePath);
+					} else {
+						logger.Error("Mod path " + mod.AbsolutePath + " does not exist");
+					}
 				}
+			} else {
+				logger.Error("Mod directory " + user.ModDir +  " doesn't exist");
 			}
+
 			return mods;
 		}
 
