@@ -93,6 +93,7 @@
     <Compile Include="Model\Content\Mod.cs" />
     <Compile Include="Model\Portrait\Characteristic.cs" />
     <Compile Include="Model\Portrait\Colour.cs" />
+    <Compile Include="Model\Portrait\Culturegfx.cs" />
     <Compile Include="Model\Portrait\Hair.cs" />
     <Compile Include="Model\Portrait\Layer.cs" />
     <Compile Include="Model\Portrait\Portrait.cs" />
