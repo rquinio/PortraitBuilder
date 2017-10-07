@@ -39,13 +39,15 @@ See the dedicated [CK2 forum thread](https://forum.paradoxplaza.com/forum/index.
 
 ## Developers
 
-Dependencies:
+Build from PortraitBuilder.sln, it will automatically download dependencies via NuGet from [packages.config](PortraitBuilder/packages.config) file.
+
+Main dependencies:
 
 - [CSharpImageLibrary](https://github.com/KFreon/CSharpImageLibrary) to read .dds images
-- [Hime Parser Generator](https://bitbucket.org/laurentw/hime/) to perform a basic parsing of CK2 files.
+- [Hime Parser Generator](https://bitbucket.org/cenotelie/hime/) to perform a basic parsing of CK2 files.
 - [SharpZipLib](http://www.icsharpcode.net/opensource/sharpziplib/) to unzip DLCs
 - [log4net](https://logging.apache.org/log4net/) to handle logging
 
-To re-generate the Lexer/Parser from the grammar, install [Hime standalone distribution](https://bitbucket.org/laurentw/hime/downloads/), and use the himecc command line utility:
+To re-generate the Lexer/Parser from the grammar, install [Hime standalone distribution](https://bitbucket.org/cenotelie/hime/downloads/), and use the himecc command line utility:
 
 > himecc PortraitReader.gram -n PortraitBuilder.Parser
