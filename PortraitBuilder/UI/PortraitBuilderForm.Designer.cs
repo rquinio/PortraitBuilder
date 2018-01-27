@@ -106,7 +106,10 @@ namespace PortraitBuilder.UI {
             "Republic",
             "Merchant Republic",
             "Tribal",
-            "Nomadic"});
+            "Nomadic",
+            "Monastic Feudal",
+            "Chinese Imperial",
+            "Confucian Bureaucracy"});
 			this.cbGovernment.Location = new System.Drawing.Point(45, 19);
 			this.cbGovernment.Name = "cbGovernment";
 			this.cbGovernment.Size = new System.Drawing.Size(136, 21);

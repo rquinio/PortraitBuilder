@@ -19,7 +19,7 @@ namespace PortraitBuilder.Engine {
 
 		private static readonly ILog logger = LogManager.GetLogger(typeof(PortraitRenderer).Name);
 
-		private static String[] governmentSpriteSuffix = new String[] { "", "_iqta", "_theocracy", "_republic" , "_merchantrepublic", "_tribal", "_nomadic"};
+		private static String[] governmentSpriteSuffix = new String[] { "", "_iqta", "_theocracy", "_republic", "_merchantrepublic", "_tribal", "_nomadic", "_theocraticfeudal", "_chineseimperial", "_confucian" };
 
 		/// <summary>
 		/// Draws a character portrait.
