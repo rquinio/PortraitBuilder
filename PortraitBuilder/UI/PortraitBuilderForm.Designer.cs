@@ -80,7 +80,7 @@ namespace PortraitBuilder.UI {
 			this.groupBox1.Controls.Add(this.pbPortrait);
 			this.groupBox1.Controls.Add(this.cbRank);
 			this.groupBox1.Controls.Add(this.label20);
-			this.groupBox1.Location = new System.Drawing.Point(491, 10);
+			this.groupBox1.Location = new System.Drawing.Point(513, 10);
 			this.groupBox1.Name = "groupBox1";
 			this.groupBox1.Size = new System.Drawing.Size(188, 471);
 			this.groupBox1.TabIndex = 1;
@@ -193,7 +193,7 @@ namespace PortraitBuilder.UI {
 			this.tabControl1.Location = new System.Drawing.Point(6, 74);
 			this.tabControl1.Name = "tabControl1";
 			this.tabControl1.SelectedIndex = 0;
-			this.tabControl1.Size = new System.Drawing.Size(228, 362);
+			this.tabControl1.Size = new System.Drawing.Size(250, 362);
 			this.tabControl1.SizeMode = System.Windows.Forms.TabSizeMode.Fixed;
 			this.tabControl1.TabIndex = 3;
 			// 
@@ -203,7 +203,7 @@ namespace PortraitBuilder.UI {
 			this.tabDNA.Location = new System.Drawing.Point(4, 22);
 			this.tabDNA.Name = "tabDNA";
 			this.tabDNA.Padding = new System.Windows.Forms.Padding(3);
-			this.tabDNA.Size = new System.Drawing.Size(220, 336);
+			this.tabDNA.Size = new System.Drawing.Size(242, 336);
 			this.tabDNA.TabIndex = 0;
 			this.tabDNA.Text = "DNA";
 			this.tabDNA.UseVisualStyleBackColor = true;
@@ -213,7 +213,7 @@ namespace PortraitBuilder.UI {
 			this.panelDNA.AutoScroll = true;
 			this.panelDNA.Location = new System.Drawing.Point(3, 6);
 			this.panelDNA.Name = "panelDNA";
-			this.panelDNA.Size = new System.Drawing.Size(211, 327);
+			this.panelDNA.Size = new System.Drawing.Size(236, 327);
 			this.panelDNA.TabIndex = 1;
 			// 
 			// tabProperties
@@ -222,7 +222,7 @@ namespace PortraitBuilder.UI {
 			this.tabProperties.Location = new System.Drawing.Point(4, 22);
 			this.tabProperties.Name = "tabProperties";
 			this.tabProperties.Padding = new System.Windows.Forms.Padding(3);
-			this.tabProperties.Size = new System.Drawing.Size(220, 336);
+			this.tabProperties.Size = new System.Drawing.Size(242, 336);
 			this.tabProperties.TabIndex = 1;
 			this.tabProperties.Text = "Properties*";
 			this.tabProperties.UseVisualStyleBackColor = true;
@@ -232,7 +232,7 @@ namespace PortraitBuilder.UI {
 			this.panelProperties.AutoScroll = true;
 			this.panelProperties.Location = new System.Drawing.Point(4, 6);
 			this.panelProperties.Name = "panelProperties";
-			this.panelProperties.Size = new System.Drawing.Size(210, 325);
+			this.panelProperties.Size = new System.Drawing.Size(235, 325);
 			this.panelProperties.TabIndex = 2;
 			// 
 			// groupBox2
@@ -246,7 +246,7 @@ namespace PortraitBuilder.UI {
 			this.groupBox2.Controls.Add(this.tabControl1);
 			this.groupBox2.Location = new System.Drawing.Point(245, 10);
 			this.groupBox2.Name = "groupBox2";
-			this.groupBox2.Size = new System.Drawing.Size(240, 471);
+			this.groupBox2.Size = new System.Drawing.Size(262, 471);
 			this.groupBox2.TabIndex = 1;
 			this.groupBox2.TabStop = false;
 			this.groupBox2.Text = "Input";
@@ -256,7 +256,7 @@ namespace PortraitBuilder.UI {
 			this.cbCulturePortraitTypes.FormattingEnabled = true;
 			this.cbCulturePortraitTypes.Location = new System.Drawing.Point(55, 46);
 			this.cbCulturePortraitTypes.Name = "cbCulturePortraitTypes";
-			this.cbCulturePortraitTypes.Size = new System.Drawing.Size(179, 21);
+			this.cbCulturePortraitTypes.Size = new System.Drawing.Size(201, 21);
 			this.cbCulturePortraitTypes.TabIndex = 26;
 			this.cbCulturePortraitTypes.SelectedIndexChanged += new System.EventHandler(this.onChangePortraitType);
 			// 
@@ -280,7 +280,7 @@ namespace PortraitBuilder.UI {
 			// 
 			// btnRandom
 			// 
-			this.btnRandom.Location = new System.Drawing.Point(149, 442);
+			this.btnRandom.Location = new System.Drawing.Point(181, 442);
 			this.btnRandom.Name = "btnRandom";
 			this.btnRandom.Size = new System.Drawing.Size(75, 23);
 			this.btnRandom.TabIndex = 11;
@@ -303,7 +303,7 @@ namespace PortraitBuilder.UI {
 			this.cbPortraitTypes.FormattingEnabled = true;
 			this.cbPortraitTypes.Location = new System.Drawing.Point(55, 19);
 			this.cbPortraitTypes.Name = "cbPortraitTypes";
-			this.cbPortraitTypes.Size = new System.Drawing.Size(179, 21);
+			this.cbPortraitTypes.Size = new System.Drawing.Size(201, 21);
 			this.cbPortraitTypes.TabIndex = 2;
 			this.cbPortraitTypes.SelectedIndexChanged += new System.EventHandler(this.onChangePortraitType);
 			// 
@@ -393,7 +393,7 @@ namespace PortraitBuilder.UI {
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-			this.ClientSize = new System.Drawing.Size(685, 485);
+			this.ClientSize = new System.Drawing.Size(706, 487);
 			this.Controls.Add(this.groupBox3);
 			this.Controls.Add(this.groupBox2);
 			this.Controls.Add(this.groupBox1);

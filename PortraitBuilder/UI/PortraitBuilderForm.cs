@@ -107,7 +107,7 @@ namespace PortraitBuilder.UI {
 			toolTip.SetToolTip(this.btnToogleAll, "Check or uncheck checkboxes in active tab");
 			toolTip.SetToolTip(this.btnReload, "Reload all data from folders");
 			toolTip.SetToolTip(this.btnImport, "Import DNA and Properties strings");
-			toolTip.SetToolTip(this.btnRandom, "Use random values for dna/properties, except for p6-p11");
+			toolTip.SetToolTip(this.btnRandom, "Choose random values for dna/properties that are checked");
 			toolTip.SetToolTip(this.btnSave, "Save portrait as a .png image");
 			toolTip.SetToolTip(this.btnCopy, "Copy DNA & Properties to use for character history");
 
@@ -188,9 +188,16 @@ namespace PortraitBuilder.UI {
 			label.Text = characteristic.ToString() + ":";
 			label.Width = 90;
 			label.TextAlign = ContentAlignment.MiddleRight;
-			
+
+			CheckBox randomizable = new CheckBox();
+			randomizable.Width = 20;
+			randomizable.Padding = new Padding(5, 0, 0, 0);
+			randomizable.DataBindings.Add("Checked", characteristic, "Randomizable");
+			toolTip.SetToolTip(randomizable, "Use this characteristic when randomizing");
+
 			container.Controls.Add(label);
 			container.Controls.Add(combobox);
+			container.Controls.Add(randomizable);
 
 			if (characteristic.type == Characteristic.Type.DNA) {
 				dnaComboBoxes.Add(characteristic, combobox);
@@ -303,10 +310,8 @@ namespace PortraitBuilder.UI {
 
 		private void randomizeCharacteristics(Dictionary<Characteristic, ComboBox> cbs) {
 			foreach (KeyValuePair<Characteristic, ComboBox> pair in cbs) {
-				if (pair.Key.randomizable) {
+				if (pair.Key.Randomizable) {
 					randomizeComboBox(pair.Value);
-				} else {
-					resetComboBox(pair.Value);
 				}
 			}
 		}

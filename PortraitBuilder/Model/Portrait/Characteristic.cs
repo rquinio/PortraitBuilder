@@ -3,13 +3,14 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.ComponentModel;
 
 namespace PortraitBuilder.Model.Portrait {
 
 	/// <summary>
 	/// Represents one DNA or Property element
 	/// </summary>
-	public class Characteristic {
+	public class Characteristic : INotifyPropertyChanged {
 
 		public Characteristic(string name, int index, Type type, bool randomizable) {
 			this.name = name;
@@ -35,7 +36,15 @@ namespace PortraitBuilder.Model.Portrait {
 		/// <summary>
 		/// Whether the characteristic should be randomized when generating a random portrait.
 		/// </summary>
-		public bool randomizable;
+		private bool randomizable;
+
+		public bool Randomizable {
+			get { return randomizable; }
+			set {
+				randomizable = value;
+				InvokePropertyChanged(new PropertyChangedEventArgs("Randomizable"));
+			}
+		}
 
 		/// <summary>
 		/// Whether the characteristic is a non-vanilla one.
@@ -103,5 +112,17 @@ namespace PortraitBuilder.Model.Portrait {
 				throw new IndexOutOfRangeException("Characteristic d" + index + " does not exist.");
 			}
 		}
+
+		#region Implementation of INotifyPropertyChanged
+
+		public event PropertyChangedEventHandler PropertyChanged;
+
+		public void InvokePropertyChanged(PropertyChangedEventArgs e) {
+			PropertyChangedEventHandler handler = PropertyChanged;
+			if (handler != null)
+				handler(this, e);
+		}
+
+		#endregion
 	}
 }
