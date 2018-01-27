@@ -143,7 +143,17 @@ namespace PortraitBuilder.Engine {
 					if (Directory.Exists(mod.AbsolutePath)) {
 						logger.Info("Loading portraits from mod: " + mod.Name);
 						mod.PortraitData = portraitReader.Parse(mod.AbsolutePath);
+						if(!mod.GetHasPortraitData()){
+							mod.Enabled = false;
+							mod.DisabledReason = "No portrait data found";
+						}
+					} else if (mod.AbsolutePath.EndsWith(".zip")) {
+						mod.Enabled = false;
+						mod.DisabledReason = "Archive format is not supported by PortraitBuilder";
+						logger.Warn("Mod " + mod.Name + " is using archive format, which is not supported by PortraitBuilder");
 					} else {
+						mod.Enabled = false;
+						mod.DisabledReason = "Mod path does not not exist";
 						logger.Error("Mod path " + mod.AbsolutePath + " does not exist");
 					}
 				}

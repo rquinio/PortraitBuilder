@@ -6,6 +6,7 @@ Version 2.x - 2018-?
 - Read mod directory from userdir.txt file in Steam CK2 folder, if any
 - Prevent crash when mod directory doesn't exist
 - Support unquoted values for spriteType name and texturefile
+- Show incompatible mods as disabled in the list, with the reason in tooltip (archived mods, no portrait data or invalid path)
 
 Version 2.4.0 - 2017-04-07
 

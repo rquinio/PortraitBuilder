@@ -31,6 +31,16 @@ namespace PortraitBuilder.Model.Content {
 		/// </summary>
 		public FileSystemWatcher Watcher;
 
+		/// <summary>
+		/// Whether the content is supported by this tool and can be enabled
+		/// </summary>
+		public bool Enabled = true;
+
+		/// <summary>
+		/// Reason why the content is not enabled.
+		/// </summary>
+		public string DisabledReason;
+
 		public override string ToString() {
 			return Name;
 		}

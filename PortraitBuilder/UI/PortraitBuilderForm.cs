@@ -136,9 +136,7 @@ namespace PortraitBuilder.UI {
 			List<Mod> mods = loader.LoadMods();
 			panelMods.Controls.Clear();
 			foreach (Mod mod in mods) {
-				if (mod.GetHasPortraitData()) {
-					registerContent(panelMods, mod);
-				}
+				registerContent(panelMods, mod);
 			}
 		}
 
@@ -165,8 +163,15 @@ namespace PortraitBuilder.UI {
 			usableContents.Add(checkbox, content);
 
 			if (content is Mod) {
-				toolTip.SetToolTip(checkbox, "Toggle activation and file watching of this mod");
-				content.Watcher = createModFilesWatcher(content);
+				if (content.Enabled) {
+					toolTip.SetToolTip(checkbox, "Toggle activation and file watching of this mod");
+					content.Watcher = createModFilesWatcher(content);
+				} else {
+					// Note: can't use checkbox.Enabled since it disables tooltips as well !
+					checkbox.ForeColor = Color.Gray; // Read-only appearance
+					checkbox.AutoCheck = false; // Read-only behavior
+					toolTip.SetToolTip(checkbox, content.DisabledReason);
+				}
 			} else {
 				toolTip.SetToolTip(checkbox, "Toggle activation of this DLC");
 			}
