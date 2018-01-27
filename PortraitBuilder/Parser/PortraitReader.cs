@@ -319,6 +319,7 @@ namespace PortraitBuilder.Parser {
 
 				switch (token.Symbol.Name) {
 				case "stringOption":
+				case "idOption": // Case of unquoted key/value
 					if (id == "name")
 						sprite.Name = value.Replace("\"", "");
 					if (id == "texturefile" || id == "textureFile")
