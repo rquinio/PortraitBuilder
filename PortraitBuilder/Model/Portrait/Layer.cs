@@ -32,6 +32,8 @@ namespace PortraitBuilder.Model.Portrait {
 		/// 3 = headgear mid
 		/// 4 = clothes infront
 		/// 5 = headgear
+		/// 6 = headgear behind hairlayer
+		/// 7 = headgear hairlayer
 		/// </summary>
 		public int CultureIndex = -1;
 

@@ -1,5 +1,11 @@
 By Romulien:
 
+Version 2.x - 2018-?
+
+- Add labels for new vanilla 2.8 properties (p14 makeup, p15 makeup2, p16 jewelry and p17 immortality)
+- Read mod directory from userdir.txt file in Steam CK2 folder, if any
+- Prevent crash when mod directory doesn't exist
+
 Version 2.4.0 - 2017-04-07
 
 - Support for clothing propertyType override, replacing sprites used by culture-indexed layers (c0->c5)

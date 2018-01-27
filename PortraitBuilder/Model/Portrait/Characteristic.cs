@@ -66,6 +66,10 @@ namespace PortraitBuilder.Model.Portrait {
 		public static Characteristic PLAYER = new Characteristic("Player", 11, Type.Property, false);
 		public static Characteristic MASK = new Characteristic("Mask", 12, Type.Property, false);
 		public static Characteristic EYEPATCH = new Characteristic("Eyepatch", 13, Type.Property, false);
+		public static Characteristic MAKEUP = new Characteristic("Makeup", 14, Type.Property, false);
+		public static Characteristic MAKEUP_2 = new Characteristic("Makeup2", 15, Type.Property, false);
+		public static Characteristic JEWELRY = new Characteristic("Jewelry", 16, Type.Property, false);
+		public static Characteristic IMMORTALITY = new Characteristic("Immortality", 17, Type.Property, false);
 
 		public static Characteristic NECK = new Characteristic("Neck", 0, Type.DNA, true);
 		public static Characteristic CHIN = new Characteristic("Chin", 1, Type.DNA, true);
@@ -80,7 +84,7 @@ namespace PortraitBuilder.Model.Portrait {
 		public static Characteristic D10 = new Characteristic("Unused", 10, Type.DNA, true);
 
 		public static Characteristic[] DNA = new Characteristic[] { NECK, CHIN, MOUTH, NOSE, CHEEKS, D5, EYES, EARS, HAIR_COLOR, EYE_COLOR, D10 };
-		public static Characteristic[] PROPERTIES = new Characteristic[] { BACKGROUND, HAIR, HEAD, CLOTHES, BEARD, HEADGEAR, IMPRISONED, SCARS, RED_DOTS, BOILS, BLINDED, PLAYER, MASK, EYEPATCH };
+		public static Characteristic[] PROPERTIES = new Characteristic[] { BACKGROUND, HAIR, HEAD, CLOTHES, BEARD, HEADGEAR, IMPRISONED, SCARS, RED_DOTS, BOILS, BLINDED, PLAYER, MASK, EYEPATCH, MAKEUP, MAKEUP_2, JEWELRY, IMMORTALITY };
 	
 
 		public static Characteristic getProperty(int index){
