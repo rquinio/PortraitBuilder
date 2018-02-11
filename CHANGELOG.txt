@@ -1,5 +1,14 @@
 By Romulien:
 
+Version 3.0.0 - 2018-xx-xx
+
+- Add support for Mono runtime (in addition to .NET runtime)
+- Switch from CSharpImageLibrary (incompatible with Mono) to dds-reader (a C# rewrite of DevIL)
+- Remove Costura/Fody (incompatible with Mono), and use a lib sub-folder to group dlls
+- Fix some hardcoded Windows path separtors for portability to Linux/Mac
+- Support CK2 binary lookup with names ck2.app (Mac) and ck2 (Linux)
+- Support CK2 default user directories on Linux/Mac
+
 Version 2.5.0 - 2018-01-27
 
 - Add labels for new vanilla 2.8 properties (p14 makeup, p15 makeup2, p16 jewelry and p17 immortality)

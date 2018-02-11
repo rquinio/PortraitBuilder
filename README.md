@@ -32,7 +32,7 @@ See the dedicated [CK2 forum thread](https://forum.paradoxplaza.com/forum/index.
 
 ## .NET users (Windows)
 
-- Install [.NET 4.5](https://www.microsoft.com/en-gb/download/details.aspx?id=30653)
+- Install [.NET 4.6](https://www.microsoft.com/en-US/download/details.aspx?id=48130)
 - Start PortraitBuilder.exe
 - Select your CK2 game directory (ex: C:\Program Files (x86)\Steam\SteamApps\common\Crusader Kings II). This value is kept into a file "gamedir".
 - Errors are logged to a log.txt file. Adding -logfull to PortraitBuilder.exe launch options will set log level to DEBUG.
