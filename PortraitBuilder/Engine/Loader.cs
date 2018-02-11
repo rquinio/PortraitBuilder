@@ -99,7 +99,7 @@ namespace PortraitBuilder.Engine {
 		}
 
 		public List<DLC> LoadDLCs() {
-			string dlcFolder = user.GameDir + "dlc" + Path.DirectorySeparatorChar;
+			string dlcFolder = Path.Combine(user.GameDir,"dlc");
 			logger.Info("Loading DLCs from " + dlcFolder);
 			List<DLC> dlcs = dlcReader.ParseFolder(dlcFolder);
 
@@ -120,11 +120,11 @@ namespace PortraitBuilder.Engine {
 			FastZip fastZip = new FastZip();
 			foreach (DLC dlc in dlcs) {
 				string dlcCode = dlc.DLCFile.Replace(".dlc", "");
-				string newDlcAbsolutePath = user.DlcDir + dlcCode + Path.DirectorySeparatorChar;
+				string newDlcAbsolutePath = Path.Combine(user.DlcDir, dlcCode);
 				if (!Directory.Exists(newDlcAbsolutePath)) {
 					logger.Info(string.Format("Extracting {0} to {1}", dlc.Name, newDlcAbsolutePath));
 					// Filter only portraits files, to gain speed/space
-					string fileFilter = @"interface;gfx/characters";
+					string fileFilter = @"interface;gfx"+Path.DirectorySeparatorChar+"characters";
 					fastZip.ExtractZip(dlc.AbsolutePath, newDlcAbsolutePath, fileFilter);
 
 					// In any case, create the directory, so that it is ignored for next load.

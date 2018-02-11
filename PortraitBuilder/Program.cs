@@ -35,8 +35,8 @@ namespace PortraitBuilder {
 
 			Application.ApplicationExit += new EventHandler(onExitApplication);
 
-			if (!Directory.Exists("dlc/"))
-				Directory.CreateDirectory("dlc/");
+			if (!Directory.Exists("dlc"))
+				Directory.CreateDirectory("dlc");
 
 			if (!File.Exists("gamedir")) {
 				string dir = null;

@@ -226,18 +226,33 @@ namespace PortraitBuilder.UI {
 		/// Read userdir.txt in Steam directory for the path to mod dir, or default to pre-defined location
 		/// </summary>
 		private string readModDir(string gameDir) {
-			string modDir = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), "Paradox Interactive", "Crusader Kings II") + Path.DirectorySeparatorChar;
+			string userDir = getDefaultUserDir();
 			string userdirFilePath = Path.Combine(gameDir, "userdir.txt");
 			if(File.Exists(userdirFilePath)){
 				logger.Info("Reading userdir.txt to determine the mod directory.");
 				Stream stream = new FileStream(userdirFilePath, FileMode.Open);
 				StreamReader reader = new StreamReader(stream, Encoding.Default);
-				modDir = reader.ReadLine() + Path.DirectorySeparatorChar;
-				logger.Info("Found userdir.txt with path: " + modDir);
+                userDir = reader.ReadLine() + Path.DirectorySeparatorChar;
+				logger.Info("Found userdir.txt with path: " + userDir);
 			}
-			modDir = Path.Combine(modDir, "mod");
-			return modDir;
-		}
+			return Path.Combine(userDir, "mod");
+        }
+
+        private string getDefaultUserDir() {
+            string userDir = null;
+            PlatformID os = System.Environment.OSVersion.Platform;
+            if (os == PlatformID.Win32NT || os == PlatformID.Win32Windows) {
+                userDir = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), "Paradox Interactive", "Crusader Kings II");
+            } else if (os == PlatformID.MacOSX || (int) os == 128) {
+                // Environment.SpecialFolder.MyDocuments does not add /Documents/ on Mac
+                userDir = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), "Documents", "Paradox Interactive", "Crusader Kings II");
+            } else if (os == PlatformID.Unix) {
+                userDir = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), ".paradoxinteractive", "Crusader Kings II");
+            } else {
+                logger.Error("Unkown platformID " + os);
+            }
+            return userDir;
+        }
 
 		/// <summary>
 		/// Entry point for re-drawing based on updated portrait.

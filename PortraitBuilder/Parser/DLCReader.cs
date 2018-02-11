@@ -23,9 +23,9 @@ namespace PortraitBuilder.Parser {
 				foreach (FileInfo dlcFile in dlcFiles) {
 					DLC dlc = Parse(dlcFile.FullName);
 					if (dlc != null && dlc.Archive != null) {
-						// Note: path will be overriden when extracting the archive
-						dlc.AbsolutePath = folder + dlc.Archive.Replace("dlc/", "");
-						dlcs.Add(dlc);
+                        // Note: path will be overriden when extracting the archive
+                        dlc.AbsolutePath = Path.Combine(folder, dlc.Archive.Substring("dlc".Length +1)); // Remove "dlc/" from path
+                        dlcs.Add(dlc);
 					}
 				}
 			} else {

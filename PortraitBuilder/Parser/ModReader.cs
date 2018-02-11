@@ -29,7 +29,7 @@ namespace PortraitBuilder.Parser {
 					try {
 						Mod mod = Parse(modFile.FullName);
 						if (mod != null && mod.Path != null) {
-							mod.AbsolutePath = folder + Path.DirectorySeparatorChar + mod.Path.Replace("mod/", "");
+                            mod.AbsolutePath = Path.Combine(folder, mod.Path.Substring("mod".Length + 1)); // Remove "mod/" from path
 							mods.Add(mod);
 						}
 					} catch (Exception e) {

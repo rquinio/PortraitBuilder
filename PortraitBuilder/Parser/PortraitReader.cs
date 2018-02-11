@@ -36,20 +36,20 @@ namespace PortraitBuilder.Parser {
 			try {
 				List<string> fileNames = new List<string>();
 
-				if (Directory.Exists(dir + @"\interface\")) {
-					fileNames.AddRange(Directory.GetFiles(dir + @"\interface\", "*.gfx"));
+				if (Directory.Exists(Path.Combine(dir, "interface"))) {
+					fileNames.AddRange(Directory.GetFiles(Path.Combine(dir, "interface"), "*.gfx"));
 				}
 				// interface/portraits seems to be loaded after interface/, and override (cf byzantinegfx)
-				if (Directory.Exists(dir + @"\interface\portraits\")) {
-					fileNames.AddRange(Directory.GetFiles(dir + @"\interface\portraits\", "*.gfx"));
+				if (Directory.Exists(Path.Combine(dir, "interface", "portraits"))) {
+					fileNames.AddRange(Directory.GetFiles(Path.Combine(dir, "interface", "portraits"), "*.gfx"));
 				}
 
 				foreach (string fileName in fileNames) {
 					Parse(fileName, data);
 				}
 
-				if (Directory.Exists(dir + @"\interface\portrait_offsets\")) {
-					string[] offsetFileNames = Directory.GetFiles(dir + @"\interface\portrait_offsets\", "*.txt");
+				if (Directory.Exists(Path.Combine(dir, "interface", "portrait_offsets"))) {
+					string[] offsetFileNames = Directory.GetFiles(Path.Combine(dir, "interface", "portrait_offsets"), "*.txt");
 					foreach (string offsetFileName in offsetFileNames) {
 						Dictionary<string, Point> offsets = portraitOffsetReader.Parse(offsetFileName);
 						data.Offsets = data.Offsets.Concat(offsets).GroupBy(d => d.Key).ToDictionary(d => d.Key, d => d.First().Value);
