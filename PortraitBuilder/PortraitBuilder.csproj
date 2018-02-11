@@ -140,6 +140,9 @@
     <None Include="Parser\PortraitReader.gram" />
     <EmbeddedResource Include="Parser\PortraitReaderLexer.bin" />
     <EmbeddedResource Include="Parser\PortraitReaderParser.bin" />
+    <None Include="PortraitBuilder">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>

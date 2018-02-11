@@ -13,7 +13,7 @@
   </tr>
   <tr>
     <td style="text-align:center">Travis</td>
-    <td>Mono 4.4</td>
+    <td>Mono 5.8</td>
     <td style="text-align:center"><a href="https://travis-ci.org/rquinio/PortraitBuilder"><img src="https://travis-ci.org/rquinio/PortraitBuilder.svg?branch=master" alt="Travis build status" /></a></td>
   </tr>
 </table>
@@ -30,20 +30,31 @@ See the dedicated [CK2 forum thread](https://forum.paradoxplaza.com/forum/index.
 - Saving current portrait as png image
 - Import/export of DNA & properties strings
 
-## Users
+## .NET users (Windows)
 
 - Install [.NET 4.5](https://www.microsoft.com/en-gb/download/details.aspx?id=30653)
 - Start PortraitBuilder.exe
 - Select your CK2 game directory (ex: C:\Program Files (x86)\Steam\SteamApps\common\Crusader Kings II). This value is kept into a file "gamedir".
 - Errors are logged to a log.txt file. Adding -logfull to PortraitBuilder.exe launch options will set log level to DEBUG.
 
+## Mono users (Linux/Mac/Windows)
+
+- Install [Mono 5.8](http://www.mono-project.com/download/). Note: GTK# is not required.
+- Run ". PortraitBuilder"
+- Select your CK2 game executable (ex: ~/.local/share/Steam/SteamApps/common/Crusader Kings II/ck2 or /Users/USER/Library/Application Support/Steam/SteamApps/common/crusader kings ii/ck2.app). This value is kept into a file "gamedir".
+- Errors are logged to a log.txt file
+
 ## Developers
+
+Install [Visual Studio Community 2017](https://www.visualstudio.com/downloads/).
 
 Build from PortraitBuilder.sln, it will automatically download dependencies via NuGet from [packages.config](PortraitBuilder/packages.config) file.
 
+The built executable for .NET can also be executed with Mono, without needing to re-compile.
+
 Main dependencies:
 
-- [dds-reader](https://github.com/andburn/dds-reader) to read .dds images
+- [dds-reader](https://github.com/andburn/dds-reader) to read .dds images. A recompiled version targeting .NET 4.5 is used from /lib.
 - [Hime Parser Generator](https://bitbucket.org/cenotelie/hime/) to perform a basic parsing of CK2 files.
 - [SharpZipLib](http://www.icsharpcode.net/opensource/sharpziplib/) to unzip DLCs
 - [log4net](https://logging.apache.org/log4net/) to handle logging

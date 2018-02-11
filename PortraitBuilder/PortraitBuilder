@@ -1,0 +1,1 @@
+MONO_PATH=./lib mono PortraitBuilder.exe

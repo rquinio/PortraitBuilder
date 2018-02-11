@@ -667,5 +667,5 @@ namespace PortraitBuilder.UI {
 		private void onWatcherError(object sender, ErrorEventArgs e){
 			logger.Error("FileSystemWatcher unable to continue", e.GetException());
 		}
-	}
+    }
 }

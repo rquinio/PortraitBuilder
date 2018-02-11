@@ -14,12 +14,12 @@ namespace PortraitBuilder {
 
 		private static readonly ILog logger = LogManager.GetLogger(typeof(Program).Name);
 
-		private static string CK2_EXE = "CK2game.exe";
+        private static bool isExiting = false;
 
-		/// <summary>
-		/// The main entry point for the application.
-		/// </summary>
-		[STAThread]
+        /// <summary>
+        /// The main entry point for the application.
+        /// </summary>
+        [STAThread]
 		static void Main(string[] args) {
 			logger.Info("Starting application");
 
@@ -42,7 +42,7 @@ namespace PortraitBuilder {
 				string dir = null;
 
 				while (dir == null) {
-					string ck2exePath = Snippets.OpenFileDialog("Please select the location of your " + CK2_EXE, "Application (*.exe)|*.exe", null);
+					string ck2exePath = Snippets.OpenFileDialog("Please select the location of your CK2 game binary", "Executable (*.exe)|*.exe|Application (*.app)|*.app|All files|*", null);
 
 					if (ck2exePath == null) {
 						if (MessageBox.Show("This program cannot run without data from the Crusader Kings II installation directory. \n To find the directory in Steam: right-click the game in the library, Properties / Local Files / Browse Local Files.",
@@ -53,14 +53,14 @@ namespace PortraitBuilder {
 						}
 					}
 					else {
-						if (!ck2exePath.EndsWith(CK2_EXE)) {
-							MessageBox.Show("Crusader Kings II not found. Make sure to select the file " + CK2_EXE, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-							dir = null;
-							continue;
-						}
-						dir = ck2exePath.Replace(CK2_EXE, "");
-						SetDir(dir);
+                        dir = Path.GetDirectoryName(ck2exePath);
+                        if (!Directory.Exists(Path.Combine(dir, "interface")) || !Directory.Exists(Path.Combine(dir, "gfx"))) {
+                            MessageBox.Show("Are you sure you've selected Crusader Kings II game binary (CK2game.exe, ck2 or ck2.app) ? The selected folder doesn't contain expected interface/gfx data.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                            dir = null;
+                            continue;
+                        }
 
+						SetDir(dir);
 						StartUI(args);
 					}
 				}
@@ -93,7 +93,10 @@ namespace PortraitBuilder {
 			try {
 				Exception exception = (Exception)e.ExceptionObject;
 				logger.Fatal("Unhandled exception", exception);
-				MessageBox.Show("Unhadled exception:\n\n" + exception.Message);
+                // On Mono when exiting: cannot call invoke or BeginInvoke on a control until the window handle is created
+                if (!isExiting) {
+                    MessageBox.Show("Unhandled exception:\n\n" + exception.Message);
+                }
 			} finally {
 				Application.Exit();
 			}
@@ -102,7 +105,9 @@ namespace PortraitBuilder {
 		private static void onUIThreadException(object sender, ThreadExceptionEventArgs t) {
 			try {
 				logger.Fatal("Unhandled UI thread exception", t.Exception);
-				MessageBox.Show("Unhandled UI exception:\n\n" + t.Exception.Message);
+                if (!isExiting) {
+                    MessageBox.Show("Unhandled UI exception:\n\n" + t.Exception.Message);
+                }
 			} finally {
 				Application.Exit();
 			}
@@ -110,6 +115,7 @@ namespace PortraitBuilder {
 
 		private static void onExitApplication(object sender, EventArgs e) {
 			logger.Info("Closing application");
+            isExiting = true;
 		}
 	}
 }
