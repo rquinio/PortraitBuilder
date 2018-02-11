@@ -93,7 +93,7 @@ namespace PortraitBuilder {
 			try {
 				Exception exception = (Exception)e.ExceptionObject;
 				logger.Fatal("Unhandled exception", exception);
-				MessageBox.Show("Unhadled domain exception:\n\n" + exception.Message);
+				MessageBox.Show("Unhadled exception:\n\n" + exception.Message);
 			} finally {
 				Application.Exit();
 			}
