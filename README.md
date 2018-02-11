@@ -43,7 +43,7 @@ Build from PortraitBuilder.sln, it will automatically download dependencies via 
 
 Main dependencies:
 
-- [CSharpImageLibrary](https://github.com/KFreon/CSharpImageLibrary) to read .dds images
+- [dds-reader](https://github.com/andburn/dds-reader) to read .dds images
 - [Hime Parser Generator](https://bitbucket.org/cenotelie/hime/) to perform a basic parsing of CK2 files.
 - [SharpZipLib](http://www.icsharpcode.net/opensource/sharpziplib/) to unzip DLCs
 - [log4net](https://logging.apache.org/log4net/) to handle logging
