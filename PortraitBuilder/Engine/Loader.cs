@@ -124,7 +124,7 @@ namespace PortraitBuilder.Engine {
 				if (!Directory.Exists(newDlcAbsolutePath)) {
 					logger.Info(string.Format("Extracting {0} to {1}", dlc.Name, newDlcAbsolutePath));
 					// Filter only portraits files, to gain speed/space
-					string fileFilter = @"interface;gfx"+Path.DirectorySeparatorChar+"characters";
+					string fileFilter = @"interface;gfx/characters";
 					fastZip.ExtractZip(dlc.AbsolutePath, newDlcAbsolutePath, fileFilter);
 
 					// In any case, create the directory, so that it is ignored for next load.
