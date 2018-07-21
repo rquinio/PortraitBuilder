@@ -35,16 +35,22 @@ namespace PortraitBuilder.Parser {
 			PortraitData data = new PortraitData();
 			try {
 				List<string> fileNames = new List<string>();
+                logger.Debug("Scanning for portrait data files in " + dir);
+                logger.Debug("Directories: " + Directory.GetDirectories(dir));
 
-				if (Directory.Exists(Path.Combine(dir, "interface"))) {
+                if (Directory.Exists(Path.Combine(dir, "interface"))) {
 					fileNames.AddRange(Directory.GetFiles(Path.Combine(dir, "interface"), "*.gfx"));
-				}
+				} else {
+                    logger.Debug("Folder not found: " + Path.Combine(dir, "interface"));
+                }
 				// interface/portraits seems to be loaded after interface/, and override (cf byzantinegfx)
 				if (Directory.Exists(Path.Combine(dir, "interface", "portraits"))) {
 					fileNames.AddRange(Directory.GetFiles(Path.Combine(dir, "interface", "portraits"), "*.gfx"));
-				}
+				} else {
+                    logger.Debug("Folder not found: " + Path.Combine(dir, "interface", "portraits"));
+                }
 
-				foreach (string fileName in fileNames) {
+                foreach (string fileName in fileNames) {
 					Parse(fileName, data);
 				}
 

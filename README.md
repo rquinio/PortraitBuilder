@@ -8,7 +8,7 @@
   </tr>
   <tr>
     <td style="text-align:center">AppVeyor</td>
-    <td>.NET 4.5</td>
+    <td>.NET 4.6</td>
     <td style="text-align:center"><a href="https://ci.appveyor.com/project/rquinio/portraitbuilder/branch/master"><img src="https://ci.appveyor.com/api/projects/status/ssardstb8qkm35sy/branch/master?svg=true" alt="AppVeyor build status" /></a></td>
   </tr>
   <tr>
@@ -34,7 +34,7 @@ See the dedicated [CK2 forum thread](https://forum.paradoxplaza.com/forum/index.
 
 - Install [.NET 4.6](https://www.microsoft.com/en-US/download/details.aspx?id=48130)
 - Start PortraitBuilder.exe
-- Select your CK2 game directory (ex: C:\Program Files (x86)\Steam\SteamApps\common\Crusader Kings II). This value is kept into a file "gamedir".
+- Select your CK2 game executable (ex: C:\Program Files (x86)\Steam\SteamApps\common\Crusader Kings II\CK2game.exe). This value is kept into a file "gamedir".
 - Errors are logged to a log.txt file. Adding -logfull to PortraitBuilder.exe launch options will set log level to DEBUG.
 
 ## Mono users (Linux/Mac/Windows)

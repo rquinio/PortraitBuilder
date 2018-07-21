@@ -99,7 +99,7 @@ namespace PortraitBuilder.Engine {
 		}
 
 		public List<DLC> LoadDLCs() {
-			string dlcFolder = Path.Combine(user.GameDir,"dlc");
+			string dlcFolder = Path.Combine(user.GameDir,"DLC");
 			logger.Info("Loading DLCs from " + dlcFolder);
 			List<DLC> dlcs = dlcReader.ParseFolder(dlcFolder);
 
