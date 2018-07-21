@@ -77,6 +77,12 @@ namespace PortraitBuilder.Parser {
 				logger.Error(string.Format("File not found: {0}", filename));
 				return;
 			}
+            // Exclude vanilla files with known errors
+            if(filename.EndsWith("DefaultDialog.gfx") || filename.EndsWith("EU3_mapitems.gfx")  || filename.EndsWith("chatfonts.gfx") 
+                || filename.EndsWith("fonts.gfx") || filename.EndsWith("mapitems.gfx")) {
+                logger.Info(string.Format("Skipping parsing of file: {0}", filename));
+                return;
+            }
 
 			StreamReader stream = new StreamReader(filename, Encoding.GetEncoding(1252));
 			string fileContent = stream.ReadToEnd();
