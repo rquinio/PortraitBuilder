@@ -209,9 +209,9 @@ namespace PortraitBuilder.UI {
 		}
 
 		private void unregisterCustomProperties() {
-			for (int i = 0; i <= customPropertiesComboBoxes.Count*2 -1; i++) {
-				// Remove Label + ComboBox for each custom property
-				panelProperties.Controls.RemoveAt(panelProperties.Controls.Count -1);
+			for (int i = 0; i <= customPropertiesComboBoxes.Count*3 -1; i++) {
+                // Remove Label + ComboBox + CheckBox for each custom property
+                panelProperties.Controls.RemoveAt(panelProperties.Controls.Count -1);
 			}
 			customPropertiesComboBoxes.Clear();
 		}
@@ -519,11 +519,8 @@ namespace PortraitBuilder.UI {
 			started = false;
 			updateActiveAdditionalContent();
 			loadPortraitTypes();
+            refreshCustomCharacectiristics();
 
-			unregisterCustomProperties();
-			foreach (Characteristic characteristic in getSelectedPortraitType().getCustomCharacterstics()) {
-				registerCharacteristic(panelProperties, characteristic);
-			}
 			fillCharacteristicComboBoxes();
 			// TODO No refresh of DNA/Properties needed (if ComboBox has less options ?)
 			started = true;
@@ -537,6 +534,15 @@ namespace PortraitBuilder.UI {
 
 			drawPortrait();
 		}
+
+        private void refreshCustomCharacectiristics() {
+            unregisterCustomProperties();
+            foreach (Characteristic characteristic in getSelectedPortraitType().getCustomCharacterstics()) {
+                if (!customPropertiesComboBoxes.ContainsKey(characteristic)) {
+                    registerCharacteristic(panelProperties, characteristic);
+                }
+            }
+        }
 
 		///////////////////
 		// Event handlers
@@ -614,12 +620,9 @@ namespace PortraitBuilder.UI {
 				PortraitType selectedPortraitType = getSelectedPortraitType();
 				portrait.SetPortraitType(selectedPortraitType);
 
-				unregisterCustomProperties();
-				foreach (Characteristic characteristic in selectedPortraitType.getCustomCharacterstics()){
-					registerCharacteristic(panelProperties, characteristic);
-				}
+                refreshCustomCharacectiristics();
 
-				fillCharacteristicComboBoxes();
+                fillCharacteristicComboBoxes();
 				updateSelectedCharacteristicValues(portrait);
 
 				started = true;
