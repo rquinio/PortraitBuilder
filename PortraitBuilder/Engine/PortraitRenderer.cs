@@ -124,7 +124,8 @@ namespace PortraitBuilder.Engine {
 		}
 
 		private void LoadSprite(Sprite sprite, List<Content> activeContents) {
-			string filePath = sprite.TextureFilePath;
+            // Paths in vanilla files are Windows-style
+			string filePath = sprite.TextureFilePath.Replace('\\', Path.DirectorySeparatorChar);
 
 			// Also try alternative extension (.tga <=> .dds)
 			string extension = filePath.Substring(filePath.Length - 4);
