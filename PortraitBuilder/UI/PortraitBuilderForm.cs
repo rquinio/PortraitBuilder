@@ -240,16 +240,20 @@ namespace PortraitBuilder.UI {
 
         private string getDefaultUserDir() {
             string userDir = null;
-            PlatformID os = System.Environment.OSVersion.Platform;
-            if (os == PlatformID.Win32NT || os == PlatformID.Win32Windows) {
-                userDir = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), "Paradox Interactive", "Crusader Kings II");
-            } else if (os == PlatformID.MacOSX || (int) os == 128) {
-                // Environment.SpecialFolder.MyDocuments does not add /Documents/ on Mac
-                userDir = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), "Documents", "Paradox Interactive", "Crusader Kings II");
-            } else if (os == PlatformID.Unix) {
-                userDir = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), ".paradoxinteractive", "Crusader Kings II");
-            } else {
-                logger.Error("Unkown platformID " + os);
+            switch (OSUtils.determineOS()) {
+                case OS.Windows:
+                    userDir = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), "Paradox Interactive", "Crusader Kings II");
+                    break;
+                case OS.Mac:
+                    // Environment.SpecialFolder.MyDocuments does not add /Documents/ on Mac
+                    userDir = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), "Documents", "Paradox Interactive", "Crusader Kings II");
+                    break;
+                case OS.Linux:
+                    userDir = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), ".paradoxinteractive", "Crusader Kings II");
+                    break;
+                case OS.Other:
+                    logger.Error("Unkown operating system, cannot lookup mods mods, platformID:  " + System.Environment.OSVersion.Platform);
+                    break;
             }
             return userDir;
         }
