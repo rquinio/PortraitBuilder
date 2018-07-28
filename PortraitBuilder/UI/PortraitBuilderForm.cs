@@ -217,9 +217,11 @@ namespace PortraitBuilder.UI {
 		}
 
 		private string readGameDir() {
-			Stream stream = new FileStream("gamedir", FileMode.Open);
-			BinaryReader reader = new BinaryReader(stream);
-			return reader.ReadString() + Path.DirectorySeparatorChar;
+			Stream stream = new FileStream("gamedir.txt", FileMode.Open);
+            StreamReader reader = new StreamReader(stream);
+            String gameDir = reader.ReadToEnd();
+            logger.Info("Read gamedir: " + gameDir);
+            return gameDir;
 		}
 
 		/// <summary>

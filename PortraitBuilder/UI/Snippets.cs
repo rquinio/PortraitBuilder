@@ -13,8 +13,10 @@ namespace PortraitBuilder.UI {
 				dFileDialog.CheckFileExists = true;
 				dFileDialog.CheckPathExists = true;
 				dFileDialog.Filter = sFilter;
+                dFileDialog.DereferenceLinks = true;
 
-				if (dFileDialog.ShowDialog() == DialogResult.OK) {
+
+                if (dFileDialog.ShowDialog() == DialogResult.OK) {
 					return dFileDialog.FileName;
 				} else {
 					return sReturn;

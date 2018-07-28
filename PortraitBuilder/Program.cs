@@ -38,13 +38,13 @@ namespace PortraitBuilder {
 			if (!Directory.Exists("dlc"))
 				Directory.CreateDirectory("dlc");
 
-			if (!File.Exists("gamedir")) {
+			if (!File.Exists("gamedir.txt")) {
 				string dir = null;
 
 				while (dir == null) {
 					string ck2exePath = Snippets.OpenFileDialog("Please select the location of your CK2 game binary", "Executable (*.exe)|*.exe|Application (*.app)|*.app|All files|*", null);
 
-					if (ck2exePath == null) {
+					if (ck2exePath == null || ck2exePath.Length == 0) {
 						if (MessageBox.Show("This program cannot run without data from the Crusader Kings II installation directory. \n To find the directory in Steam: right-click the game in the library, Properties / Local Files / Browse Local Files.",
 																 "Exit Application?",
 																 MessageBoxButtons.YesNo,
@@ -54,7 +54,7 @@ namespace PortraitBuilder {
 					}
 					else {
                         dir = Path.GetDirectoryName(ck2exePath);
-                        if (!Directory.Exists(Path.Combine(dir, "interface")) || !Directory.Exists(Path.Combine(dir, "gfx"))) {
+                        if (dir.Length == 0 || !Directory.Exists(Path.Combine(dir, "interface")) || !Directory.Exists(Path.Combine(dir, "gfx"))) {
                             MessageBox.Show("Are you sure you've selected Crusader Kings II game binary (CK2game.exe, ck2 or ck2.app) ? The selected folder doesn't contain expected interface/gfx data.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                             dir = null;
                             continue;
@@ -71,10 +71,11 @@ namespace PortraitBuilder {
 		}
 
 		private static void SetDir(string dir) {
-			Stream stream = new FileStream("gamedir", FileMode.Create);
-			BinaryWriter writer = new BinaryWriter(stream);
+			Stream stream = new FileStream("gamedir.txt", FileMode.Create);
+			StreamWriter writer = new StreamWriter(stream);
 			writer.Write(dir);
-			stream.Close();
+            writer.Flush();
+            stream.Close();
 		}
 
 		private static void StartUI(string[] args) {

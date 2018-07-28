@@ -13,7 +13,7 @@
   </tr>
   <tr>
     <td style="text-align:center">Travis</td>
-    <td>Mono 5.8</td>
+    <td>Mono 5.x</td>
     <td style="text-align:center"><a href="https://travis-ci.org/rquinio/PortraitBuilder"><img src="https://travis-ci.org/rquinio/PortraitBuilder.svg?branch=master" alt="Travis build status" /></a></td>
   </tr>
 </table>
@@ -39,7 +39,7 @@ See the dedicated [CK2 forum thread](https://forum.paradoxplaza.com/forum/index.
 
 ## Mono users (Linux/Mac/Windows)
 
-- Install [Mono 5.8](http://www.mono-project.com/download/). Note: GTK# is not required.
+- Install [Mono 5.x](http://www.mono-project.com/download/). Note: GTK# is not required.
 - Run ". PortraitBuilder"
 - Select your CK2 game executable (ex: ~/.local/share/Steam/SteamApps/common/Crusader Kings II/ck2 or /Users/USER/Library/Application Support/Steam/SteamApps/common/crusader kings ii/ck2.app). This value is kept into a file "gamedir".
 - Errors are logged to a log.txt file
@@ -62,3 +62,11 @@ Main dependencies:
 To re-generate the Lexer/Parser from the grammar, install [Hime standalone distribution](https://bitbucket.org/cenotelie/hime/downloads/), and use the himecc command line utility:
 
 > himecc PortraitReader.gram -n PortraitBuilder.Parser
+
+### Using Ubunutu on Windows 10
+
+Create the following symlinks to simulate a CK2 Steam installation on Unix:
+
+- Game files: ln -s /mnt/c/Program\ Files\ \(x86\)/Steam ~/.local/share/Steam
+- Shortcut in home folder: ln -s ~/.local/share/Steam/SteamApps/common/Crusader\ Kings\ II ~/ck2
+- Mod folder: ln -s /mnt/c/Users/<user>/Documents/Paradox\ Interactive ~/.paradoxinteractive
