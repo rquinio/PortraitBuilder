@@ -1,6 +1,6 @@
 By Romulien:
 
-Version 3.0.0 - 2018-02-xx
+Version 3.0.0 - 2018-??-??
 
 - Add support for Mono runtime (in addition to .NET runtime)
 - Switch from CSharpImageLibrary (incompatible with Mono) to dds-reader (a C# rewrite of DevIL)
@@ -8,6 +8,12 @@ Version 3.0.0 - 2018-02-xx
 - Fix some hardcoded Windows path separtors for portability to Linux/Mac
 - Support CK2 binary lookup with names ck2.app (Mac) and ck2 (Linux)
 - Support CK2 default user directories on Linux/Mac
+- Fix log4net console appender failing on unix
+- Switch gamedir (binary) to gamedir.txt (text format) for easy edition
+- Exclude some vanilla gfx files with known parsing errors (mapitems.gfx, fonts.gfx, ...)
+- Fix duplicated custom characteristics
+- Upgrade SharpZipLib to 1.0-rc2
+- Upgrade target to .NET 4.6 
 
 Version 2.5.0 - 2018-01-27
 
