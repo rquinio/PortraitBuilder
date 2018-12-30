@@ -91,8 +91,28 @@ namespace PortraitBuilder.Model.Portrait {
 		public static Characteristic MAKEUP_2 = new Characteristic("Makeup2", 15, Type.Property, false);
 		public static Characteristic JEWELRY = new Characteristic("Jewelry", 16, Type.Property, false);
 		public static Characteristic IMMORTALITY = new Characteristic("Immortality", 17, Type.Property, false);
+        public static Characteristic SPECIAL_CROWN_BEHIND = new Characteristic("Crown behind", 18, Type.Property, false);
+        public static Characteristic SPECIAL_CROWN = new Characteristic("Crown", 19, Type.Property, false);
+        public static Characteristic FRECKLES = new Characteristic("Freckles", 20, Type.Property, false);
+        public static Characteristic PHYSIQUE = new Characteristic("Physique", 21, Type.Property, false);
+        public static Characteristic PALE = new Characteristic("Pale", 22, Type.Property, false);
+        public static Characteristic BLACK_EYE = new Characteristic("Black eye", 23, Type.Property, false);
+        public static Characteristic HAIRELIP = new Characteristic("Hairelip", 24, Type.Property, false);
+        public static Characteristic SCARS_MID = new Characteristic("Scars mid", 25, Type.Property, false);
+        public static Characteristic SCARS_HIGH = new Characteristic("Scars high", 26, Type.Property, false);
+        public static Characteristic BLOOD = new Characteristic("Blood", 27, Type.Property, false);
+        public static Characteristic TATTOO = new Characteristic("Tattoo", 28, Type.Property, false);
+        public static Characteristic WARPAINT = new Characteristic("Warpaint", 29, Type.Property, false);
+        public static Characteristic POSSESSED = new Characteristic("Possessed", 30, Type.Property, false);
+        public static Characteristic OVERLAYER_BEHIND = new Characteristic("Overlayer behind", 31, Type.Property, false);
+        public static Characteristic OVERLAYER = new Characteristic("Overlayer", 32, Type.Property, false);
+        public static Characteristic UNDERMAIN = new Characteristic("Undermain", 33, Type.Property, false);
+        public static Characteristic SPECIAL_HELMET = new Characteristic("Helmet", 34, Type.Property, false);
+        public static Characteristic SPECIAL_MASK = new Characteristic("Mask", 35, Type.Property, false);
+        public static Characteristic SPECIAL_SCEPTER = new Characteristic("Scepter", 36, Type.Property, false);
 
-		public static Characteristic NECK = new Characteristic("Neck", 0, Type.DNA, true);
+
+        public static Characteristic NECK = new Characteristic("Neck", 0, Type.DNA, true);
 		public static Characteristic CHIN = new Characteristic("Chin", 1, Type.DNA, true);
 		public static Characteristic MOUTH = new Characteristic("Mouth", 2, Type.DNA, true);
 		public static Characteristic NOSE = new Characteristic("Nose", 3, Type.DNA, true);
@@ -105,7 +125,9 @@ namespace PortraitBuilder.Model.Portrait {
 		public static Characteristic D10 = new Characteristic("Unused", 10, Type.DNA, true);
 
 		public static Characteristic[] DNA = new Characteristic[] { NECK, CHIN, MOUTH, NOSE, CHEEKS, D5, EYES, EARS, HAIR_COLOR, EYE_COLOR, D10 };
-		public static Characteristic[] PROPERTIES = new Characteristic[] { BACKGROUND, HAIR, HEAD, CLOTHES, BEARD, HEADGEAR, IMPRISONED, SCARS, RED_DOTS, BOILS, BLINDED, PLAYER, MASK, EYEPATCH, MAKEUP, MAKEUP_2, JEWELRY, IMMORTALITY };
+		public static Characteristic[] PROPERTIES = new Characteristic[] { BACKGROUND, HAIR, HEAD, CLOTHES, BEARD, HEADGEAR, IMPRISONED, SCARS, RED_DOTS, BOILS,
+            BLINDED, PLAYER, MASK, EYEPATCH, MAKEUP, MAKEUP_2, JEWELRY, IMMORTALITY, SPECIAL_CROWN_BEHIND, SPECIAL_CROWN, FRECKLES, PHYSIQUE, PALE, BLACK_EYE,
+            HAIRELIP, SCARS_MID, SCARS_HIGH, BLOOD, TATTOO, WARPAINT, POSSESSED, OVERLAYER_BEHIND, OVERLAYER, UNDERMAIN, SPECIAL_HELMET, SPECIAL_MASK, SPECIAL_SCEPTER };
 	
 
 		public static Characteristic getProperty(int index){
