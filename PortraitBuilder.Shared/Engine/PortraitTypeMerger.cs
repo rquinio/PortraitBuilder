@@ -14,7 +14,7 @@ namespace PortraitBuilder.Engine {
 	/// </summary>
 	public class PortraitTypeMerger {
 
-		private static readonly ILog logger = LogManager.GetLogger(typeof(PortraitTypeMerger).Name);
+		private static readonly ILog logger = LogManager.GetLogger(typeof(PortraitTypeMerger));
 
 		/// <summary>
 		/// Returns a new PortraitTytpe, with the clothing layers of basePortraitType overriden by clothingPortraitType

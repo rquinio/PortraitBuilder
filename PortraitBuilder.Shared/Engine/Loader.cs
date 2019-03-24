@@ -4,12 +4,12 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using ICSharpCode.SharpZipLib.Zip;
 using log4net;
 using PortraitBuilder.Model;
 using PortraitBuilder.Parser;
 using PortraitBuilder.Model.Content;
 using PortraitBuilder.Model.Portrait;
+using ICSharpCode.SharpZipLib.Zip;
 
 namespace PortraitBuilder.Engine {
 
@@ -18,7 +18,7 @@ namespace PortraitBuilder.Engine {
 	/// </summary>
 	public class Loader {
 
-		private static readonly ILog logger = LogManager.GetLogger(typeof(Loader).Name);
+		private static readonly ILog logger = LogManager.GetLogger(typeof(Loader));
 
 		private PortraitTypeMerger portraitTypeMerger = new PortraitTypeMerger();
 

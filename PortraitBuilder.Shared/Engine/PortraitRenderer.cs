@@ -17,7 +17,7 @@ namespace PortraitBuilder.Engine {
 	/// </summary>
 	public class PortraitRenderer {
 
-		private static readonly ILog logger = LogManager.GetLogger(typeof(PortraitRenderer).Name);
+		private static readonly ILog logger = LogManager.GetLogger(typeof(PortraitRenderer));
 
 		private static String[] governmentSpriteSuffix = new String[] { "", "_iqta", "_theocracy", "_republic", "_merchantrepublic", "_tribal", "_nomadic", "_theocraticfeudal", "_chineseimperial", "_confucian" };
 
@@ -227,6 +227,7 @@ namespace PortraitBuilder.Engine {
 			BitmapData odata = output.LockBits(new Rectangle(0, 0, source.Width, source.Height), ImageLockMode.ReadOnly, output.PixelFormat);
 			int pixelSize = 4;
 
+            //FIXME: spanify
 			unsafe {
 				for (int y = 0; y < source.Height; y++) {
 					byte* brow = (byte*)bdata.Scan0 + (y * bdata.Stride);

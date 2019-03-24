@@ -13,7 +13,7 @@ namespace PortraitBuilder.Model.Portrait {
 	/// </summary>
 	public class PortraitData {
 
-		private static readonly ILog logger = LogManager.GetLogger(typeof(PortraitData).Name);
+		private static readonly ILog logger = LogManager.GetLogger(typeof(PortraitData));
 
 		/// <summary>
 		/// Dictionary of included sprites

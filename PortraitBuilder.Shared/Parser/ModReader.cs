@@ -6,9 +6,10 @@ using log4net;
 using PortraitBuilder.Model.Content;
 
 namespace PortraitBuilder.Parser {
-	public class ModReader {
+    using static EncodingHelper;
+    public class ModReader {
 
-		private static readonly ILog logger = LogManager.GetLogger(typeof(ModReader).Name);
+		private static readonly ILog logger = LogManager.GetLogger(typeof(ModReader));
 
 		/// <summary>
 		/// Loads all files in the given folder.
@@ -54,7 +55,7 @@ namespace PortraitBuilder.Parser {
 			Mod mod = new Mod();
 			mod.ModFile = modFile.Name;
 
-			StreamReader reader = new StreamReader(filename, Encoding.GetEncoding(1252));
+			StreamReader reader = new StreamReader(filename, WesternEncoding);
 			while ((line = reader.ReadLine()) != null) {
 				if (line.StartsWith("#"))
 					continue;
