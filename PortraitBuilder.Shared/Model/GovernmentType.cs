@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace PortraitBuilder.Shared.Model
+﻿namespace PortraitBuilder.Shared.Model
 {
     public enum GovernmentType
     {

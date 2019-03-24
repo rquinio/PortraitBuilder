@@ -1,15 +1,17 @@
 using System.Collections.Generic;
 
-namespace PortraitBuilder.Model.Portrait {
+namespace PortraitBuilder.Model.Portrait
+{
 
-	public class Hair {
-		public Colour Dark;
-		public Colour Base;
-		public Colour Highlight;
+    public class Hair
+    {
+        public Colour Dark;
+        public Colour Base;
+        public Colour Highlight;
 
-		/// <summary>
-		/// Used for storing data specific to the program.
-		/// </summary>
-		public Dictionary<string, object> CustomFlags = new Dictionary<string, object>();
-	}
+        /// <summary>
+        /// Used for storing data specific to the program.
+        /// </summary>
+        public Dictionary<string, object> CustomFlags = new Dictionary<string, object>();
+    }
 }
