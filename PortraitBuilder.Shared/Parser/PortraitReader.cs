@@ -315,8 +315,7 @@ namespace PortraitBuilder.Parser {
 		}
 
 		private Sprite ParseSpriteType(ASTNode node, string filename) {
-			Sprite sprite = new Sprite();
-			sprite.Filename = filename;
+			Sprite sprite = new Sprite(filename);
 
 			IEnumerable<ASTNode> children = node.Children.Where(child => child.Symbol.Name == "Option");
 			string id, value;

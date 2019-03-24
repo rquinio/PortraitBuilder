@@ -3,68 +3,75 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.Drawing.Imaging;
 using System.IO;
+using System.Linq;
 
-namespace PortraitBuilder.Model.Portrait {
-	public class Sprite {
-		public string Name;
-		public string TextureFilePath;
+namespace PortraitBuilder.Model.Portrait
+{
+    public class Sprite
+    {
+        public string Name;
+        public string TextureFilePath;
 
-		public int FrameCount;
+        public int FrameCount;
 
-		public bool NoRefCount;
-		public bool IsLoaded;
+        public bool NoRefCount;
+        public bool IsLoaded;
 
-		public List<Bitmap> Tiles = new List<Bitmap>();
+        public List<Bitmap> Tiles { get; private set; } = new List<Bitmap>();
 
-		/// <summary>
-		/// The file that the data was loaded from.
-		/// </summary>
-		public string Filename;
+        /// <summary>
+        /// The file that the data was loaded from.
+        /// </summary>
+        public string Filename { get; }
 
-		/// <summary>
-		/// Loads the tiles in the sprite. Sets IsLoaded to true.
-		/// </summary>
-		/// <param name="filePath">Path to the image.</param>
-		public void Load(string filePath) {
-			Bitmap texture;
+        public Sprite(string filename)
+        {
+            this.Filename = filename;
+        }
 
-			Unload();
+        /// <summary>
+        /// Loads the tiles in the sprite. Sets IsLoaded to true.
+        /// </summary>
+        /// <param name="filePath">Path to the image.</param>
+        public void Load(string filePath)
+        {
+            Unload();
 
-			if (File.Exists(filePath)) {
-                texture = LoadDDS(filePath);
-			} else {
-				throw new FileLoadException("Unable to find texture file", filePath);
-			}
+            if (!File.Exists(filePath))
+            {
+                throw new FileLoadException("Unable to find texture file", filePath);
+            }
 
-			if(texture == null) {
-				throw new FileLoadException("Texture file is empty.", filePath);
-			}
+            using (var texture = LoadDDS(filePath))
+            {
+                Size size = new Size(texture.Width / FrameCount, texture.Height);
+                for (int indexFrame = 0; indexFrame < FrameCount; indexFrame++)
+                {
+                    Bitmap tile = new Bitmap(size.Width, size.Height);
+                    using (Graphics g = Graphics.FromImage(tile))
+                    {
+                        Rectangle drawArea = new Rectangle(indexFrame * size.Width, 0, size.Width, size.Height);
+                        g.DrawImage(texture, 0, 0, drawArea, GraphicsUnit.Pixel);
+                    }
+                    Tiles.Add(tile);
+                }
+            }
 
-			Size size = new Size(texture.Width / FrameCount, texture.Height);
+            IsLoaded = true;
+        }
 
-			for (int indexFrame = 0; indexFrame < FrameCount; indexFrame++) {
-				Bitmap tile = new Bitmap(size.Width, size.Height);
-				Graphics g = Graphics.FromImage(tile);
-				Rectangle drawArea = new Rectangle(indexFrame * size.Width, 0, size.Width, size.Height);
-				g.DrawImage(texture, 0, 0, drawArea, GraphicsUnit.Pixel);
-				Tiles.Add(tile);
-				g.Dispose();
-			}
+        public void Unload()
+        {
+            if (!Tiles.Any())
+                return;
 
-			texture.Dispose();
-
-			IsLoaded = true;
-		}
-
-		public void Unload() {
-			if (Tiles.Count > 0) {
-				foreach (Bitmap tile in Tiles) {
-					tile.Dispose();
-				}
-				IsLoaded = false;
-				Tiles = new List<Bitmap>();
-			}
-		}
+            foreach (var tile in Tiles)
+            {
+                tile.Dispose();
+            }
+            IsLoaded = false;
+            Tiles = new List<Bitmap>();
+        }
 
         private static Bitmap LoadDDS(string filepath)
         {
@@ -83,6 +90,7 @@ namespace PortraitBuilder.Model.Portrait {
 
                 default:
                     throw new Exception("Format not recognized");
+                    //throw new FileLoadException("Texture file is empty.", filePath);
             }
 
             unsafe
@@ -94,8 +102,7 @@ namespace PortraitBuilder.Model.Portrait {
             }
         }
 
-        public override string ToString() {
-			return string.Format("Name: {0}, Texture: {1}, FrameCount: {2}, IsLoaded: {3}", Name, TextureFilePath, FrameCount, IsLoaded);
-		}
-	}
+        public override string ToString()
+            => $"Name: {Name}, Texture: {TextureFilePath}, FrameCount: {FrameCount}, IsLoaded: {IsLoaded}";
+    }
 }
