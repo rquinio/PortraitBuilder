@@ -45,16 +45,15 @@ namespace PortraitBuilder.Engine
             logger.Info(string.Format("Drawing Portrait {0}", portrait));
 
             Bitmap portraitImage = new Bitmap(176, 176);
-            Graphics g = Graphics.FromImage(portraitImage);
-
-            foreach (Layer layer in portrait.PortraitType.Layers)
+            using (Graphics g = Graphics.FromImage(portraitImage))
             {
-                DrawLayer(layer, g, portrait, activeContents, sprites);
+                foreach (Layer layer in portrait.PortraitType.Layers)
+                {
+                    DrawLayer(layer, g, portrait, activeContents, sprites);
+                }
+
+                DrawBorder(portrait, g, activeContents, sprites);
             }
-
-            DrawBorder(portrait, g, activeContents, sprites);
-
-            g.Dispose();
             return portraitImage;
         }
 
