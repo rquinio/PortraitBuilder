@@ -11,7 +11,7 @@ namespace PortraitBuilder.Online
 {
     public static class Function1
     {
-        [FunctionName("Function1")]
+        [FunctionName("portrait")]
         public static async Task<IActionResult> Run(
             [HttpTrigger(AuthorizationLevel.Anonymous, "get", "post", Route = null)] HttpRequest req,
             ILogger log)
@@ -19,6 +19,18 @@ namespace PortraitBuilder.Online
             log.LogInformation("C# HTTP trigger function processed a request.");
 
             string name = req.Query["name"];
+
+            //string dna = req.Query["dna"];
+            //string properties = req.Query["properties"];
+
+            //updatePortrait(dialog.portrait.DNA, dialog.portrait.Properties, "");
+
+            //// Reflect on dropdown
+            //updateSelectedCharacteristicValues(portrait);
+
+            //started = true;
+
+            //drawPortrait();
 
             string requestBody = await new StreamReader(req.Body).ReadToEndAsync();
             dynamic data = JsonConvert.DeserializeObject(requestBody);
