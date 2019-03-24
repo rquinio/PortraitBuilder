@@ -143,7 +143,7 @@ namespace PortraitBuilder.Model.Portrait {
 			try { 
 				return DNA[index];
 			} catch (IndexOutOfRangeException) {
-				throw new IndexOutOfRangeException("Characteristic d" + index + " does not exist.");
+				throw new IndexOutOfRangeException($"Characteristic d{index} does not exist.");
 			}
 		}
 
@@ -151,12 +151,8 @@ namespace PortraitBuilder.Model.Portrait {
 
 		public event PropertyChangedEventHandler PropertyChanged;
 
-		public void InvokePropertyChanged(PropertyChangedEventArgs e) {
-			PropertyChangedEventHandler handler = PropertyChanged;
-			if (handler != null)
-				handler(this, e);
-		}
+        public void InvokePropertyChanged(PropertyChangedEventArgs e) => PropertyChanged?.Invoke(this, e);
 
-		#endregion
-	}
+        #endregion
+    }
 }
