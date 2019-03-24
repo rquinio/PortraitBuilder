@@ -1,4 +1,5 @@
 ﻿using System.IO;
+using System.Linq;
 using PortraitBuilder.Model.Portrait;
 
 namespace PortraitBuilder.Model.Content
@@ -20,6 +21,8 @@ namespace PortraitBuilder.Model.Content
         /// </summary>
         public string AbsolutePath;
 
+        public string PortraitPath => Path.Combine(AbsolutePath, @"gfx\characters\");
+
         public PortraitData PortraitData;
 
         /// <summary>
@@ -37,10 +40,7 @@ namespace PortraitBuilder.Model.Content
         /// </summary>
         public string DisabledReason;
 
-        public override string ToString()
-        {
-            return Name;
-        }
+        public override string ToString() => Name;
 
         /// <summary>
         /// True if either:
@@ -50,25 +50,17 @@ namespace PortraitBuilder.Model.Content
         /// Checking any kind of sprites would cause too many false positives (unit DLCs, ...).
         /// </summary>
         /// <returns></returns>
-        public bool GetHasPortraitData()
-        {
-            return (PortraitData != null && PortraitData.PortraitTypes.Count > 0) || Directory.Exists(AbsolutePath + @"gfx\characters\");
-        }
+        public bool HasPortraitData
+            => PortraitData?.PortraitTypes.Any() == true || Directory.Exists(PortraitPath);
 
         public void Unload()
         {
-            if (PortraitData != null)
-            {
-                PortraitData.Unload();
-            }
+            PortraitData?.Unload();
         }
 
         public void Dispose()
         {
-            if (PortraitData != null)
-            {
-                PortraitData.Dispose();
-            }
+            PortraitData?.Dispose();
         }
     }
 }

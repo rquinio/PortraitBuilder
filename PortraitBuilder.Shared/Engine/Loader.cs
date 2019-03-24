@@ -20,8 +20,6 @@ namespace PortraitBuilder.Engine
 
         private static readonly ILog logger = LogManager.GetLogger(typeof(Loader));
 
-        private PortraitTypeMerger portraitTypeMerger = new PortraitTypeMerger();
-
         /// <summary>
         /// User configuration: game path, etc.
         /// </summary>
@@ -68,9 +66,7 @@ namespace PortraitBuilder.Engine
         }
 
         public PortraitType GetPortraitType(string basePortraitType, string clothingPortraitType)
-        {
-            return portraitTypeMerger.merge(ActivePortraitData.PortraitTypes[basePortraitType], ActivePortraitData.PortraitTypes[clothingPortraitType]);
-        }
+            => ActivePortraitData.PortraitTypes[basePortraitType].Merge(ActivePortraitData.PortraitTypes[clothingPortraitType]);
 
         public void LoadVanilla()
         {
@@ -150,7 +146,7 @@ namespace PortraitBuilder.Engine
                     {
                         logger.Info("Loading portraits from mod: " + mod.Name);
                         mod.PortraitData = portraitReader.Parse(mod.AbsolutePath);
-                        if (!mod.GetHasPortraitData())
+                        if (!mod.HasPortraitData)
                         {
                             mod.Enabled = false;
                             mod.DisabledReason = "No portrait data found";

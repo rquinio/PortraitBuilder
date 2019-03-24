@@ -11,6 +11,7 @@ using PortraitBuilder.Model.Content;
 using PortraitBuilder.Model.Portrait;
 using PortraitBuilder.Model;
 using PortraitBuilder.Shared.Model;
+using System.Linq;
 
 namespace PortraitBuilder.UI
 {
@@ -142,7 +143,8 @@ namespace PortraitBuilder.UI
         {
             List<Mod> mods = loader.LoadMods();
             panelMods.Controls.Clear();
-            foreach (Mod mod in mods)
+
+            foreach (var mod in mods)
             {
                 registerContent(panelMods, mod);
             }
@@ -150,14 +152,12 @@ namespace PortraitBuilder.UI
 
         private void loadDLCs(bool clean)
         {
-            List<DLC> dlcs = loader.LoadDLCs(clean);
+            var dlcs = loader.LoadDLCs(clean);
             panelDLCs.Controls.Clear();
-            foreach (DLC dlc in dlcs)
+
+            foreach (var dlc in dlcs.Where(d => d.HasPortraitData))
             {
-                if (dlc.GetHasPortraitData())
-                {
-                    registerContent(panelDLCs, dlc);
-                }
+                registerContent(panelDLCs, dlc);
             }
         }
 
