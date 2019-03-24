@@ -50,7 +50,7 @@ namespace PortraitBuilder.Engine {
 		/// <summary>
 		/// Merged portraitData of all active content.
 		/// </summary>
-		private PortraitData activePortraitData = new PortraitData();
+		public PortraitData ActivePortraitData { get; private set; } = new PortraitData();
 
 		/// <summary>
 		/// Vanilla data - never reloaded dynamically
@@ -61,16 +61,12 @@ namespace PortraitBuilder.Engine {
 			this.user = user;
 		}
 
-		public PortraitData GetActivePortraitData() {
-			return activePortraitData;
-		}
-
 		public PortraitType GetPortraitType(string basePortraitType) {
-			return GetActivePortraitData().PortraitTypes[basePortraitType];
+			return ActivePortraitData.PortraitTypes[basePortraitType];
 		}
 
 		public PortraitType GetPortraitType(string basePortraitType, string clothingPortraitType) {
-			return portraitTypeMerger.merge(GetActivePortraitData().PortraitTypes[basePortraitType], GetActivePortraitData().PortraitTypes[clothingPortraitType]);
+			return portraitTypeMerger.merge(ActivePortraitData.PortraitTypes[basePortraitType], ActivePortraitData.PortraitTypes[clothingPortraitType]);
 		}
 
 		public List<Content> GetActiveContents() {
@@ -86,7 +82,7 @@ namespace PortraitBuilder.Engine {
 			vanilla.PortraitData = portraitReader.Parse(user.GameDir);
 
 			// Init
-			activePortraitData = vanilla.PortraitData;
+			ActivePortraitData = vanilla.PortraitData;
 			activeContents.Add(vanilla);
 		}
 
@@ -197,12 +193,12 @@ namespace PortraitBuilder.Engine {
 		}
 
 		private void MergePortraitData() {
-			activePortraitData = new PortraitData();
+			ActivePortraitData = new PortraitData();
 
-			activePortraitData.MergeWith(vanilla.PortraitData);
+			ActivePortraitData.MergeWith(vanilla.PortraitData);
 			// Recalculate merged portrait data
 			foreach (Content content in activeContents) {
-				activePortraitData.MergeWith(content.PortraitData);
+				ActivePortraitData.MergeWith(content.PortraitData);
 			}
 		}
 
@@ -210,12 +206,12 @@ namespace PortraitBuilder.Engine {
 			MergePortraitData();
 
 			// Apply external offsets
-			foreach (KeyValuePair<string, PortraitType> pair in activePortraitData.PortraitTypes) {
+			foreach (KeyValuePair<string, PortraitType> pair in ActivePortraitData.PortraitTypes) {
 				PortraitType portraitType = pair.Value;
 
 				foreach (Layer layer in portraitType.Layers) {
-					if (activePortraitData.Offsets.ContainsKey(layer.Name)) {
-						layer.Offset = activePortraitData.Offsets[layer.Name];
+					if (ActivePortraitData.Offsets.ContainsKey(layer.Name)) {
+						layer.Offset = ActivePortraitData.Offsets[layer.Name];
 						logger.Debug(string.Format("Overriding offset of layer {0} to {1}", layer.Name, layer.Offset));
 					}
 				}

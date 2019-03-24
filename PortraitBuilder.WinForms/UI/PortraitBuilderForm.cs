@@ -303,7 +303,7 @@ namespace PortraitBuilder.UI
 
             try
             {
-                Bitmap portraitImage = portraitRenderer.DrawPortrait(portrait, loader.GetActiveContents(), loader.GetActivePortraitData().Sprites);
+                Bitmap portraitImage = portraitRenderer.DrawPortrait(portrait, loader.GetActiveContents(), loader.ActivePortraitData.Sprites);
                 g.DrawImage(portraitImage, 0, 0);
             }
             catch (Exception e)
@@ -410,7 +410,7 @@ namespace PortraitBuilder.UI
             PortraitType portraitType = portrait.PortraitType;
             if (portraitType != null)
             {
-                int frameCount = loader.GetActivePortraitData().GetFrameCount(portraitType, characteristic);
+                int frameCount = loader.ActivePortraitData.GetFrameCount(portraitType, characteristic);
                 if (frameCount > 0)
                 {
                     logger.Debug(string.Format("Item count for {0} {1} : {2}", portraitType, characteristic, frameCount));
@@ -485,14 +485,14 @@ namespace PortraitBuilder.UI
 
             loader.LoadPortraits();
 
-            if (loader.GetActivePortraitData().PortraitTypes.Count == 0)
+            if (loader.ActivePortraitData.PortraitTypes.Count == 0)
             {
                 logger.Fatal("No portrait types found.");
                 return;
             }
 
             cbCulturePortraitTypes.Items.Add(""); // Empty = no override
-            foreach (KeyValuePair<string, PortraitType> pair in loader.GetActivePortraitData().PortraitTypes)
+            foreach (KeyValuePair<string, PortraitType> pair in loader.ActivePortraitData.PortraitTypes)
             {
                 PortraitType portraitType = pair.Value;
                 String portraitName = portraitType.Name.Replace("PORTRAIT_", "");
