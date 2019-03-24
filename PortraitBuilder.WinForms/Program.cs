@@ -12,7 +12,7 @@ using PortraitBuilder.UI;
 namespace PortraitBuilder {
 	static class Program {
 
-		private static readonly ILog logger = LogManager.GetLogger(typeof(Program).Name);
+		private static readonly ILog logger = LogManager.GetLogger(typeof(Program));
 
         private static bool isExiting = false;
 
@@ -80,7 +80,7 @@ namespace PortraitBuilder {
 
 		private static void StartUI(string[] args) {
 			if (args.Length > 0 && args[0] == "-logfull") {
-				((Hierarchy)LogManager.GetRepository()).Root.Level = Level.Debug;
+				((Hierarchy)LogManager.GetRepository(nameof(PortraitBuilder.Program))).Root.Level = Level.Debug;
 			}
 			try {
 				Application.Run(new PortraitBuilderForm());

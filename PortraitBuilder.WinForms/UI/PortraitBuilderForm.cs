@@ -7,7 +7,6 @@ using System.IO;
 using System.Reflection;
 using System.Text;
 using System.Windows.Forms;
-using ICSharpCode.SharpZipLib.Zip;
 using log4net;
 using PortraitBuilder.Engine;
 using PortraitBuilder.Model.Content;
@@ -21,7 +20,7 @@ namespace PortraitBuilder.UI {
 	/// </summary>
 	public partial class PortraitBuilderForm : Form {
 
-		private static readonly ILog logger = LogManager.GetLogger(typeof(PortraitBuilderForm).Name);
+		private static readonly ILog logger = LogManager.GetLogger(typeof(PortraitBuilderForm));
 
 		private Image previewImage = new Bitmap(176, 176);
 
