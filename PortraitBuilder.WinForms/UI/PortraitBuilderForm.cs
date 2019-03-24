@@ -296,20 +296,21 @@ namespace PortraitBuilder.UI
         /// </summary>
         private void drawPortrait()
         {
-            Graphics g = Graphics.FromImage(previewImage);
-
-            logger.Debug("Clearing preview.");
-            g.Clear(Color.Empty);
-
-            try
+            using (Graphics g = Graphics.FromImage(previewImage))
             {
-                Bitmap portraitImage = portraitRenderer.DrawPortrait(portrait, loader.GetActiveContents(), loader.ActivePortraitData.Sprites);
-                g.DrawImage(portraitImage, 0, 0);
-            }
-            catch (Exception e)
-            {
-                logger.Error("Error encountered rendering portrait", e);
-                return;
+                logger.Debug("Clearing preview.");
+                g.Clear(Color.Empty);
+
+                try
+                {
+                    Bitmap portraitImage = portraitRenderer.DrawPortrait(portrait, loader.ActiveContents, loader.ActivePortraitData.Sprites);
+                    g.DrawImage(portraitImage, 0, 0);
+                }
+                catch (Exception e)
+                {
+                    logger.Error("Error encountered rendering portrait", e);
+                    return;
+                }
             }
 
             pbPortrait.Image = previewImage;
@@ -408,24 +409,24 @@ namespace PortraitBuilder.UI
         {
             cb.Items.Clear();
             PortraitType portraitType = portrait.PortraitType;
-            if (portraitType != null)
+            if (portraitType == null)
+                return;
+
+            int frameCount = loader.ActivePortraitData.GetFrameCount(portraitType, characteristic);
+            if (frameCount > 0)
             {
-                int frameCount = loader.ActivePortraitData.GetFrameCount(portraitType, characteristic);
-                if (frameCount > 0)
+                logger.Debug(string.Format("Item count for {0} {1} : {2}", portraitType, characteristic, frameCount));
+                cb.Enabled = true;
+                fillComboBox(cb, frameCount);
+                if (frameCount == 1)
                 {
-                    logger.Debug(string.Format("Item count for {0} {1} : {2}", portraitType, characteristic, frameCount));
-                    cb.Enabled = true;
-                    fillComboBox(cb, frameCount);
-                    if (frameCount == 1)
-                    {
-                        cb.Enabled = false; // Disable if only 1 frame, as there's no selection to do, for instance head (p2)
-                    }
+                    cb.Enabled = false; // Disable if only 1 frame, as there's no selection to do, for instance head (p2)
                 }
-                else
-                {
-                    logger.Warn(string.Format("Could not find frame count for {0} and {1}, disabling dropdown.", portraitType, characteristic));
-                    cb.Enabled = false;
-                }
+            }
+            else
+            {
+                logger.Warn(string.Format("Could not find frame count for {0} and {1}, disabling dropdown.", portraitType, characteristic));
+                cb.Enabled = false;
             }
         }
 
@@ -565,7 +566,7 @@ namespace PortraitBuilder.UI
 
         private void updatePortrait(string dna, string properties, string customProperties)
         {
-            portrait = new Portrait(dna, properties + customProperties);
+            portrait.Import(dna, properties + customProperties);
             outputDNA();
         }
 

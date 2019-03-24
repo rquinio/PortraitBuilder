@@ -17,9 +17,9 @@ namespace PortraitBuilder.Model.Portrait
     {
         public static char[] Alphabet { get; } = "abcdefghijklmnopqrstuvwxyz".ToCharArray();
 
-        public string DNA { get; set; } = "aaaaa0aaaa0";
+        public string DNA { get; private set; } = "aaaaa0aaaa0";
 
-        public string Properties { get; set; } = "aa0aaaaaaaa000";
+        public string Properties { get; private set; } = "aa0aaaaaaaa000";
 
         public PortraitType PortraitType { get; set; }
 
@@ -50,8 +50,7 @@ namespace PortraitBuilder.Model.Portrait
             }
         }
 
-        public Portrait() { }
-        public Portrait(string dna, string properties)
+        public void Import(string dna, string properties)
         {
             if (string.IsNullOrEmpty(dna))
                 throw new ArgumentNullException(nameof(dna));

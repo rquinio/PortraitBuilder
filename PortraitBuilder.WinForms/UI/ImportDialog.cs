@@ -23,8 +23,7 @@ namespace PortraitBuilder.UI
 
         private void btnOK_Click(object sender, EventArgs e)
         {
-            portrait.DNA = tbDNA.Text;
-            portrait.Properties = tbProperties.Text;
+            portrait.Import(tbDNA.Text, tbProperties.Text);
 
             DialogResult = DialogResult.OK;
             Close();
