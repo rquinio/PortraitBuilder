@@ -55,7 +55,7 @@ namespace PortraitBuilder.Parser {
 			Mod mod = new Mod();
 			mod.ModFile = modFile.Name;
 
-			StreamReader reader = new StreamReader(filename, WesternEncoding);
+			StreamReader reader = new StreamReader(filename, Encoding.GetEncoding(1252));
 			while ((line = reader.ReadLine()) != null) {
 				if (line.StartsWith("#"))
 					continue;

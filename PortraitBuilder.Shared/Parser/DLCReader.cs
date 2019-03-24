@@ -8,7 +8,7 @@ using PortraitBuilder.Model.Content;
 namespace PortraitBuilder.Parser {
 	public class DLCReader {
 
-		private static readonly ILog logger = LogManager.GetLogger(typeof(DLC).Name);
+		private static readonly ILog logger = LogManager.GetLogger(typeof(DLC));
 
 		public List<DLC> ParseFolder(string folder) {
 			List<DLC> dlcs = new List<DLC>();

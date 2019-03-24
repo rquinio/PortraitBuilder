@@ -14,7 +14,7 @@ namespace PortraitBuilder.Parser {
 	/// </summary>
 	public class PortraitOffsetReader {
 
-		private static readonly ILog logger = LogManager.GetLogger(typeof(PortraitOffsetReader).Name);
+		private static readonly ILog logger = LogManager.GetLogger(typeof(PortraitOffsetReader));
 
 		/// <summary>
 		/// Parse offset files

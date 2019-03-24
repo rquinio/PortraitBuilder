@@ -1,7 +1,8 @@
+using System;
 using System.Collections.Generic;
 using System.Drawing;
+using System.Drawing.Imaging;
 using System.IO;
-using Imaging.DDSReader;
 
 namespace PortraitBuilder.Model.Portrait {
 	public class Sprite {
@@ -30,7 +31,7 @@ namespace PortraitBuilder.Model.Portrait {
 			Unload();
 
 			if (File.Exists(filePath)) {
-                texture = DDS.LoadImage(filePath);
+                texture = LoadDDS(filePath);
 			} else {
 				throw new FileLoadException("Unable to find texture file", filePath);
 			}
@@ -65,7 +66,35 @@ namespace PortraitBuilder.Model.Portrait {
 			}
 		}
 
-		public override string ToString() {
+        private static Bitmap LoadDDS(string filepath)
+        {
+            var image = Pfim.Pfim.FromFile(filepath);
+
+            PixelFormat format;
+            switch (image.Format)
+            {
+                case Pfim.ImageFormat.Rgb24:
+                    format = PixelFormat.Format24bppRgb;
+                    break;
+
+                case Pfim.ImageFormat.Rgba32:
+                    format = PixelFormat.Format32bppArgb;
+                    break;
+
+                default:
+                    throw new Exception("Format not recognized");
+            }
+
+            unsafe
+            {
+                fixed (byte* p = image.Data)
+                {
+                    return new Bitmap(image.Width, image.Height, image.Stride, format, (IntPtr)p);
+                }
+            }
+        }
+
+        public override string ToString() {
 			return string.Format("Name: {0}, Texture: {1}, FrameCount: {2}, IsLoaded: {3}", Name, TextureFilePath, FrameCount, IsLoaded);
 		}
 	}
