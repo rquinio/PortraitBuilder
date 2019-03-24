@@ -12,10 +12,11 @@ using PortraitBuilder.Model.Portrait;
 
 namespace PortraitBuilder.Parser {
 
-	/// <summary>
-	/// Handles the parsing of portraits *.gfx files.
-	/// </summary>
-	public class PortraitReader {
+    using static EncodingHelper;
+    /// <summary>
+    /// Handles the parsing of portraits *.gfx files.
+    /// </summary>
+    public class PortraitReader {
 
 		private static readonly ILog logger = LogManager.GetLogger(typeof(PortraitReader));
 
@@ -84,7 +85,7 @@ namespace PortraitBuilder.Parser {
                 return;
             }
 
-			StreamReader stream = new StreamReader(filename, Encoding.GetEncoding(1252));
+			StreamReader stream = new StreamReader(filename, WesternEncoding);
 			string fileContent = stream.ReadToEnd();
 			stream.Dispose();
 
