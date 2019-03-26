@@ -15,6 +15,10 @@
   </ItemGroup>
 
   <ItemGroup>
+    <PackageReference Include="SkiaSharp.Views" Version="1.68.0" />
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="..\PortraitBuilder.Shared\PortraitBuilder.Shared.csproj" />
   </ItemGroup>
 

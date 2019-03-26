@@ -1,9 +1,11 @@
+using SkiaSharp;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Drawing;
-using System.Drawing.Imaging;
 using System.IO;
 using System.Linq;
+using System.Runtime.InteropServices;
 
 namespace PortraitBuilder.Model.Portrait
 {
@@ -17,7 +19,7 @@ namespace PortraitBuilder.Model.Portrait
         public bool NoRefCount;
         public bool IsLoaded;
 
-        public List<Bitmap> Tiles { get; private set; } = new List<Bitmap>();
+        public List<SKBitmap> Tiles { get; private set; } = new List<SKBitmap>();
 
         /// <summary>
         /// The file that the data was loaded from.
@@ -44,16 +46,24 @@ namespace PortraitBuilder.Model.Portrait
 
             using (var texture = LoadDDS(filePath))
             {
-                Size size = new Size(texture.Width / FrameCount, texture.Height);
-                for (int indexFrame = 0; indexFrame < FrameCount; indexFrame++)
+                //Engine.PortraitRenderer.debug(texture);
+
+                var src = new SKRectI(0, 0, texture.Width / FrameCount, texture.Height);
+                var dst = new SKRectI(0, 0, src.Width, src.Height);
+
+                for (int i = 0; i < FrameCount; i++)
                 {
-                    Bitmap tile = new Bitmap(size.Width, size.Height);
-                    using (Graphics g = Graphics.FromImage(tile))
+                    var tile = new SKBitmap(src.Width, src.Height);
+                    using (var canvas = new SKCanvas(tile))
                     {
-                        Rectangle drawArea = new Rectangle(indexFrame * size.Width, 0, size.Width, size.Height);
-                        g.DrawImage(texture, 0, 0, drawArea, GraphicsUnit.Pixel);
+                        //must set transparent bg for unpremul -> premul
+                        canvas.Clear(SKColors.Transparent);
+                        canvas.DrawBitmap(texture, src, dst);
                     }
+                    //Engine.PortraitRenderer.debug(tile);
                     Tiles.Add(tile);
+
+                    src.Offset(src.Width, 0);
                 }
             }
 
@@ -70,35 +80,24 @@ namespace PortraitBuilder.Model.Portrait
                 tile.Dispose();
             }
             IsLoaded = false;
-            Tiles = new List<Bitmap>();
+            Tiles = new List<SKBitmap>();
         }
 
-        private static Bitmap LoadDDS(string filepath)
+        private static SKBitmap LoadDDS(string filepath)
         {
             var image = Pfim.Pfim.FromFile(filepath);
+            Debug.Assert(image.Format == Pfim.ImageFormat.Rgba32);
+            Debug.Assert(image.Compressed == false);
 
-            PixelFormat format;
-            switch (image.Format)
-            {
-                case Pfim.ImageFormat.Rgb24:
-                    format = PixelFormat.Format24bppRgb;
-                    break;
-
-                case Pfim.ImageFormat.Rgba32:
-                    format = PixelFormat.Format32bppArgb;
-                    break;
-
-                default:
-                    throw new Exception("Format not recognized");
-                    //throw new FileLoadException("Texture file is empty.", filePath);
-            }
-
+            var info = new SKImageInfo(image.Width, image.Height, SKColorType.Bgra8888, SKAlphaType.Unpremul);
+            var bmp = new SKBitmap(info);
             unsafe
             {
-                fixed (byte* p = image.Data)
+                fixed (byte* pData = image.Data)
                 {
-                    return new Bitmap(image.Width, image.Height, image.Stride, format, (IntPtr)p);
+                    bmp.InstallPixels(info, (IntPtr)pData, image.Stride);
                 }
+                return bmp;
             }
         }
 

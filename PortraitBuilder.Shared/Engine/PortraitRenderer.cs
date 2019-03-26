@@ -1,12 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Drawing;
-using System.Drawing.Imaging;
 using log4net;
 using PortraitBuilder.Model.Portrait;
 using PortraitBuilder.Model.Content;
 using PortraitBuilder.Shared.Model;
+using SkiaSharp;
+using static PortraitBuilder.Model.Portrait.ColorHelper;
+using System.Diagnostics;
 
 namespace PortraitBuilder.Engine
 {
@@ -40,26 +41,30 @@ namespace PortraitBuilder.Engine
         /// <param name="portrait">Portrait input to draw.</param>
         /// <param name="activeContents">Content to load sprites from</param>
         /// <returns>Frameless portrait drawn with the given parameters.</returns>
-        public Bitmap DrawPortrait(Portrait portrait, List<Content> activeContents, Dictionary<string, Sprite> sprites)
+        public SKBitmap DrawPortrait(Portrait portrait, List<Content> activeContents, Dictionary<string, Sprite> sprites)
         {
-            logger.Info(string.Format("Drawing Portrait {0}", portrait));
+            logger.Info($"Drawing Portrait {portrait}");
 
-            Bitmap portraitImage = new Bitmap(176, 176);
-            using (Graphics g = Graphics.FromImage(portraitImage))
+            var portraitInfo = new SKImageInfo(176, 176);
+            var portraitImage = new SKBitmap(portraitInfo);
+            using (var canvas = new SKCanvas(portraitImage))
             {
-                foreach (Layer layer in portrait.PortraitType.Layers)
+                //must set transparent bg for unpremul -> premul
+                canvas.Clear(SKColors.Transparent);
+
+                foreach (var layer in portrait.PortraitType.Layers)
                 {
-                    DrawLayer(layer, g, portrait, activeContents, sprites);
+                    DrawLayer(layer, canvas, portrait, activeContents, sprites);
                 }
 
-                DrawBorder(portrait, g, activeContents, sprites);
+                DrawBorder(portrait, canvas, activeContents, sprites);
             }
             return portraitImage;
         }
 
-        private void DrawLayer(Layer layer, Graphics g, Portrait portrait, List<Content> activeContents, Dictionary<string, Sprite> sprites)
+        private void DrawLayer(Layer layer, SKCanvas canvas, Portrait portrait, List<Content> activeContents, Dictionary<string, Sprite> sprites)
         {
-            logger.Debug("Drawing Layer : " + layer);
+            logger.Debug($"Drawing Layer : {layer}");
 
             string spriteName = GetOverriddenSpriteName(portrait, layer);
 
@@ -84,16 +89,16 @@ namespace PortraitBuilder.Engine
                     //Get DNA/Properties letter, then the index of the tile to draw
                     int tileIndex = GetTileIndex(portrait, sprite.FrameCount, layer);
 
-                    DrawTile(portrait, g, sprite, layer, tileIndex);
+                    DrawTile(portrait, canvas, sprite, layer, tileIndex);
                 }
                 else
                 {
-                    throw new FileNotFoundException("Sprite not found:" + spriteName);
+                    throw new FileNotFoundException($"Sprite not found: {spriteName}");
                 }
             }
             catch (Exception e)
             {
-                logger.Error("Could not render layer " + layer, e);
+                logger.Error($"Could not render layer {layer}", e);
             }
         }
 
@@ -120,7 +125,7 @@ namespace PortraitBuilder.Engine
             return spriteName;
         }
 
-        private void DrawBorder(Portrait portrait, Graphics g, List<Content> activeContents, Dictionary<string, Sprite> sprites)
+        private void DrawBorder(Portrait portrait, SKCanvas canvas, List<Content> activeContents, Dictionary<string, Sprite> sprites)
         {
             logger.Debug("Drawing border.");
             try
@@ -135,7 +140,7 @@ namespace PortraitBuilder.Engine
                     {
                         LoadSprite(sprite, activeContents);
                     }
-                    g.DrawImage(sprite.Tiles[portrait.Rank], 0, 0);
+                    canvas.DrawBitmap(sprite.Tiles[portrait.Rank], SKPoint.Empty);
                 }
             }
             catch (Exception e)
@@ -148,7 +153,7 @@ namespace PortraitBuilder.Engine
         {
             char letter = portrait.GetLetter(layer.Characteristic);
             int tileIndex = Portrait.GetIndex(letter, frameCount);
-            logger.Debug(string.Format("Layer letter: {0}, Tile Index: {1}", letter, tileIndex));
+            logger.Debug($"Layer letter: {letter}, Tile Index: {tileIndex}");
             return tileIndex;
         }
 
@@ -191,74 +196,59 @@ namespace PortraitBuilder.Engine
             }
         }
 
-        private void DrawTile(Portrait portrait, Graphics g, Sprite sprite, Layer layer, int tileIndex)
+        private void DrawTile(Portrait portrait, SKCanvas canvas, Sprite sprite, Layer layer, int tileIndex)
         {
-            Bitmap tile;
+            SKBitmap tile;
             if (layer.IsHair)
             {
-                List<Hair> hairCoulours = portrait.PortraitType.HairColours;
-                int hairIndex = Portrait.GetIndex(portrait.GetLetter(Characteristic.HAIR_COLOR), hairCoulours.Count);
-                tile = DrawHair(sprite.Tiles[tileIndex], hairCoulours[hairIndex]);
-
+                var hairColors = portrait.PortraitType.HairColours;
+                int hairIndex = Portrait.GetIndex(portrait.GetLetter(Characteristic.HAIR_COLOR), hairColors.Count);
+                tile = DrawHair(sprite.Tiles[tileIndex], hairColors[hairIndex]);
             }
             else if (layer.IsEye)
             {
-                List<Colour> eyeCoulours = portrait.PortraitType.EyeColours;
-                int eyeIndex = Portrait.GetIndex(portrait.GetLetter(Characteristic.EYE_COLOR), eyeCoulours.Count);
-                tile = DrawEye(sprite.Tiles[tileIndex], eyeCoulours[eyeIndex]);
-
+                var eyeColors = portrait.PortraitType.EyeColours;
+                int eyeIndex = Portrait.GetIndex(portrait.GetLetter(Characteristic.EYE_COLOR), eyeColors.Count);
+                tile = DrawEye(sprite.Tiles[tileIndex], eyeColors[eyeIndex]);
             }
             else
             {
                 tile = sprite.Tiles[tileIndex];
             }
 
-            g.DrawImage(tile, 12 + layer.Offset.X, 12 + 152 - tile.Size.Height - layer.Offset.Y);
+            var p = new SKPointI(12 + layer.Offset.X, 12 + 152 - tile.Height - layer.Offset.Y);
+            canvas.DrawBitmap(tile, p);
         }
 
         /// <summary>
         /// Based on gfx\FX\portrait.lua EyePixelShader
         /// </summary>
-        private Bitmap DrawEye(Bitmap source, Colour eyeColour)
+        private SKBitmap DrawEye(SKBitmap source, SKColor eyeColor)
         {
-            Bitmap output = new Bitmap(source.Width, source.Height);
-            Colour colour1 = new Colour();
-            Colour colour2 = new Colour();
+            var output = new SKBitmap(source.Width, source.Height, source.ColorType, source.AlphaType);
+            output.Erase(SKColors.Transparent);
 
-            BitmapData bdata = source.LockBits(new Rectangle(0, 0, source.Width, source.Height), ImageLockMode.ReadOnly, source.PixelFormat);
-            BitmapData odata = output.LockBits(new Rectangle(0, 0, source.Width, source.Height), ImageLockMode.ReadOnly, output.PixelFormat);
-            int pixelSize = 4;
+            Debug.Assert(source.BytesPerPixel == 4 /* sizeof(BGRA) */);
 
             unsafe
             {
+                SKPMColor* sColor = (SKPMColor*)source.GetPixels().ToPointer();
+                SKPMColor* oColor = (SKPMColor*)output.GetPixels().ToPointer();
+
                 for (int y = 0; y < source.Height; y++)
                 {
-                    byte* brow = (byte*)bdata.Scan0 + (y * bdata.Stride);
-                    byte* orow = (byte*)odata.Scan0 + (y * odata.Stride);
-
-                    for (int x = 0; x < source.Width; x++)
+                    for (int x = 0; x < source.Width; x++, sColor++, oColor++)
                     {
-                        colour1.Red = brow[x * pixelSize + 2];
-                        colour1.Alpha = brow[x * pixelSize + 3];
+                        if (sColor->Alpha == 0) continue;
 
-                        if (colour1.Alpha > 0)
-                        {
-                            colour2.Red = (byte)(255 * ((eyeColour.Red / 255f) * (colour1.Red / 255f)));
-                            colour2.Green = (byte)(255 * ((eyeColour.Green / 255f) * (colour1.Red / 255f)));
-                            colour2.Blue = (byte)(255 * ((eyeColour.Blue / 255f) * (colour1.Red / 255f)));
-                            colour2.Alpha = colour1.Alpha;
-
-                            orow[x * pixelSize] = colour2.Blue;
-                            orow[x * pixelSize + 1] = colour2.Green;
-                            orow[x * pixelSize + 2] = colour2.Red;
-                            orow[x * pixelSize + 3] = colour2.Alpha;
-                        }
+                        var final = new SKColor(blue: (byte)(255 * ((eyeColor.Blue / 255d) * (sColor->Red / 255d))),
+                                                green: (byte)(255 * ((eyeColor.Green / 255d) * (sColor->Red / 255d))),
+                                                red: (byte)(255 * ((eyeColor.Red / 255d) * (sColor->Red / 255d))),
+                                                alpha: sColor->Alpha);
+                        *oColor = SKPMColor.PreMultiply(final);
                     }
                 }
             }
-
-            source.UnlockBits(bdata);
-            output.UnlockBits(odata);
 
             return output;
         }
@@ -266,45 +256,32 @@ namespace PortraitBuilder.Engine
         /// <summary>
         /// Based on gfx\FX\portrait.lua HairPixelShader
         /// </summary>
-        private Bitmap DrawHair(Bitmap source, Hair hair)
+        private SKBitmap DrawHair(SKBitmap source, Hair hair)
         {
-            Bitmap output = new Bitmap(source.Width, source.Height);
-            Colour colour1 = new Colour();
+            var output = new SKBitmap(source.Width, source.Height, source.ColorType, source.AlphaType);
+            output.Erase(SKColors.Transparent);
 
-            BitmapData bdata = source.LockBits(new Rectangle(0, 0, source.Width, source.Height), ImageLockMode.ReadOnly, source.PixelFormat);
-            BitmapData odata = output.LockBits(new Rectangle(0, 0, source.Width, source.Height), ImageLockMode.ReadOnly, output.PixelFormat);
-            int pixelSize = 4;
+            Debug.Assert(source.BytesPerPixel == 4 /* sizeof(BGRA) */);
 
-            //FIXME: spanify
             unsafe
             {
+                SKPMColor* sColor = (SKPMColor*)source.GetPixels().ToPointer();
+                SKPMColor* oColor = (SKPMColor*)output.GetPixels().ToPointer();
+
                 for (int y = 0; y < source.Height; y++)
                 {
-                    byte* brow = (byte*)bdata.Scan0 + (y * bdata.Stride);
-                    byte* orow = (byte*)odata.Scan0 + (y * odata.Stride);
-
-                    for (int x = 0; x < source.Width; x++)
+                    for (int x = 0; x < source.Width; x++, sColor++, oColor++)
                     {
-                        colour1.Green = brow[x * pixelSize + 1];
-                        colour1.Alpha = brow[x * pixelSize + 3];
+                        if (sColor->Alpha == 0) continue;
 
-                        if (colour1.Alpha > 0)
-                        {
-                            Colour colour2 = Colour.Lerp(hair.Dark, hair.Base, Colour.Clamp(colour1.Green * 2));
-                            colour2 = Colour.Lerp(colour2, hair.Highlight, Colour.Clamp((colour1.Green - 128f) * 2));
-                            colour2.Alpha = colour1.Alpha;
+                        var lerp1 = Lerp(hair.Dark, hair.Base, Clamp(sColor->Green * 2d));
+                        var lerp2 = Lerp(lerp1, hair.Highlight, Clamp((sColor->Green - 128d) * 2));
+                        var final = lerp2.WithAlpha(sColor->Alpha);
 
-                            orow[x * pixelSize] = colour2.Blue;
-                            orow[x * pixelSize + 1] = colour2.Green;
-                            orow[x * pixelSize + 2] = colour2.Red;
-                            orow[x * pixelSize + 3] = colour2.Alpha;
-                        }
+                        *oColor = SKPMColor.PreMultiply(final);
                     }
                 }
             }
-
-            source.UnlockBits(bdata);
-            output.UnlockBits(odata);
 
             return output;
         }

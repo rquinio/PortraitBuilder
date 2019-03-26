@@ -6,6 +6,7 @@ using System.Linq;
 using Hime.Redist;
 using log4net;
 using PortraitBuilder.Model.Portrait;
+using SkiaSharp;
 
 namespace PortraitBuilder.Parser
 {
@@ -263,9 +264,9 @@ namespace PortraitBuilder.Parser
             return portraitType;
         }
 
-        private List<Colour> ParseEyeColours(ASTNode node)
+        private List<SKColor> ParseEyeColours(ASTNode node)
         {
-            List<Colour> colours = new List<Colour>();
+            List<SKColor> colours = new List<SKColor>();
             IEnumerable<ASTNode> children = node.Children.Where(child => child.Symbol.Name == "colourGroup");
 
             foreach (ASTNode child in children)
@@ -284,32 +285,29 @@ namespace PortraitBuilder.Parser
             {
                 logger.Debug(" --Parsing Hair colours");
 
-                Hair hair = new Hair();
+                var h_dark = ParseColour(children[i]);
+                logger.Debug("   --Dark: " + h_dark);
 
-                hair.Dark = ParseColour(children[i]);
-                logger.Debug("   --Dark: " + hair.Dark);
+                var h_base = ParseColour(children[i + 1]);
+                logger.Debug("   --Base: " + h_base);
 
-                hair.Base = ParseColour(children[i + 1]);
-                logger.Debug("   --Base: " + hair.Base);
+                var h_highlight = ParseColour(children[i + 2]);
+                logger.Debug("   --Highlight: " + h_highlight);
 
-                hair.Highlight = ParseColour(children[i + 2]);
-                logger.Debug("   --Highlight: " + hair.Highlight);
-
-                hairs.Add(hair);
+                hairs.Add(new Hair(h_dark, h_base, h_highlight));
             }
             return hairs;
         }
 
-        private Colour ParseColour(ASTNode child)
+        private SKColor ParseColour(ASTNode child)
         {
-            Colour colour = new Colour();
+            var red = parseByte(child.Children[0].Value);
+            var green = parseByte(child.Children[1].Value);
+            var blue = parseByte(child.Children[2].Value);
 
-            colour.Red = parseByte(child.Children[0].Value);
-            colour.Green = parseByte(child.Children[1].Value);
-            colour.Blue = parseByte(child.Children[2].Value);
-
-            logger.Debug(" --Colour Parsed: " + colour);
-            return colour;
+            var color = new SKColor(red, green, blue);
+            logger.Debug(" --Colour Parsed: " + color);
+            return color;
         }
 
         private List<Layer> ParseLayers(ASTNode node, string filename)

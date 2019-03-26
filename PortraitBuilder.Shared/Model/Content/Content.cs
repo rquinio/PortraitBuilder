@@ -50,8 +50,7 @@ namespace PortraitBuilder.Model.Content
         /// Checking any kind of sprites would cause too many false positives (unit DLCs, ...).
         /// </summary>
         /// <returns></returns>
-        public bool HasPortraitData
-            => PortraitData?.PortraitTypes.Any() == true || Directory.Exists(PortraitPath);
+        public bool HasPortraitData => PortraitData?.PortraitTypes.Any() == true || Directory.Exists(PortraitPath);
 
         public void Unload()
         {

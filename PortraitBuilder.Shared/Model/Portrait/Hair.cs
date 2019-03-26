@@ -1,17 +1,18 @@
-using System.Collections.Generic;
+using SkiaSharp;
 
 namespace PortraitBuilder.Model.Portrait
 {
-
-    public class Hair
+    public readonly struct Hair
     {
-        public Colour Dark;
-        public Colour Base;
-        public Colour Highlight;
+        public readonly SKColor Dark;
+        public readonly SKColor Base;
+        public readonly SKColor Highlight;
 
-        /// <summary>
-        /// Used for storing data specific to the program.
-        /// </summary>
-        public Dictionary<string, object> CustomFlags = new Dictionary<string, object>();
+        public Hair(SKColor dark, SKColor @base, SKColor highlight)
+        {
+            Dark = dark;
+            Base = @base;
+            Highlight = highlight;
+        }
     }
 }
