@@ -1,3 +1,4 @@
+using SkiaSharp;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -33,7 +34,7 @@ namespace PortraitBuilder.Model.Portrait
         public List<Layer> Layers { get; set; } = new List<Layer>();
 
         public List<Hair> HairColours { get; set; } = new List<Hair>();
-        public List<Colour> EyeColours { get; set; } = new List<Colour>();
+        public List<SKColor> EyeColours { get; set; } = new List<SKColor>();
 
         /// <summary>
         /// TODO How is this used in-game ?

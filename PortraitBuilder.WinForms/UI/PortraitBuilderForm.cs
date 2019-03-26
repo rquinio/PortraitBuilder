@@ -12,6 +12,8 @@ using PortraitBuilder.Model.Portrait;
 using PortraitBuilder.Model;
 using PortraitBuilder.Shared.Model;
 using System.Linq;
+using SkiaSharp.Views.Desktop;
+using SkiaSharp;
 
 namespace PortraitBuilder.UI
 {
@@ -24,7 +26,7 @@ namespace PortraitBuilder.UI
 
         private static readonly ILog logger = LogManager.GetLogger(typeof(PortraitBuilderForm));
 
-        private Image previewImage = new Bitmap(176, 176);
+        private SKImage previewImage;
 
         private bool started = false;
         public static Random rand = new Random();
@@ -296,24 +298,20 @@ namespace PortraitBuilder.UI
         /// </summary>
         private void drawPortrait()
         {
-            using (Graphics g = Graphics.FromImage(previewImage))
-            {
-                logger.Debug("Clearing preview.");
-                g.Clear(Color.Empty);
+            pbPortrait.Image?.Dispose();
 
-                try
-                {
-                    Bitmap portraitImage = portraitRenderer.DrawPortrait(portrait, loader.ActiveContents, loader.ActivePortraitData.Sprites);
-                    g.DrawImage(portraitImage, 0, 0);
-                }
-                catch (Exception e)
-                {
-                    logger.Error("Error encountered rendering portrait", e);
-                    return;
-                }
+            try
+            {
+                var rendered = portraitRenderer.DrawPortrait(portrait, loader.ActiveContents, loader.ActivePortraitData.Sprites);
+                previewImage = SKImage.FromBitmap(rendered);
+            }
+            catch (Exception e)
+            {
+                logger.Error("Error encountered rendering portrait", e);
+                return;
             }
 
-            pbPortrait.Image = previewImage;
+            pbPortrait.Image = Image.FromStream(previewImage.Encode().AsStream(true));
         }
 
         private string getCharacteristicsString(Dictionary<Characteristic, ComboBox> characteristics)
@@ -680,10 +678,11 @@ namespace PortraitBuilder.UI
         private void onClickSave(object sender, EventArgs e)
         {
             string file = Snippets.SaveFileDialog("Save Image", "PNG|*.png", null);
+            if (string.IsNullOrEmpty(file)) return;
 
-            if (file != null)
+            using (var fs = File.Create(file))
             {
-                previewImage.Save(file, ImageFormat.Png);
+                previewImage.Encode().SaveTo(fs);
             }
         }
 

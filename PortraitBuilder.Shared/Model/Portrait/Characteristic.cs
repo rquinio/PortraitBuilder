@@ -59,25 +59,12 @@ namespace PortraitBuilder.Model.Portrait
             Property
         }
 
-        public override bool Equals(Object obj)
-        {
-            Characteristic characteristic = obj as Characteristic;
-            if (characteristic == null)
-                return false;
-            else
-                return index.Equals(characteristic.index) && type.Equals(characteristic.type);
-        }
+        public override bool Equals(object obj)
+            => !(obj is Characteristic characteristic) ? false : index.Equals(characteristic.index) && type.Equals(characteristic.type);
 
-        public override int GetHashCode()
-        {
-            return type.GetHashCode() + index;
-        }
+        public override int GetHashCode() => type.GetHashCode() + index;
 
-        public override string ToString()
-        {
-            char typeCode = (type == Type.DNA) ? 'd' : 'p';
-            return string.Format("{0} ({1}{2})", name, typeCode, index);
-        }
+        public override string ToString() => $"{name} ({(type == Type.DNA ? 'd' : 'p')}{index})";
 
         public static Characteristic BACKGROUND = new Characteristic("Background", 0, Type.Property, true);
         public static Characteristic HAIR = new Characteristic("Hair", 1, Type.Property, true);

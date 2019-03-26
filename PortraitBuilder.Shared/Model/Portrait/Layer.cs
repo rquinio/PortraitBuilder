@@ -62,9 +62,6 @@ namespace PortraitBuilder.Model.Portrait
         /// </summary>
         public string Filename;
 
-        public override string ToString()
-        {
-            return string.Format("{0} from {1}", Name + ":" + Characteristic, Filename);
-        }
+        public override string ToString() => $"{Name}:{Characteristic} from {Filename}";
     }
 }

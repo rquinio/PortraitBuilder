@@ -46,16 +46,23 @@ namespace PortraitBuilder.Model.Portrait
 
             using (var texture = LoadDDS(filePath))
             {
-                Size size = new Size(texture.Width / FrameCount, texture.Height);
-                for (int indexFrame = 0; indexFrame < FrameCount; indexFrame++)
+                //Engine.PortraitRenderer.debug(texture);
+
+                var src = new SKRectI(0, 0, texture.Width / FrameCount, texture.Height);
+                var dst = new SKRectI(0, 0, src.Width, src.Height);
+
+                for (int i = 0; i < FrameCount; i++)
                 {
-                    SKBitmap tile = new Bitmap(size.Width, size.Height);
-                    using (Graphics g = Graphics.FromImage(tile))
+                    var tile = new SKBitmap(src.Width, src.Height, texture.ColorType, texture.AlphaType);
+                    using (var canvas = new SKCanvas(tile))
                     {
-                        Rectangle drawArea = new Rectangle(indexFrame * size.Width, 0, size.Width, size.Height);
-                        g.DrawImage(texture, 0, 0, drawArea, GraphicsUnit.Pixel);
+                        //canvas.Clear(SKColors.Transparent);
+                        canvas.DrawBitmap(texture, src, dst);
                     }
+                    //Engine.PortraitRenderer.debug(tile);
                     Tiles.Add(tile);
+
+                    src.Offset(src.Width, 0);
                 }
             }
 
@@ -79,20 +86,17 @@ namespace PortraitBuilder.Model.Portrait
         {
             var image = Pfim.Pfim.FromFile(filepath);
             Debug.Assert(image.Format == Pfim.ImageFormat.Rgba32);
+            Debug.Assert(image.Compressed == false);
 
-            GCHandle? handle = null;
-            try
+            var info = new SKImageInfo(image.Width, image.Height, SKColorType.Bgra8888, SKAlphaType.Unpremul);
+            var bmp = new SKBitmap(info);
+            unsafe
             {
-                handle = GCHandle.Alloc(image.Data, GCHandleType.Pinned);
-
-                var bmp = new SKBitmap(image.Width, image.Height, SKColorType.Bgra8888, SKAlphaType.Unpremul);
-                bmp.SetPixels(handle.Value.AddrOfPinnedObject());
-
+                fixed (byte* pData = image.Data)
+                {
+                    bmp.InstallPixels(info, (IntPtr)pData, image.Stride);
+                }
                 return bmp;
-            }
-            finally
-            {
-                handle?.Free();
             }
         }
 
