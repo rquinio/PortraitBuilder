@@ -1,9 +1,11 @@
+using SkiaSharp;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Drawing;
-using System.Drawing.Imaging;
 using System.IO;
 using System.Linq;
+using System.Runtime.InteropServices;
 
 namespace PortraitBuilder.Model.Portrait
 {
@@ -17,7 +19,7 @@ namespace PortraitBuilder.Model.Portrait
         public bool NoRefCount;
         public bool IsLoaded;
 
-        public List<Bitmap> Tiles { get; private set; } = new List<Bitmap>();
+        public List<SKBitmap> Tiles { get; private set; } = new List<SKBitmap>();
 
         /// <summary>
         /// The file that the data was loaded from.
@@ -47,7 +49,7 @@ namespace PortraitBuilder.Model.Portrait
                 Size size = new Size(texture.Width / FrameCount, texture.Height);
                 for (int indexFrame = 0; indexFrame < FrameCount; indexFrame++)
                 {
-                    Bitmap tile = new Bitmap(size.Width, size.Height);
+                    SKBitmap tile = new Bitmap(size.Width, size.Height);
                     using (Graphics g = Graphics.FromImage(tile))
                     {
                         Rectangle drawArea = new Rectangle(indexFrame * size.Width, 0, size.Width, size.Height);
@@ -70,35 +72,27 @@ namespace PortraitBuilder.Model.Portrait
                 tile.Dispose();
             }
             IsLoaded = false;
-            Tiles = new List<Bitmap>();
+            Tiles = new List<SKBitmap>();
         }
 
-        private static Bitmap LoadDDS(string filepath)
+        private static SKBitmap LoadDDS(string filepath)
         {
             var image = Pfim.Pfim.FromFile(filepath);
+            Debug.Assert(image.Format == Pfim.ImageFormat.Rgba32);
 
-            PixelFormat format;
-            switch (image.Format)
+            GCHandle? handle = null;
+            try
             {
-                case Pfim.ImageFormat.Rgb24:
-                    format = PixelFormat.Format24bppRgb;
-                    break;
+                handle = GCHandle.Alloc(image.Data, GCHandleType.Pinned);
 
-                case Pfim.ImageFormat.Rgba32:
-                    format = PixelFormat.Format32bppArgb;
-                    break;
+                var bmp = new SKBitmap(image.Width, image.Height, SKColorType.Bgra8888, SKAlphaType.Unpremul);
+                bmp.SetPixels(handle.Value.AddrOfPinnedObject());
 
-                default:
-                    throw new Exception("Format not recognized");
-                    //throw new FileLoadException("Texture file is empty.", filePath);
+                return bmp;
             }
-
-            unsafe
+            finally
             {
-                fixed (byte* p = image.Data)
-                {
-                    return new Bitmap(image.Width, image.Height, image.Stride, format, (IntPtr)p);
-                }
+                handle?.Free();
             }
         }
 
