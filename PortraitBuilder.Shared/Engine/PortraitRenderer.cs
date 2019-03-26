@@ -45,24 +45,30 @@ namespace PortraitBuilder.Engine
         /// <returns>Frameless portrait drawn with the given parameters.</returns>
         public SKBitmap DrawPortrait(Portrait portrait, List<Content> activeContents, Dictionary<string, Sprite> sprites)
         {
+            bool dd = false;
             logger.Info($"Drawing Portrait {portrait}");
 
-            var portraitInfo = new SKImageInfo(176, 176, SKColorType.Bgra8888, SKAlphaType.Unpremul);
-            var portraitImage = new SKBitmap(portraitInfo, SKBitmapAllocFlags.ZeroPixels);
+            var portraitInfo = new SKImageInfo(176, 176);
+            var portraitImage = new SKBitmap(portraitInfo);
             using (var canvas = new SKCanvas(portraitImage))
             {
+                //must set transparent bg for unpremul -> premul
+                canvas.Clear(SKColors.Empty);
+
                 foreach (var layer in portrait.PortraitType.Layers)
                 {
                     DrawLayer(layer, canvas, portrait, activeContents, sprites);
                     canvas.Flush();
 
-                    //debug(portraitImage);
+                    if (dd)
+                        debug(portraitImage);
                 }
 
                 DrawBorder(portrait, canvas, activeContents, sprites);
                 canvas.Flush();
 
-                //debug(portraitImage);
+                if (dd)
+                    debug(portraitImage);
             }
             return portraitImage;
         }
@@ -233,21 +239,12 @@ namespace PortraitBuilder.Engine
             canvas.DrawBitmap(tile, p);
         }
 
-        [StructLayout(LayoutKind.Sequential)]
-        private struct BGRA
-        {
-            public byte Blue;
-            public byte Green;
-            public byte Red;
-            public byte Alpha;
-        }
-
         /// <summary>
         /// Based on gfx\FX\portrait.lua EyePixelShader
         /// </summary>
         private SKBitmap DrawEye(SKBitmap source, SKColor eyeColor)
         {
-            //debug(source);
+            debug(source);
 
             var output = new SKBitmap(source.Width, source.Height, source.ColorType, source.AlphaType);
             //output.Erase(SKColors.Transparent);
@@ -256,8 +253,8 @@ namespace PortraitBuilder.Engine
 
             unsafe
             {
-                BGRA* sColor = (BGRA*)source.GetPixels().ToPointer();
-                BGRA* oColor = (BGRA*)output.GetPixels().ToPointer();
+                SKPMColor* sColor = (SKPMColor*)source.GetPixels().ToPointer();
+                SKPMColor* oColor = (SKPMColor*)output.GetPixels().ToPointer();
 
                 for (int y = 0; y < source.Height; y++)
                 {
@@ -265,15 +262,16 @@ namespace PortraitBuilder.Engine
                     {
                         if (sColor->Alpha == 0) continue;
 
-                        oColor->Blue = (byte)(255 * ((eyeColor.Blue / 255d) * (sColor->Red / 255d)));
-                        oColor->Green = (byte)(255 * ((eyeColor.Green / 255d) * (sColor->Red / 255d)));
-                        oColor->Red = (byte)(255 * ((eyeColor.Red / 255d) * (sColor->Red / 255d)));
-                        oColor->Alpha = sColor->Alpha;
+                        var final = new SKColor(blue: (byte)(255 * ((eyeColor.Blue / 255d) * (sColor->Red / 255d))),
+                                                green: (byte)(255 * ((eyeColor.Green / 255d) * (sColor->Red / 255d))),
+                                                red: (byte)(255 * ((eyeColor.Red / 255d) * (sColor->Red / 255d))),
+                                                alpha: sColor->Alpha);
+                        *oColor = SKPMColor.PreMultiply(final);
                     }
                 }
             }
 
-            //debug(output);
+            debug(output);
 
             return output;
         }
@@ -283,7 +281,7 @@ namespace PortraitBuilder.Engine
         /// </summary>
         private SKBitmap DrawHair(SKBitmap source, Hair hair)
         {
-            //debug(source);
+            debug(source);
 
             var output = new SKBitmap(source.Width, source.Height, source.ColorType, source.AlphaType);
             //output.Erase(SKColors.Transparent);
@@ -292,8 +290,8 @@ namespace PortraitBuilder.Engine
 
             unsafe
             {
-                BGRA* sColor = (BGRA*)source.GetPixels().ToPointer();
-                BGRA* oColor = (BGRA*)output.GetPixels().ToPointer();
+                SKPMColor* sColor = (SKPMColor*)source.GetPixels().ToPointer();
+                SKPMColor* oColor = (SKPMColor*)output.GetPixels().ToPointer();
 
                 for (int y = 0; y < source.Height; y++)
                 {
@@ -305,15 +303,12 @@ namespace PortraitBuilder.Engine
                         var lerp2 = Lerp(lerp1, hair.Highlight, Clamp((sColor->Green - 128d) * 2));
                         var final = lerp2.WithAlpha(sColor->Alpha);
 
-                        oColor->Blue = final.Blue;
-                        oColor->Green = final.Green;
-                        oColor->Red = final.Red;
-                        oColor->Alpha = final.Alpha;
+                        *oColor = SKPMColor.PreMultiply(final);
                     }
                 }
             }
 
-            //debug(output);
+            debug(output);
 
             return output;
         }

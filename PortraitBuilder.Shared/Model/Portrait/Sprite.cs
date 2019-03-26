@@ -53,10 +53,11 @@ namespace PortraitBuilder.Model.Portrait
 
                 for (int i = 0; i < FrameCount; i++)
                 {
-                    var tile = new SKBitmap(src.Width, src.Height, texture.ColorType, texture.AlphaType);
+                    var tile = new SKBitmap(src.Width, src.Height);
                     using (var canvas = new SKCanvas(tile))
                     {
-                        //canvas.Clear(SKColors.Transparent);
+                        //must set transparent bg for unpremul -> premul
+                        canvas.Clear(SKColors.Empty);
                         canvas.DrawBitmap(texture, src, dst);
                     }
                     //Engine.PortraitRenderer.debug(tile);
