@@ -1,14 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Drawing;
 using log4net;
 using PortraitBuilder.Model.Portrait;
 using PortraitBuilder.Model.Content;
 using PortraitBuilder.Shared.Model;
 using SkiaSharp;
 using static PortraitBuilder.Model.Portrait.ColorHelper;
-using System.Runtime.InteropServices;
 using System.Diagnostics;
 
 namespace PortraitBuilder.Engine
@@ -45,7 +43,6 @@ namespace PortraitBuilder.Engine
         /// <returns>Frameless portrait drawn with the given parameters.</returns>
         public SKBitmap DrawPortrait(Portrait portrait, List<Content> activeContents, Dictionary<string, Sprite> sprites)
         {
-            bool dd = false;
             logger.Info($"Drawing Portrait {portrait}");
 
             var portraitInfo = new SKImageInfo(176, 176);
@@ -53,22 +50,14 @@ namespace PortraitBuilder.Engine
             using (var canvas = new SKCanvas(portraitImage))
             {
                 //must set transparent bg for unpremul -> premul
-                canvas.Clear(SKColors.Empty);
+                canvas.Clear(SKColors.Transparent);
 
                 foreach (var layer in portrait.PortraitType.Layers)
                 {
                     DrawLayer(layer, canvas, portrait, activeContents, sprites);
-                    canvas.Flush();
-
-                    if (dd)
-                        debug(portraitImage);
                 }
 
                 DrawBorder(portrait, canvas, activeContents, sprites);
-                canvas.Flush();
-
-                if (dd)
-                    debug(portraitImage);
             }
             return portraitImage;
         }
@@ -207,14 +196,6 @@ namespace PortraitBuilder.Engine
             }
         }
 
-        internal static void debug(SKBitmap bmp)
-        {
-            var tmp = Path.ChangeExtension(Path.GetTempFileName(), ".png");
-            using (var skstream = File.Create(tmp))
-                SKImage.FromBitmap(bmp).Encode().SaveTo(skstream);
-            System.Diagnostics.Process.Start(new System.Diagnostics.ProcessStartInfo(tmp) { UseShellExecute = true });
-        }
-
         private void DrawTile(Portrait portrait, SKCanvas canvas, Sprite sprite, Layer layer, int tileIndex)
         {
             SKBitmap tile;
@@ -244,10 +225,8 @@ namespace PortraitBuilder.Engine
         /// </summary>
         private SKBitmap DrawEye(SKBitmap source, SKColor eyeColor)
         {
-            debug(source);
-
             var output = new SKBitmap(source.Width, source.Height, source.ColorType, source.AlphaType);
-            //output.Erase(SKColors.Transparent);
+            output.Erase(SKColors.Transparent);
 
             Debug.Assert(source.BytesPerPixel == 4 /* sizeof(BGRA) */);
 
@@ -271,8 +250,6 @@ namespace PortraitBuilder.Engine
                 }
             }
 
-            debug(output);
-
             return output;
         }
 
@@ -281,10 +258,8 @@ namespace PortraitBuilder.Engine
         /// </summary>
         private SKBitmap DrawHair(SKBitmap source, Hair hair)
         {
-            debug(source);
-
             var output = new SKBitmap(source.Width, source.Height, source.ColorType, source.AlphaType);
-            //output.Erase(SKColors.Transparent);
+            output.Erase(SKColors.Transparent);
 
             Debug.Assert(source.BytesPerPixel == 4 /* sizeof(BGRA) */);
 
@@ -307,8 +282,6 @@ namespace PortraitBuilder.Engine
                     }
                 }
             }
-
-            debug(output);
 
             return output;
         }

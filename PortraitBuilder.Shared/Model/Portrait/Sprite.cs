@@ -57,7 +57,7 @@ namespace PortraitBuilder.Model.Portrait
                     using (var canvas = new SKCanvas(tile))
                     {
                         //must set transparent bg for unpremul -> premul
-                        canvas.Clear(SKColors.Empty);
+                        canvas.Clear(SKColors.Transparent);
                         canvas.DrawBitmap(texture, src, dst);
                     }
                     //Engine.PortraitRenderer.debug(tile);
