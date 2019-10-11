@@ -37,11 +37,13 @@ See the dedicated [CK2 forum thread](https://forum.paradoxplaza.com/forum/index.
 - Select your CK2 game executable (ex: C:\Program Files (x86)\Steam\SteamApps\common\Crusader Kings II\CK2game.exe). This value is kept into a file "gamedir.txt".
 - Errors are logged to a log.txt file. Adding -logfull to PortraitBuilder.exe launch options will set log level to DEBUG.
 
-## Mono users (Linux/Mac/Windows)
+## Mono users (Linux/MacOS/Windows)
 
 - Install [Mono 5.x](http://www.mono-project.com/download/). Note: GTK# is not required.
-- Run ". PortraitBuilder" which is an alias for "MONO_PATH=./lib mono PortraitBuilder.exe"
-Note: on MacOS, use: "MONO_PATH=./lib mono --arch=32 PortraitBuilder.exe", as [WinForms only work with Mono 32bits on MacOS](http://www.mono-project.com/docs/about-mono/supported-platforms/osx/#32-and-64-bit-support)
+- To launch:
+  - On Windows, run "mono PortraitBuilder.exe"
+  - On Linux, run ". PortraitBuilder" which is an alias for "MONO_PATH=./lib mono PortraitBuilder.exe"
+  - On MacOS, run: "MONO_PATH=./lib mono --arch=32 PortraitBuilder.exe", as [WinForms only work with Mono 32bits on MacOS](http://www.mono-project.com/docs/about-mono/supported-platforms/osx/#32-and-64-bit-support)
 - Select your CK2 game executable (ex: ~/.local/share/Steam/SteamApps/common/Crusader Kings II/ck2 or /Users/USER/Library/Application Support/Steam/SteamApps/common/crusader kings ii/ck2.app). This value is kept into a file "gamedir.txt".
 - Errors are logged to a log.txt file
 
@@ -64,7 +66,9 @@ To re-generate the Lexer/Parser from the grammar, install [Hime standalone distr
 
 > himecc PortraitReader.gram -n PortraitBuilder.Parser
 
-### Using Ubunutu on Windows 10
+### Using Ubuntu on Windows 10
+
+You'll need [Xming for Windows](https://sourceforge.net/projects/xming/).
 
 Create the following symlinks to simulate a CK2 Steam installation on Unix:
 

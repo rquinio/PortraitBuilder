@@ -111,6 +111,7 @@ namespace PortraitBuilder.UI {
             "Chinese Imperial",
             "Confucian Bureaucracy"});
             this.cbGovernment.Location = new System.Drawing.Point(45, 19);
+            this.cbGovernment.MaxDropDownItems = 12;
             this.cbGovernment.Name = "cbGovernment";
             this.cbGovernment.Size = new System.Drawing.Size(136, 21);
             this.cbGovernment.TabIndex = 25;
@@ -223,10 +224,10 @@ namespace PortraitBuilder.UI {
             // tabProperties
             // 
             this.tabProperties.Controls.Add(this.panelProperties);
-            this.tabProperties.Location = new System.Drawing.Point(4, 22);
+            this.tabProperties.Location = new System.Drawing.Point(4, 24);
             this.tabProperties.Name = "tabProperties";
             this.tabProperties.Padding = new System.Windows.Forms.Padding(3);
-            this.tabProperties.Size = new System.Drawing.Size(242, 336);
+            this.tabProperties.Size = new System.Drawing.Size(242, 334);
             this.tabProperties.TabIndex = 1;
             this.tabProperties.Text = "Properties*";
             this.tabProperties.UseVisualStyleBackColor = true;
@@ -351,9 +352,9 @@ namespace PortraitBuilder.UI {
             // 
             this.tabMods.AutoScroll = true;
             this.tabMods.Controls.Add(this.panelMods);
-            this.tabMods.Location = new System.Drawing.Point(4, 22);
+            this.tabMods.Location = new System.Drawing.Point(4, 24);
             this.tabMods.Name = "tabMods";
-            this.tabMods.Size = new System.Drawing.Size(216, 393);
+            this.tabMods.Size = new System.Drawing.Size(216, 391);
             this.tabMods.TabIndex = 2;
             this.tabMods.Text = "Mods";
             this.tabMods.UseVisualStyleBackColor = true;

@@ -403,7 +403,8 @@ namespace PortraitBuilder.UI {
 		}
 
 		private void loadPortraitTypes() {
-			object previouslySelectedBasePortrait = null;
+            logger.Info("Loading PortraitTypes.");
+            object previouslySelectedBasePortrait = null;
 			object previouslySelectedOverridePortrait = null;
 
 			if (cbPortraitTypes.SelectedItem != null) {
