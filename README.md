@@ -8,7 +8,7 @@
   </tr>
   <tr>
     <td style="text-align:center">AppVeyor</td>
-    <td>.NET 4.6</td>
+    <td>.NET 4.6.2</td>
     <td style="text-align:center"><a href="https://ci.appveyor.com/project/rquinio/portraitbuilder/branch/master"><img src="https://ci.appveyor.com/api/projects/status/ssardstb8qkm35sy/branch/master?svg=true" alt="AppVeyor build status" /></a></td>
   </tr>
   <tr>
@@ -32,14 +32,14 @@ See the dedicated [CK2 forum thread](https://forum.paradoxplaza.com/forum/index.
 
 ## .NET users (Windows)
 
-- Install [.NET 4.6](https://www.microsoft.com/en-US/download/details.aspx?id=48130)
+- Install [.NET 4.6.2](https://www.microsoft.com/en-us/download/details.aspx?id=53345)
 - Start PortraitBuilder.exe
 - Select your CK2 game executable (ex: C:\Program Files (x86)\Steam\SteamApps\common\Crusader Kings II\CK2game.exe). This value is kept into a file "gamedir.txt".
 - Errors are logged to a log.txt file. Adding -logfull to PortraitBuilder.exe launch options will set log level to DEBUG.
 
 ## Mono users (Linux/MacOS/Windows)
 
-- Install [Mono 5.x](http://www.mono-project.com/download/). Note: GTK# is not required.
+- Install [Mono 6.x](http://www.mono-project.com/download/). Note: GTK# is not required.
 - To launch:
   - On Windows, run "mono PortraitBuilder.exe"
   - On Linux, run ". PortraitBuilder" which is an alias for "MONO_PATH=./lib mono PortraitBuilder.exe"
@@ -57,10 +57,10 @@ The built executable for .NET can also be executed with Mono, without needing to
 
 Main dependencies:
 
-- [dds-reader](https://github.com/andburn/dds-reader) to read .dds images. A recompiled version targeting .NET 4.5 is used from /lib.
+- [Pfim](https://github.com/nickbabcock/Pfim) to read .dds images.
 - [Hime Parser Generator](https://bitbucket.org/cenotelie/hime/) to perform a basic parsing of CK2 files.
-- [SharpZipLib](http://www.icsharpcode.net/opensource/sharpziplib/) to unzip DLCs
-- [log4net](https://logging.apache.org/log4net/) to handle logging
+- [SharpZipLib](http://www.icsharpcode.net/opensource/sharpziplib/) to unzip DLCs.
+- [log4net](https://logging.apache.org/log4net/) to handle logging.
 
 To re-generate the Lexer/Parser from the grammar, install [Hime standalone distribution](https://bitbucket.org/cenotelie/hime/downloads/), and use the himecc command line utility:
 

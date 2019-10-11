@@ -27,7 +27,7 @@
     <BootstrapperEnabled>true</BootstrapperEnabled>
     <StartupObject>PortraitBuilder.Program</StartupObject>
     <ReleaseVersion>2.1.0</ReleaseVersion>
-    <TargetFrameworkVersion>v4.6</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.6.2</TargetFrameworkVersion>
     <NuGetPackageImportStamp>
     </NuGetPackageImportStamp>
     <!-- Prevent default XML files copied to output in RELEASE. -->
@@ -60,10 +60,6 @@
     <ApplicationIcon>UI\unknown_character.ico</ApplicationIcon>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="DDSReader, Version=0.1.6.0, Culture=neutral, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\lib\DDSReader.dll</HintPath>
-    </Reference>
     <Reference Include="Hime.Redist, Version=2.0.5.0, Culture=neutral, PublicKeyToken=984dd3a5d55ca89c, processorArchitecture=MSIL">
       <HintPath>..\packages\Hime.Redist.2.0.5.0\lib\net45\Hime.Redist.dll</HintPath>
     </Reference>
@@ -73,6 +69,9 @@
     <Reference Include="log4net, Version=2.0.8.0, Culture=neutral, PublicKeyToken=669e0ddf0bb1aa2a, processorArchitecture=MSIL">
       <HintPath>..\packages\log4net.2.0.8\lib\net45-full\log4net.dll</HintPath>
       <Private>True</Private>
+    </Reference>
+    <Reference Include="Pfim, Version=0.8.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\Pfim.0.8.0\lib\netstandard2.0\Pfim.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />

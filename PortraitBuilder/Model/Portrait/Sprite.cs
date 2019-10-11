@@ -1,7 +1,9 @@
 using System.Collections.Generic;
 using System.Drawing;
+using System.Drawing.Imaging;
 using System.IO;
-using Imaging.DDSReader;
+using System.Runtime.InteropServices;
+using Pfim.dds;
 
 namespace PortraitBuilder.Model.Portrait {
 	public class Sprite {
@@ -30,7 +32,9 @@ namespace PortraitBuilder.Model.Portrait {
 			Unload();
 
 			if (File.Exists(filePath)) {
-                texture = DDS.LoadImage(filePath);
+                Pfim.IImage image = Pfim.Pfim.FromFile(filePath);
+                var data = Marshal.UnsafeAddrOfPinnedArrayElement(image.Data, 0);
+                texture = new Bitmap(image.Width, image.Height, image.Stride, PixelFormat.Format32bppRgb, data);
 			} else {
 				throw new FileLoadException("Unable to find texture file", filePath);
 			}
